@@ -1,0 +1,36 @@
+name: Spring Boot CI with Branch Validation
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  validate_branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Validate Branch Name
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
+          elif [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            BRANCH_NAME=$(echo $GITHUB_HEAD_REF)
+          else
+            echo "Invalid event type: $GITHUB_EVENT_NAME" >&2
+            exit 1
+          fi
+
+          echo "Branch name: $BRANCH_NAME"
+
+          # Validate branch name against the pattern
+          if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|release)\/[A-Za-z0-9_-]+(\/[A-Za-z0-9_-]+)*$ ]]; then
+            echo "Invalid branch name: $BRANCH_NAME. Branch must be 'main' or start with 'feature/', 'bugfix/', or 'release/'." >&2
+            exit 1 
+          fi

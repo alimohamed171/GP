@@ -1,0 +1,28 @@
+name: Spring Boot CI with PR Title Validation
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+    branches:
+      - '*'
+
+jobs:
+  validate_pr_title:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Validate PR Title
+        run: |
+          # Ensure we get the PR title correctly
+          PR_TITLE=$(jq --raw-output .pull_request.title $GITHUB_EVENT_PATH)
+
+          echo "PR Title: $PR_TITLE"
+
+          # Validate PR title against the pattern
+          if [[ ! "$PR_TITLE" =~ ^(feat|fix|docs|style|refactor|test|chore):\ .+ ]]; then
+            echo "Invalid PR title: '$PR_TITLE'. PR title must match the pattern: '^(feat|fix|docs|style|refactor|test|chore):\ .+'." >&2
+            exit 1
+          fi

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface UniversityService {
     University findUniversityById(int id);
-
     ResponseEntity<Object> addUniversity(@Valid UniversityDTO request);
+
+    ResponseEntity<Object> getAllUniversity();
 }
