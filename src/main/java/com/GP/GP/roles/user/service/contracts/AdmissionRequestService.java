@@ -1,10 +1,14 @@
 package com.GP.GP.roles.user.service.contracts;
 
 import com.GP.GP.roles.user.dto.AdmissionRequestDTO;
+import com.GP.GP.utill.base.BaseResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface AdmissionRequestService {
-    AdmissionRequestDTO createAdmissionRequest(AdmissionRequestDTO admissionRequestDTO);
-    AdmissionRequestDTO updateAdmissionRequest(int id, AdmissionRequestDTO admissionRequestDTO);
-    String checkApplicationStatus(int id, int userId);
+    ResponseEntity<Object> createAdmissionRequest(AdmissionRequestDTO admissionRequestDTO);
+    ResponseEntity<Object> updateAdmissionRequest(int id, AdmissionRequestDTO admissionRequestDTO);
+    ResponseEntity<Object> checkApplicationStatus(int id, int userId);
+
+    
 
 }
