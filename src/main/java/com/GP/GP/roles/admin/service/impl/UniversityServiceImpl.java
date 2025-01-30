@@ -35,6 +35,12 @@ public class UniversityServiceImpl implements UniversityService {
 
     @Override
     public ResponseEntity<Object> deleteAllUniversities() {
+        long count = repo.count();
+
+        if (count == 0) {
+            BaseResponse response = new BaseResponse(false, "No universities found to delete.", null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
         repo.deleteAll();
         BaseResponse response = new BaseResponse(true, "All universities deleted successfully.", null);
         return new ResponseEntity<>(response, HttpStatus.OK);
