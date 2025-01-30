@@ -32,5 +32,12 @@ public class UniversityServiceImpl implements UniversityService {
         BaseResponse response = new BaseResponse(true, "University added successfully.", responseDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Object> deleteAllUniversities() {
+        repo.deleteAll();
+        BaseResponse response = new BaseResponse(true, "All universities deleted successfully.", null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
 

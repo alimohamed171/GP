@@ -29,4 +29,9 @@ public class AdminController {
         return universityService.addUniversity(request);
     }
 
+    @DeleteMapping("deleteAllUniversities")
+    public ResponseEntity<Object> deleteAllUniversities() {
+        return universityService.deleteAllUniversities();
+    }
+
 }
