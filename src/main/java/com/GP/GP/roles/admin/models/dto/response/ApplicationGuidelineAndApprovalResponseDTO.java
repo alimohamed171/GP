@@ -15,6 +15,7 @@ public class ApplicationGuidelineAndApprovalResponseDTO {
     private int universityId;
     private String universityName;
     private String guidelines;
+
     static public ApplicationGuidelineAndApprovalResponseDTO mapToResponseDTO(ApplicationGuidelineAndApproval guidelineEntity) {
         return ApplicationGuidelineAndApprovalResponseDTO.builder()
                 .guideLinesId(guidelineEntity.getId())
