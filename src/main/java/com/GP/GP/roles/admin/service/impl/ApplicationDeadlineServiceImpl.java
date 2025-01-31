@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -53,5 +54,22 @@ public class ApplicationDeadlineServiceImpl implements ApplicationDeadlineServic
         repo.delete(applicationDeadline.get());
         BaseResponse baseResponse = new BaseResponse(true, "Application deadline deleted successfully.", null);
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getAllAppDeadlinesByUniversityId(int universityId) {
+        List<ApplicationDeadline> deadlines = repo.findAllByUniversityId(universityId);
+
+        if (deadlines.isEmpty()) {
+            BaseResponse response = new BaseResponse(false, "No deadlines found for this university.", null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        List<ApplicationDeadlineResponseDTO> responseDTOs = deadlines.stream()
+                .map(ApplicationDeadlineResponseDTO::mapToResponseDTO)
+                .toList();
+
+        BaseResponse response = new BaseResponse(true, "Deadlines retrieved successfully.", responseDTOs);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
