@@ -1,7 +1,9 @@
 package com.GP.GP.roles.admin.controller;
 
 import com.GP.GP.repository.ApplicationDeadlineRepository;
+import com.GP.GP.roles.admin.models.dto.request.ApplicationDeadlineDTO;
 import com.GP.GP.roles.admin.models.dto.request.ApplicationGuidelineAndApprovalDTO;
+import com.GP.GP.roles.admin.service.contracts.ApplicationDeadlineService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
