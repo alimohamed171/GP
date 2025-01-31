@@ -53,7 +53,9 @@ public class UniversityServiceImpl implements UniversityService {
            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
        }
 
-       AdminMapper.toUniversityEntity(request);
+        if (request.getName() != null) {
+            university.setName(request.getName());
+        }
        university = repo.save(university);
        UniversityResponseDTO responseDTO = UniversityResponseDTO.mapToResponseDTO(university);
        BaseResponse response = new BaseResponse(true, "University updated successfully.", responseDTO);

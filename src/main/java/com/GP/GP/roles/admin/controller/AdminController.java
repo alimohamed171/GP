@@ -34,7 +34,7 @@ public class AdminController {
         return universityService.deleteUniversityById(id);
     }
 
-    @PutMapping("university/{id}")
+    @PutMapping("update_university/{id}")
     public ResponseEntity<Object> updateUniversity(
             @PathVariable int id,
             @Valid @RequestBody UniversityDTO request) {
