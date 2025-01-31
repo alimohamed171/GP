@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class UniversityServiceImpl implements UniversityService {
 
@@ -60,6 +63,16 @@ public class UniversityServiceImpl implements UniversityService {
        UniversityResponseDTO responseDTO = UniversityResponseDTO.mapToResponseDTO(university);
        BaseResponse response = new BaseResponse(true, "University updated successfully.", responseDTO);
        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getAllUniversity() {
+        List<University> universities = repo.findAll();
+        List<UniversityResponseDTO> universityResponseDTOs = universities.stream()
+                .map(UniversityResponseDTO::mapToResponseDTO)
+                .collect(Collectors.toList());
+        BaseResponse response = new BaseResponse(true, "All universities retrieved successfully.", universityResponseDTOs);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
 

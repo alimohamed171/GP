@@ -12,10 +12,13 @@ import com.GP.GP.roles.user.exception.InvalidOperationException;
 import com.GP.GP.roles.user.exception.ResourceNotFoundException;
 import com.GP.GP.roles.user.mapper.AdmissionRequestMapper;
 import com.GP.GP.utill.Enums;
+import com.GP.GP.utill.base.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,9 +35,9 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
     private UniversityService universityService;
 
     @Override
-    public AdmissionRequestDTO createAdmissionRequest(AdmissionRequestDTO admissionRequestDTO) {
+    public ResponseEntity<Object> createAdmissionRequest(AdmissionRequestDTO admissionRequestDTO) {
         User user = userRepository.findById(admissionRequestDTO.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with ${admissionRequestDTO.getUserId()}"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with "+ admissionRequestDTO.getUserId()));
         University university = universityService.findUniversityById(admissionRequestDTO.getUniversityId());
         AdmissionRequest admissionRequest;
 
@@ -46,11 +49,15 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
 
         AdmissionRequest savedRequest = admissionRequestRepository.save(admissionRequest);
 
-        return AdmissionRequestMapper.toDTO(savedRequest);
+        AdmissionRequestDTO dto = AdmissionRequestMapper.toDTO(savedRequest);
+        BaseResponse response = new BaseResponse(true, "Admission request created successfully", dto);
+
+
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @Override
-    public AdmissionRequestDTO updateAdmissionRequest(int id, AdmissionRequestDTO admissionRequestDTO) {
+    public ResponseEntity<Object> updateAdmissionRequest(int id, AdmissionRequestDTO admissionRequestDTO) {
         AdmissionRequest existingRequest = admissionRequestRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Admission request not found"));
 
@@ -58,17 +65,50 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
             throw new InvalidOperationException("Cannot update request after it has been processed");
         }
         //I don't know what else could be updated :(
-        existingRequest.setHousingType(admissionRequestDTO.getHousingType());
+        existingRequest.setStudentType(admissionRequestDTO.getStudentType());
+        existingRequest.setNationalId(admissionRequestDTO.getNationalId());
+        existingRequest.setName(admissionRequestDTO.getName());
+        existingRequest.setDateOfBirth(admissionRequestDTO.getDateOfBirth());
+        existingRequest.setPlaceOfBirth(admissionRequestDTO.getPlaceOfBirth());
+        existingRequest.setGender(admissionRequestDTO.getGender());
+        existingRequest.setReligion(admissionRequestDTO.getReligion());
+        existingRequest.setResidenceAddress(admissionRequestDTO.getResidenceAddress());
+        existingRequest.setDetailedAddress(admissionRequestDTO.getDetailedAddress());
+        existingRequest.setEmail(admissionRequestDTO.getEmail());
+        existingRequest.setMobileNumber(admissionRequestDTO.getMobileNumber());
+        existingRequest.setFatherName(admissionRequestDTO.getFatherName());
+        existingRequest.setFatherNationalId(admissionRequestDTO.getFatherNationalId());
+        existingRequest.setFatherOccupation(admissionRequestDTO.getFatherOccupation());
+        existingRequest.setFatherPhoneNumber(admissionRequestDTO.getFatherPhoneNumber());
+        existingRequest.setGuardianName(admissionRequestDTO.getGuardianName());
+        existingRequest.setGuardianNationalId(admissionRequestDTO.getGuardianNationalId());
+        existingRequest.setGuardianPhoneNumber(admissionRequestDTO.getGuardianPhoneNumber());
+        existingRequest.setParentsStatus(admissionRequestDTO.getParentsStatus());
+        existingRequest.setPreviousAcademicYearGpa(admissionRequestDTO.getPreviousAcademicYearGpa());
+        existingRequest.setHousingInPreviousYears(admissionRequestDTO.getHousingInPreviousYears());
+        existingRequest.setFamilyAbroad(admissionRequestDTO.getFamilyAbroad());
+        existingRequest.setSpecialNeeds(admissionRequestDTO.getSpecialNeeds());
+        existingRequest.setSecondaryDivision(admissionRequestDTO.getSecondaryDivision());
+        existingRequest.setTotalGradesHighSchool(admissionRequestDTO.getTotalGradesHighSchool());
+        existingRequest.setPassportNumber(admissionRequestDTO.getPassportNumber());
+        existingRequest.setPassportIssuingAuthority(admissionRequestDTO.getPassportIssuingAuthority());
+        existingRequest.setDate(admissionRequestDTO.getDate());
+
         existingRequest.setUpdatedAt(LocalDateTime.now());
+
         AdmissionRequest updatedRequest = admissionRequestRepository.save(existingRequest);
-        return AdmissionRequestMapper.toDTO(updatedRequest);
+        AdmissionRequestDTO dto = AdmissionRequestMapper.toDTO(updatedRequest);
+        BaseResponse response =new BaseResponse(true, "Admission request updated successfully", dto);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @Override
-    public String checkApplicationStatus(int id, int userId) {
+    public ResponseEntity<Object> checkApplicationStatus(int id, int userId) {
         AdmissionRequest request = admissionRequestRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Admission request not found"));
-        return request.getStatus().name();
+        String admissionRequestStatues = request.getStatus().name();
+        BaseResponse response = new BaseResponse(true, "Application status retrieved successfully", admissionRequestStatues);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

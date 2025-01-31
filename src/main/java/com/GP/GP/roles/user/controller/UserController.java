@@ -14,26 +14,19 @@ public class UserController {
     private AdmissionRequestService admissionRequestService;
 
     @PostMapping
-    public ResponseEntity<AdmissionRequestDTO> applyForAdmission(@RequestBody AdmissionRequestDTO dto) {
-        AdmissionRequestDTO createdRequest = admissionRequestService.createAdmissionRequest(dto);
-        return new ResponseEntity<>(createdRequest, HttpStatus.CREATED);
+    public ResponseEntity<Object> applyForAdmission(@RequestBody AdmissionRequestDTO dto) {
+        return admissionRequestService.createAdmissionRequest(dto);
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<AdmissionRequestDTO> updateRequest(
-//            @PathVariable int id,
-//            @RequestBody AdmissionRequestDTO dto) {
-//        AdmissionRequestDTO updatedRequest = admissionRequestService.updateAdmissionRequest(id, dto);
-//        return ResponseEntity.ok(updatedRequest);
-//    }
-//
-//    @GetMapping("/{id}/status")
-//    public ResponseEntity<String> checkStatus(
-//            @PathVariable int id,
-//            @RequestParam int userId) {
-//        String status = admissionRequestService.checkApplicationStatus(id, userId);
-//        return ResponseEntity.ok(status);
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateRequest(@PathVariable int id, @RequestBody AdmissionRequestDTO dto) {
+        return admissionRequestService.updateAdmissionRequest(id, dto);
+    }
+
+    @GetMapping("/{id}/status")
+    public ResponseEntity<Object> checkStatus(@PathVariable int id, @RequestParam int userId) {
+        return admissionRequestService.checkApplicationStatus(id, userId);
+    }
 
 }
 

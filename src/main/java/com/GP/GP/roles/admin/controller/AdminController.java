@@ -41,4 +41,9 @@ public class AdminController {
         return universityService.updateUniversity(id, request);
     }
 
+    @GetMapping("getAllUniversity")
+    public ResponseEntity<Object> getAllUniversity(){
+        return universityService.getAllUniversity();
+    }
+
 }

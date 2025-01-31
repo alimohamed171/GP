@@ -14,4 +14,6 @@ public interface UniversityService {
     ResponseEntity<Object> deleteUniversityById(int id);
 
     ResponseEntity<Object> updateUniversity(int id, @Valid UniversityDTO request);
+
+    ResponseEntity<Object> getAllUniversity();
 }
