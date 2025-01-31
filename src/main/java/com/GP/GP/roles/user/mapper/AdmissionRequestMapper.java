@@ -4,7 +4,9 @@ import com.GP.GP.entities.University;
 import com.GP.GP.roles.user.dto.AdmissionRequestDTO;
 import com.GP.GP.entities.AdmissionRequest;
 import com.GP.GP.entities.User;
+import lombok.Builder;
 
+@Builder
 public class AdmissionRequestMapper {
     public static AdmissionRequestDTO toDTO(AdmissionRequest entity) {
         return AdmissionRequestDTO.builder()

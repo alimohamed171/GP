@@ -37,7 +37,7 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
     @Override
     public ResponseEntity<Object> createAdmissionRequest(AdmissionRequestDTO admissionRequestDTO) {
         User user = userRepository.findById(admissionRequestDTO.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with ${admissionRequestDTO.getUserId()}"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with "+ admissionRequestDTO.getUserId()));
         University university = universityService.findUniversityById(admissionRequestDTO.getUniversityId());
         AdmissionRequest admissionRequest;
 
