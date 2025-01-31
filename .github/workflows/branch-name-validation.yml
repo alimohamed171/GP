@@ -30,7 +30,7 @@ jobs:
           echo "Branch name: $BRANCH_NAME"
 
           # Validate branch name against the pattern
-          if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|release)\/[A-Za-z0-9_-]+(\/[A-Za-z0-9_-]+)*$ ]]; then
+          if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|release|refactor)\/[A-Za-z0-9_-]+(\/[A-Za-z0-9_-]+)*$ ]]; then
             echo "Invalid branch name: $BRANCH_NAME. Branch must be 'main' or start with 'feature/', 'bugfix/', or 'release/'." >&2
             exit 1 
           fi
