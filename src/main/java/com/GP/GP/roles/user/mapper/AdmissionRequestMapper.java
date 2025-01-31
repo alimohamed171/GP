@@ -11,7 +11,6 @@ public class AdmissionRequestMapper {
                 .id(entity.getId())
                 .userId(entity.getUser().getId())
                 .universityId(entity.getUniversity().getId())
-                .housingType(entity.getHousingType())
                 .studentType(entity.getStudentType())
                 .nationalId(entity.getNationalId())
                 .name(entity.getName())
@@ -43,9 +42,7 @@ public class AdmissionRequestMapper {
                 .passportIssuingAuthority(entity.getPassportIssuingAuthority())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
-                .distance(entity.getDistance())
                 .date(entity.getDate())
-                .password(entity.getPassword())
                 .build();
     }
 
@@ -54,7 +51,6 @@ public class AdmissionRequestMapper {
         entity.setId(dto.getId());
         entity.setUser(user);
         entity.setUniversity(university);
-        entity.setHousingType(dto.getHousingType());
         entity.setStudentType(dto.getStudentType());
         entity.setNationalId(dto.getNationalId());
         entity.setName(dto.getName());
@@ -86,9 +82,7 @@ public class AdmissionRequestMapper {
         entity.setPassportIssuingAuthority(dto.getPassportIssuingAuthority());
         entity.setCreatedAt(dto.getCreatedAt());
         entity.setUpdatedAt(dto.getUpdatedAt());
-        entity.setDistance(dto.getDistance());
         entity.setDate(dto.getDate());
-        entity.setPassword(dto.getPassword());
         return entity;
     }
 

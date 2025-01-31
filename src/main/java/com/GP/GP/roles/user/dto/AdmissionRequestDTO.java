@@ -16,7 +16,6 @@ public class AdmissionRequestDTO {
     private int id;
     private int userId;
     private int universityId;
-    private String housingType;
     private Enums.StudentType studentType;
     private String nationalId;
     private String name;
@@ -48,7 +47,6 @@ public class AdmissionRequestDTO {
     private String passportIssuingAuthority;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Double distance;
     private LocalDate date;
-    private String password;
+
 }
