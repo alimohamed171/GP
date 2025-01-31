@@ -65,8 +65,37 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
             throw new InvalidOperationException("Cannot update request after it has been processed");
         }
         //I don't know what else could be updated :(
-        existingRequest.setHousingType(admissionRequestDTO.getHousingType());
+        existingRequest.setStudentType(admissionRequestDTO.getStudentType());
+        existingRequest.setNationalId(admissionRequestDTO.getNationalId());
+        existingRequest.setName(admissionRequestDTO.getName());
+        existingRequest.setDateOfBirth(admissionRequestDTO.getDateOfBirth());
+        existingRequest.setPlaceOfBirth(admissionRequestDTO.getPlaceOfBirth());
+        existingRequest.setGender(admissionRequestDTO.getGender());
+        existingRequest.setReligion(admissionRequestDTO.getReligion());
+        existingRequest.setResidenceAddress(admissionRequestDTO.getResidenceAddress());
+        existingRequest.setDetailedAddress(admissionRequestDTO.getDetailedAddress());
+        existingRequest.setEmail(admissionRequestDTO.getEmail());
+        existingRequest.setMobileNumber(admissionRequestDTO.getMobileNumber());
+        existingRequest.setFatherName(admissionRequestDTO.getFatherName());
+        existingRequest.setFatherNationalId(admissionRequestDTO.getFatherNationalId());
+        existingRequest.setFatherOccupation(admissionRequestDTO.getFatherOccupation());
+        existingRequest.setFatherPhoneNumber(admissionRequestDTO.getFatherPhoneNumber());
+        existingRequest.setGuardianName(admissionRequestDTO.getGuardianName());
+        existingRequest.setGuardianNationalId(admissionRequestDTO.getGuardianNationalId());
+        existingRequest.setGuardianPhoneNumber(admissionRequestDTO.getGuardianPhoneNumber());
+        existingRequest.setParentsStatus(admissionRequestDTO.getParentsStatus());
+        existingRequest.setPreviousAcademicYearGpa(admissionRequestDTO.getPreviousAcademicYearGpa());
+        existingRequest.setHousingInPreviousYears(admissionRequestDTO.getHousingInPreviousYears());
+        existingRequest.setFamilyAbroad(admissionRequestDTO.getFamilyAbroad());
+        existingRequest.setSpecialNeeds(admissionRequestDTO.getSpecialNeeds());
+        existingRequest.setSecondaryDivision(admissionRequestDTO.getSecondaryDivision());
+        existingRequest.setTotalGradesHighSchool(admissionRequestDTO.getTotalGradesHighSchool());
+        existingRequest.setPassportNumber(admissionRequestDTO.getPassportNumber());
+        existingRequest.setPassportIssuingAuthority(admissionRequestDTO.getPassportIssuingAuthority());
+        existingRequest.setDate(admissionRequestDTO.getDate());
+
         existingRequest.setUpdatedAt(LocalDateTime.now());
+
         AdmissionRequest updatedRequest = admissionRequestRepository.save(existingRequest);
         AdmissionRequestDTO dto = AdmissionRequestMapper.toDTO(updatedRequest);
         BaseResponse response =new BaseResponse(true, "Admission request updated successfully", dto);
