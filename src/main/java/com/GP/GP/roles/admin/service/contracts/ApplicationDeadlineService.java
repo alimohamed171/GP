@@ -8,4 +8,6 @@ public interface ApplicationDeadlineService {
     ResponseEntity<Object> addApplicationDeadline(int universityId, @Valid ApplicationDeadlineDTO dto);
 
     ResponseEntity<Object> deleteApplicationDeadlineById(int id);
+
+    ResponseEntity<Object> getAllAppDeadlinesByUniversityId(int universityId);
 }
