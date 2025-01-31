@@ -2,6 +2,7 @@ package com.GP.GP.entities;
 
 import com.GP.GP.utill.Enums;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
+@Builder
 @Table(name = "admission_requests")
 public class AdmissionRequest {
 
