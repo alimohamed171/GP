@@ -2,6 +2,7 @@ package com.GP.GP.roles.user.controller;
 
 import com.GP.GP.roles.user.dto.AdmissionRequestDTO;
 import com.GP.GP.roles.user.service.contracts.AdmissionRequestService;
+import com.GP.GP.utill.Enums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,10 @@ public class AdmissionRequestController {
     }
 
     // update statues ->admin (admissionId, enum.Admission status )
+    @PatchMapping("/admin/admission-requests/{id}/status")
+    public ResponseEntity<Object> updateAdmissionRequestStatus(@PathVariable int id, @RequestParam Enums.AdmissionRequestStatues status) {
+        return admissionRequestService.updateAdmissionRequestStatues(id, status);
+    }
 
 
 }

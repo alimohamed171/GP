@@ -134,5 +134,17 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Object> updateAdmissionRequestStatues(int id, Enums.AdmissionRequestStatues status) {
+        AdmissionRequest existingRequest = admissionRequestRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Admission request not found"));
 
+        existingRequest.setStatus(status);
+        existingRequest.setUpdatedAt(LocalDateTime.now());
+         AdmissionRequest updatedRequestStatus = admissionRequestRepository.save(existingRequest);
+        AdmissionRequestDTO dto =  AdmissionRequestMapper.toDTO(updatedRequestStatus);
+        BaseResponse response = new BaseResponse(true, "Admission request status updated successfully",dto);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 }
+
