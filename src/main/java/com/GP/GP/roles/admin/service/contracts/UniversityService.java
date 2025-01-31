@@ -10,7 +10,6 @@ public interface UniversityService {
 
     ResponseEntity<Object> addUniversity(@Valid UniversityDTO request);
 
-    ResponseEntity<Object> deleteAllUniversities();
 
     ResponseEntity<Object> deleteUniversityById(int id);
 }

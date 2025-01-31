@@ -29,11 +29,6 @@ public class AdminController {
         return universityService.addUniversity(request);
     }
 
-    @DeleteMapping("deleteAllUniversities")
-    public ResponseEntity<Object> deleteAllUniversities() {
-        return universityService.deleteAllUniversities();
-    }
-
     @DeleteMapping("deleteUniversity/{id}")
     public ResponseEntity<Object> deleteUniversityById(@PathVariable int id) {
         return universityService.deleteUniversityById(id);
