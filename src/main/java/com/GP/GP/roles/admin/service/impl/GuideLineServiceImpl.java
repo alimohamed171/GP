@@ -28,7 +28,7 @@ public class GuideLineServiceImpl implements GuideLineService {
     public ResponseEntity<Object> addGuideLines(int universityId,@Valid ApplicationGuidelineAndApprovalDTO request) {
 
         University university = universityService.findUniversityById(universityId);
-        ApplicationGuidelineAndApproval guidelineEntity = AdminMapper.toEntity(request, university);
+        ApplicationGuidelineAndApproval guidelineEntity = AdminMapper.toApplicationGuidelineAndApprovalEntity(request, university);
 
         if (university == null){
             BaseResponse response = new BaseResponse(false, "No university found with ID "+ universityId, null);

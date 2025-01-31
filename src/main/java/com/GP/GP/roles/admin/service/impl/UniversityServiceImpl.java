@@ -26,7 +26,7 @@ public class UniversityServiceImpl implements UniversityService {
 
     @Override
     public ResponseEntity<Object> addUniversity(UniversityDTO request) {
-        University university = AdminMapper.toEntity(request);
+        University university = AdminMapper.toUniversityEntity(request);
         university = repo.save(university);
         UniversityResponseDTO responseDTO = UniversityResponseDTO.mapToResponseDTO(university);
         BaseResponse response = new BaseResponse(true, "University added successfully.", responseDTO);
@@ -43,6 +43,21 @@ public class UniversityServiceImpl implements UniversityService {
         repo.delete(university);
         BaseResponse response = new BaseResponse(true, "University deleted successfully.", null);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> updateUniversity(int id, UniversityDTO request) {
+       University university = findUniversityById(id);
+       if (university == null){
+           BaseResponse response = new BaseResponse(false, "University with ID " + id + " not found.", null);
+           return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+       }
+
+       AdminMapper.toUniversityEntity(request);
+       university = repo.save(university);
+       UniversityResponseDTO responseDTO = UniversityResponseDTO.mapToResponseDTO(university);
+       BaseResponse response = new BaseResponse(true, "University updated successfully.", responseDTO);
+       return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
 
