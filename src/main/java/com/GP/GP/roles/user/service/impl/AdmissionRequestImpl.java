@@ -124,5 +124,15 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Object> getAdmissionRequestByUserId(int userId) {
+        AdmissionRequest request = admissionRequestRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Admission request not found for userId: " + userId));
+
+        AdmissionRequestDTO dto = AdmissionRequestMapper.toDTO(request);
+        BaseResponse response = new BaseResponse(true, "Admission request retrieved successfully", dto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }

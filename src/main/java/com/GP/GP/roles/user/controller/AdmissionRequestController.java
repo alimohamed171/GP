@@ -28,12 +28,16 @@ public class AdmissionRequestController {
 
     // get all admission -> admin
     @GetMapping("/admin/admission-requests")
-    public ResponseEntity<Object> getAllAdmissionRequests(){
+    public ResponseEntity<Object> getAllAdmissionRequests() {
         return admissionRequestService.getAllAdmissionRequests();
     }
 
-
     //get admission by user Id -> user(get admission request to update it same to )
+    @GetMapping("/user/admission-requests/{userId}")
+    public ResponseEntity<Object> getAdmissionRequestByUserId(@PathVariable int userId) {
+        return admissionRequestService.getAdmissionRequestByUserId(userId);
+    }
+
     // update statues ->admin (admissionId, enum.Admission status )
 
 
