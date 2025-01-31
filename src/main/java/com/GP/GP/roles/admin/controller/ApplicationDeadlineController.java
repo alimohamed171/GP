@@ -8,15 +8,20 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin/")
+@RequestMapping("")
 public class ApplicationDeadlineController {
 
     @Autowired
     private ApplicationDeadlineService applicationDeadlineService;
 
-    @PostMapping("application-deadline/{universityId}")
+    @PostMapping("/admin/application-deadline/{universityId}")
     ResponseEntity<Object> addApplicationDeadline(@PathVariable int universityId, @Valid @RequestBody ApplicationDeadlineDTO dto){
         return applicationDeadlineService.addApplicationDeadline(universityId, dto);
+    }
+
+    @DeleteMapping("/admin/delete-application-deadline/{id}")
+    public ResponseEntity<Object> deleteApplicationDeadline(@PathVariable int id) {
+        return applicationDeadlineService.deleteApplicationDeadlineById(id);
     }
 
 

@@ -6,4 +6,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface ApplicationDeadlineService {
     ResponseEntity<Object> addApplicationDeadline(int universityId, @Valid ApplicationDeadlineDTO dto);
+
+    ResponseEntity<Object> deleteApplicationDeadlineById(int id);
 }
