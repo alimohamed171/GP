@@ -49,43 +49,45 @@ public class AdmissionRequestMapper {
     }
 
     public static AdmissionRequest toEntity(AdmissionRequestDTO dto, User user, University university) {
-        AdmissionRequest entity = new AdmissionRequest();
-        entity.setId(dto.getId());
-        entity.setUser(user);
-        entity.setUniversity(university);
-        entity.setStudentType(dto.getStudentType());
-        entity.setNationalId(dto.getNationalId());
-        entity.setName(dto.getName());
-        entity.setDateOfBirth(dto.getDateOfBirth());
-        entity.setPlaceOfBirth(dto.getPlaceOfBirth());
-        entity.setGender(dto.getGender());
-        entity.setReligion(dto.getReligion());
-        entity.setResidenceAddress(dto.getResidenceAddress());
-        entity.setDetailedAddress(dto.getDetailedAddress());
-        entity.setEmail(dto.getEmail());
-        entity.setMobileNumber(dto.getMobileNumber());
-        entity.setFatherName(dto.getFatherName());
-        entity.setFatherNationalId(dto.getFatherNationalId());
-        entity.setFatherOccupation(dto.getFatherOccupation());
-        entity.setFatherPhoneNumber(dto.getFatherPhoneNumber());
-        entity.setGuardianName(dto.getGuardianName());
-        entity.setGuardianNationalId(dto.getGuardianNationalId());
-        entity.setGuardianPhoneNumber(dto.getGuardianPhoneNumber());
-        entity.setParentsStatus(dto.getParentsStatus());
-        entity.setPreviousAcademicYearGpa(dto.getPreviousAcademicYearGpa());
-        entity.setStatus(dto.getStatus());
-        entity.setUniversityName(dto.getUniversityName());
-        entity.setHousingInPreviousYears(dto.getHousingInPreviousYears());
-        entity.setFamilyAbroad(dto.getFamilyAbroad());
-        entity.setSpecialNeeds(dto.getSpecialNeeds());
-        entity.setSecondaryDivision(dto.getSecondaryDivision());
-        entity.setTotalGradesHighSchool(dto.getTotalGradesHighSchool());
-        entity.setPassportNumber(dto.getPassportNumber());
-        entity.setPassportIssuingAuthority(dto.getPassportIssuingAuthority());
-        entity.setCreatedAt(dto.getCreatedAt());
-        entity.setUpdatedAt(dto.getUpdatedAt());
-        entity.setDate(dto.getDate());
-        return entity;
+        return AdmissionRequest.builder()
+                .id(dto.getId())
+                .user(user)
+                .university(university)
+                .studentType(dto.getStudentType())
+                .nationalId(dto.getNationalId())
+                .name(dto.getName())
+                .dateOfBirth(dto.getDateOfBirth())
+                .placeOfBirth(dto.getPlaceOfBirth())
+                .gender(dto.getGender())
+                .religion(dto.getReligion())
+                .residenceAddress(dto.getResidenceAddress())
+                .detailedAddress(dto.getDetailedAddress())
+                .email(dto.getEmail())
+                .mobileNumber(dto.getMobileNumber())
+                .fatherName(dto.getFatherName())
+                .fatherNationalId(dto.getFatherNationalId())
+                .fatherOccupation(dto.getFatherOccupation())
+                .fatherPhoneNumber(dto.getFatherPhoneNumber())
+                .guardianName(dto.getGuardianName())
+                .guardianNationalId(dto.getGuardianNationalId())
+                .guardianPhoneNumber(dto.getGuardianPhoneNumber())
+                .parentsStatus(dto.getParentsStatus())
+                .previousAcademicYearGpa(dto.getPreviousAcademicYearGpa())
+                .status(dto.getStatus())
+                .universityName(dto.getUniversityName())
+                .housingInPreviousYears(dto.getHousingInPreviousYears())
+                .familyAbroad(dto.getFamilyAbroad())
+                .specialNeeds(dto.getSpecialNeeds())
+                .secondaryDivision(dto.getSecondaryDivision())
+                .totalGradesHighSchool(dto.getTotalGradesHighSchool())
+                .passportNumber(dto.getPassportNumber())
+                .passportIssuingAuthority(dto.getPassportIssuingAuthority())
+                .createdAt(dto.getCreatedAt())
+                .updatedAt(dto.getUpdatedAt())
+                .date(dto.getDate())
+                .build();
+
+
     }
 
 }
