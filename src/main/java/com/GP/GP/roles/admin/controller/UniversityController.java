@@ -1,8 +1,6 @@
 package com.GP.GP.roles.admin.controller;
 
-import com.GP.GP.roles.admin.models.dto.request.ApplicationGuidelineAndApprovalDTO;
 import com.GP.GP.roles.admin.models.dto.request.UniversityDTO;
-import com.GP.GP.roles.admin.service.contracts.GuideLineService;
 import com.GP.GP.roles.admin.service.contracts.UniversityService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,40 +8,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin/")
-public class AdminController {
+@RequestMapping("")
+public class UniversityController {
 
-    @Autowired
-    private GuideLineService guideLineService;
 
     @Autowired
     private UniversityService universityService;
 
-    @PostMapping("guidelines/{universityId}")
-    public ResponseEntity<Object> addGuideLines(@PathVariable int universityId, @Valid @RequestBody ApplicationGuidelineAndApprovalDTO request) {
-        return guideLineService.addGuideLines(universityId, request);
-    }
-
-    @PostMapping("university")
+    @PostMapping("/admin/university")
     public ResponseEntity<Object> addUniversity(@Valid @RequestBody UniversityDTO request) {
         return universityService.addUniversity(request);
     }
 
-    @DeleteMapping("deleteUniversity/{id}")
+    @DeleteMapping("/admin/deleteUniversity/{id}")
     public ResponseEntity<Object> deleteUniversityById(@PathVariable int id) {
         return universityService.deleteUniversityById(id);
     }
 
-    @PutMapping("update_university/{id}")
+    @PutMapping("/admin/update_university/{id}")
     public ResponseEntity<Object> updateUniversity(
             @PathVariable int id,
             @Valid @RequestBody UniversityDTO request) {
         return universityService.updateUniversity(id, request);
     }
 
-    @GetMapping("getAllUniversity")
+    @GetMapping("/public/getAllUniversity")
     public ResponseEntity<Object> getAllUniversity(){
         return universityService.getAllUniversity();
     }
-
 }
