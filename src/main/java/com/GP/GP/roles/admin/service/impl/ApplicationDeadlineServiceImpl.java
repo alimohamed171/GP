@@ -9,10 +9,13 @@ import com.GP.GP.roles.admin.models.mapper.ApplicationDeadlineMapper;
 import com.GP.GP.roles.admin.service.contracts.ApplicationDeadlineService;
 import com.GP.GP.roles.admin.service.contracts.UniversityService;
 import com.GP.GP.utill.base.BaseResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ApplicationDeadlineServiceImpl implements ApplicationDeadlineService {
 
     @Autowired
@@ -21,7 +24,7 @@ public class ApplicationDeadlineServiceImpl implements ApplicationDeadlineServic
     @Autowired
     private UniversityService universityService;
     @Override
-    public ResponseEntity<Object> addApplicationDeadline(int universityId, ApplicationDeadlineDTO dto) {
+    public ResponseEntity<Object> addApplicationDeadline(int universityId,@Valid ApplicationDeadlineDTO dto) {
         University university = universityService.findUniversityById(universityId);
         if (university == null){
             BaseResponse response = new BaseResponse(false, "University not found.", null);

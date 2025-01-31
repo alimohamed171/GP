@@ -19,8 +19,8 @@ public class ApplicationDeadline {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "university_id", nullable = false, unique = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
     @Column(name = "application_start_date")
