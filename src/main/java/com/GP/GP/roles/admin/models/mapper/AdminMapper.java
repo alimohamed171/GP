@@ -8,26 +8,26 @@ import lombok.Builder;
 
 @Builder
 public class AdminMapper {
-    public static ApplicationGuidelineAndApprovalDTO toDTO(ApplicationGuidelineAndApproval entity) {
+    public static ApplicationGuidelineAndApprovalDTO toApplicationGuidelineAndApprovalDTO(ApplicationGuidelineAndApproval entity) {
         return ApplicationGuidelineAndApprovalDTO.builder()
                 .guidelines(entity.getGuidelines())
                 .build();
     }
 
-    public static ApplicationGuidelineAndApproval toEntity(ApplicationGuidelineAndApprovalDTO dto, University university) {
+    public static ApplicationGuidelineAndApproval toApplicationGuidelineAndApprovalEntity(ApplicationGuidelineAndApprovalDTO dto, University university) {
         return ApplicationGuidelineAndApproval.builder()
                 .guidelines(dto.getGuidelines())
                 .university(university)
                 .build();
     }
 
-    public static UniversityDTO toDTO(University entity) {
+    public static UniversityDTO toUniversityDTO(University entity) {
         return UniversityDTO.builder()
                 .name(entity.getName())
                 .build();
     }
 
-    public static University toEntity(UniversityDTO dto) {
+    public static University toUniversityEntity(UniversityDTO dto) {
         return University.builder()
                 .name(dto.getName())
                 .build();
