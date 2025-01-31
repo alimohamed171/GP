@@ -29,4 +29,9 @@ public class AdminController {
         return universityService.addUniversity(request);
     }
 
+    @GetMapping("getAllUniversity")
+    public ResponseEntity<Object> getAllUniversity(){
+        return universityService.getAllUniversity();
+    }
+
 }
