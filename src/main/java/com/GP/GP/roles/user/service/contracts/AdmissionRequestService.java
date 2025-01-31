@@ -9,6 +9,8 @@ public interface AdmissionRequestService {
     ResponseEntity<Object> updateAdmissionRequest(int id, AdmissionRequestDTO admissionRequestDTO);
     ResponseEntity<Object> checkApplicationStatus(int id, int userId);
 
+    ResponseEntity<Object> getAllAdmissionRequests();
+
     
 
 }

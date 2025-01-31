@@ -22,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -43,7 +45,7 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
 
         admissionRequest = AdmissionRequestMapper.toEntity(admissionRequestDTO, user,university);
 
-
+// why do you need to put it in the DTO !! 
         admissionRequest.setStatus(Enums.AdmissionRequestStatues.UNDER_REVIEW);
         admissionRequest.setCreatedAt(LocalDateTime.now());
 
@@ -108,6 +110,17 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
                 .orElseThrow(() -> new ResourceNotFoundException("Admission request not found"));
         String admissionRequestStatues = request.getStatus().name();
         BaseResponse response = new BaseResponse(true, "Application status retrieved successfully", admissionRequestStatues);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getAllAdmissionRequests() {
+        List<AdmissionRequest> requests = admissionRequestRepository.findAll();
+        List<AdmissionRequestDTO> dtos = requests.stream()
+                .map(AdmissionRequestMapper::toDTO)
+                .collect(Collectors.toList());
+
+        BaseResponse response = new BaseResponse(true, "All admission requests retrieved successfully", dtos);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
