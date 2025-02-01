@@ -19,10 +19,22 @@ public class ApplicationDeadlineController {
         return applicationDeadlineService.addApplicationDeadline(universityId, dto);
     }
 
-    @DeleteMapping("/admin/delete-application-deadline/{id}")
-    public ResponseEntity<Object> deleteApplicationDeadline(@PathVariable int id) {
-        return applicationDeadlineService.deleteApplicationDeadlineById(id);
+    @DeleteMapping("/admin/delete-application-deadline")
+    public ResponseEntity<Object> deleteApplicationDeadline(@RequestParam int deadlineId,@RequestParam int universityId) {
+        return applicationDeadlineService.deleteApplicationDeadlineById(deadlineId, universityId);
     }
 
+    @GetMapping("/public/all-deadlines/university/{universityId}")
+    public ResponseEntity<Object> getAllDeadlinesByUniversity(@PathVariable int universityId) {
+        return applicationDeadlineService.getAllAppDeadlinesByUniversityId(universityId);
+    }
+
+    @PutMapping("/admin/update-application-deadline")
+    public ResponseEntity<Object> updateApplicationDeadline(
+            @RequestParam int deadlineId,
+            @RequestParam int universityId,
+            @Valid @RequestBody ApplicationDeadlineDTO dto) {
+        return applicationDeadlineService.updateApplicationDeadline(deadlineId, universityId, dto);
+    }
 
 }

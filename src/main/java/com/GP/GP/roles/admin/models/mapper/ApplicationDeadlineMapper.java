@@ -15,4 +15,10 @@ public class ApplicationDeadlineMapper {
                 .studentType(dto.getStudentType())
                 .build();
     }
+
+    public static void updateApplicationDeadlineEntity(ApplicationDeadline applicationDeadline, ApplicationDeadlineDTO dto) {
+        applicationDeadline.setApplicationStartDate(dto.getApplicationStartDate());
+        applicationDeadline.setApplicationEndDate(dto.getApplicationEndDate());
+        applicationDeadline.setStudentType(dto.getStudentType());
+    }
 }

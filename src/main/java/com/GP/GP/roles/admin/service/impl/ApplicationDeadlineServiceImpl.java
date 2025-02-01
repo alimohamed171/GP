@@ -44,10 +44,11 @@ public class ApplicationDeadlineServiceImpl implements ApplicationDeadlineServic
     }
 
     @Override
-    public ResponseEntity<Object> deleteApplicationDeadlineById(int id) {
-        Optional<ApplicationDeadline> applicationDeadline = repo.findById(id);
+    public ResponseEntity<Object> deleteApplicationDeadlineById(int deadlineId, int universityId) {
+        Optional<ApplicationDeadline> applicationDeadline = repo.findByIdAndUniversityId(deadlineId, universityId);
+
         if (applicationDeadline.isEmpty()) {
-            BaseResponse baseResponse = new BaseResponse(false, "Application deadline not found.", null);
+            BaseResponse baseResponse = new BaseResponse(false, "Application deadline not found for this university.", null);
             return new ResponseEntity<>(baseResponse, HttpStatus.NOT_FOUND);
         }
 
@@ -70,6 +71,27 @@ public class ApplicationDeadlineServiceImpl implements ApplicationDeadlineServic
                 .toList();
 
         BaseResponse response = new BaseResponse(true, "Deadlines retrieved successfully.", responseDTOs);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> updateApplicationDeadline(int deadlineId, int universityId, ApplicationDeadlineDTO dto) {
+        Optional<ApplicationDeadline> optionalDeadline = repo.findByIdAndUniversityId(deadlineId, universityId);
+
+        if (optionalDeadline.isEmpty()) {
+            BaseResponse response = new BaseResponse(false, "Application deadline not found for this university.", null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        ApplicationDeadline applicationDeadline = optionalDeadline.get();
+
+        ApplicationDeadlineMapper.updateApplicationDeadlineEntity(applicationDeadline, dto);
+
+        repo.save(applicationDeadline);
+
+        ApplicationDeadlineResponseDTO responseDTO = ApplicationDeadlineResponseDTO.mapToResponseDTO(applicationDeadline);
+
+        BaseResponse response = new BaseResponse(true, "Application deadline updated successfully.", responseDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
