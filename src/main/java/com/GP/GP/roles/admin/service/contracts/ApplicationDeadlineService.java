@@ -1,0 +1,15 @@
+package com.GP.GP.roles.admin.service.contracts;
+
+import com.GP.GP.roles.admin.models.dto.request.ApplicationDeadlineDTO;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+
+public interface ApplicationDeadlineService {
+    ResponseEntity<Object> addApplicationDeadline(int universityId, @Valid ApplicationDeadlineDTO dto);
+
+    ResponseEntity<Object> deleteApplicationDeadlineById(int deadlineId, int universityId);
+
+    ResponseEntity<Object> getAllAppDeadlinesByUniversityId(int universityId);
+
+    ResponseEntity<Object> updateApplicationDeadline(int deadlineId, int universityId, @Valid ApplicationDeadlineDTO dto);
+}

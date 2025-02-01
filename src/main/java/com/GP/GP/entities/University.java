@@ -32,4 +32,7 @@ public class University {
     private ApplicationGuidelineAndApproval applicationGuidelineAndApproval;
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<HousingFee> housingFees = new ArrayList<>();
+
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ApplicationDeadline> applicationDeadlines;
 }
