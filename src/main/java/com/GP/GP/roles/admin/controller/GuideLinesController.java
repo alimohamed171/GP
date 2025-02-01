@@ -22,4 +22,11 @@ public class GuideLinesController {
     public ResponseEntity<Object> getAllGuidelines(@PathVariable int universityId) {
         return guideLineService.getAllGuidelines(universityId);
     }
+
+    @DeleteMapping("/admin/delete-guidelines")
+    public ResponseEntity<Object> deleteGuideline(
+            @RequestParam int universityId,
+            @RequestParam int guidelineId) {
+        return guideLineService.deleteGuideline(universityId, guidelineId);
+    }
 }

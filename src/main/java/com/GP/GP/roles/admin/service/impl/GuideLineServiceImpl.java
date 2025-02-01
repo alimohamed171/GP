@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GuideLineServiceImpl implements GuideLineService {
@@ -55,7 +56,7 @@ public class GuideLineServiceImpl implements GuideLineService {
         List<ApplicationGuidelineAndApproval> guidelines = guidelineRepo.findByUniversity(university);
 
         if (guidelines.isEmpty()) {
-            BaseResponse response = new BaseResponse(false, "No guidelines found for university ID", null);
+            BaseResponse response = new BaseResponse(false, "No guidelines found for university", null);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
 
@@ -64,6 +65,29 @@ public class GuideLineServiceImpl implements GuideLineService {
                 .toList();
 
         BaseResponse response = new BaseResponse(true, "Guidelines retrieved successfully.", responseDTOs);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> deleteGuideline(int universityId, int guidelineId) {
+        University university = universityService.findUniversityById(universityId);
+
+        if (university == null) {
+            BaseResponse response = new BaseResponse(false, "No university found", null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        Optional<ApplicationGuidelineAndApproval> guideline = guidelineRepo.findById(guidelineId);
+
+        if (guideline.isEmpty() || guideline.get().getUniversity().getId() != universityId) {
+            BaseResponse response = new BaseResponse(false, "No guideline found with this university", null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        guidelineRepo.delete(guideline.get());
+        guidelineRepo.flush();
+
+        BaseResponse response = new BaseResponse(true, "Guideline deleted successfully.", null);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

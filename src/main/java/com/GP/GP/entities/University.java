@@ -28,8 +28,8 @@ public class University {
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL)
     private List<Building> buildings = new ArrayList<>();
 
-    @OneToOne(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ApplicationGuidelineAndApproval applicationGuidelineAndApproval;
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // تغيير من OneToOne إلى OneToMany
+    private List<ApplicationGuidelineAndApproval> applicationGuidelines = new ArrayList<>();
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<HousingFee> housingFees = new ArrayList<>();
 }

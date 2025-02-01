@@ -20,8 +20,8 @@ public class ApplicationGuidelineAndApproval {
     @Column(name = "guidelines",columnDefinition = "TEXT")
     private String guidelines;
 
-    @OneToOne
-    @JoinColumn(name = "university_id", nullable = false, unique = true)
+    @ManyToOne
+    @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
 }
