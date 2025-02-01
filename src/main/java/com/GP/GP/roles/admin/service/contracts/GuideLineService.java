@@ -5,4 +5,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface GuideLineService {
     ResponseEntity<Object> addGuideLines(int universityId,ApplicationGuidelineAndApprovalDTO request);
+
+    ResponseEntity<Object> getAllGuidelines(int universityId);
 }

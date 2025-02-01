@@ -17,4 +17,9 @@ public class GuideLinesController {
     public ResponseEntity<Object> addGuideLines(@PathVariable int universityId, @Valid @RequestBody ApplicationGuidelineAndApprovalDTO request) {
         return guideLineService.addGuideLines(universityId, request);
     }
+
+    @GetMapping("/public/guidelines/{universityId}")
+    public ResponseEntity<Object> getAllGuidelines(@PathVariable int universityId) {
+        return guideLineService.getAllGuidelines(universityId);
+    }
 }

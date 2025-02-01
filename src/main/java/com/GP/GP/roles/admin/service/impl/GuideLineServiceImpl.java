@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class GuideLineServiceImpl implements GuideLineService {
 
@@ -38,6 +40,30 @@ public class GuideLineServiceImpl implements GuideLineService {
         guidelineEntity = guidelineRepo.save(guidelineEntity);
         ApplicationGuidelineAndApprovalResponseDTO responseDto = ApplicationGuidelineAndApprovalResponseDTO.mapToResponseDTO(guidelineEntity);
         BaseResponse response = new BaseResponse(true, "Guidelines added successfully.", responseDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getAllGuidelines(int universityId) {
+        University university = universityService.findUniversityById(universityId);
+
+        if (university == null) {
+            BaseResponse response = new BaseResponse(false, "No university found ", null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        List<ApplicationGuidelineAndApproval> guidelines = guidelineRepo.findByUniversity(university);
+
+        if (guidelines.isEmpty()) {
+            BaseResponse response = new BaseResponse(false, "No guidelines found for university ID", null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        List<ApplicationGuidelineAndApprovalResponseDTO> responseDTOs = guidelines.stream()
+                .map(ApplicationGuidelineAndApprovalResponseDTO::mapToResponseDTO)
+                .toList();
+
+        BaseResponse response = new BaseResponse(true, "Guidelines retrieved successfully.", responseDTOs);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
