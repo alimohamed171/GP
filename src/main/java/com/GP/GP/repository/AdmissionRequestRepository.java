@@ -15,4 +15,7 @@ public interface AdmissionRequestRepository extends JpaRepository<AdmissionReque
             @Param("requestId") Integer requestId,
             @Param("userId") Integer userId);
 
+    @Query("SELECT ar FROM AdmissionRequest ar WHERE ar.user.id = :userId")
+    Optional<AdmissionRequest> findByUserId(
+            @Param("userId") Integer userId);
 }

@@ -22,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -43,7 +45,7 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
 
         admissionRequest = AdmissionRequestMapper.toEntity(admissionRequestDTO, user,university);
 
-
+// why do you need to put it in the DTO !! 
         admissionRequest.setStatus(Enums.AdmissionRequestStatues.UNDER_REVIEW);
         admissionRequest.setCreatedAt(LocalDateTime.now());
 
@@ -111,5 +113,38 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Object> getAllAdmissionRequests() {
+        List<AdmissionRequest> requests = admissionRequestRepository.findAll();
+        List<AdmissionRequestDTO> dtos = requests.stream()
+                .map(AdmissionRequestMapper::toDTO)
+                .collect(Collectors.toList());
 
+        BaseResponse response = new BaseResponse(true, "All admission requests retrieved successfully", dtos);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getAdmissionRequestByUserId(int userId) {
+        AdmissionRequest request = admissionRequestRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Admission request not found for userId: " + userId));
+
+        AdmissionRequestDTO dto = AdmissionRequestMapper.toDTO(request);
+        BaseResponse response = new BaseResponse(true, "Admission request retrieved successfully", dto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> updateAdmissionRequestStatues(int id, Enums.AdmissionRequestStatues status) {
+        AdmissionRequest existingRequest = admissionRequestRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Admission request not found"));
+
+        existingRequest.setStatus(status);
+        existingRequest.setUpdatedAt(LocalDateTime.now());
+         AdmissionRequest updatedRequestStatus = admissionRequestRepository.save(existingRequest);
+        AdmissionRequestDTO dto =  AdmissionRequestMapper.toDTO(updatedRequestStatus);
+        BaseResponse response = new BaseResponse(true, "Admission request status updated successfully",dto);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 }
+
