@@ -28,13 +28,13 @@ public class GuideLineServiceImpl implements GuideLineService {
     private UniversityService universityService;
 
     @Override
-    public ResponseEntity<Object> addGuideLines(int universityId,@Valid ApplicationGuidelineAndApprovalDTO request) {
+    public ResponseEntity<Object> addGuideLines(int universityId, @Valid ApplicationGuidelineAndApprovalDTO request) {
 
         University university = universityService.findUniversityById(universityId);
         ApplicationGuidelineAndApproval guidelineEntity = AdminMapper.toApplicationGuidelineAndApprovalEntity(request, university);
 
-        if (university == null){
-            BaseResponse response = new BaseResponse(false, "No university found with ID "+ universityId, null);
+        if (university == null) {
+            BaseResponse response = new BaseResponse(false, "No university found with ID " + universityId, null);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
 
@@ -88,6 +88,30 @@ public class GuideLineServiceImpl implements GuideLineService {
         guidelineRepo.flush();
 
         BaseResponse response = new BaseResponse(true, "Guideline deleted successfully.", null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> updateGuideline(int universityId, int guidelineId, ApplicationGuidelineAndApprovalDTO request) {
+        Optional<ApplicationGuidelineAndApproval> guidelineOptional = guidelineRepo.findById(guidelineId);
+
+        if (guidelineOptional.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "Guideline not found", null), HttpStatus.NOT_FOUND);
+        }
+
+        ApplicationGuidelineAndApproval guideline = guidelineOptional.get();
+
+        if (guideline.getUniversity().getId() != universityId) {
+            return new ResponseEntity<>(new BaseResponse(false, "Guideline does not belong to this university", null), HttpStatus.BAD_REQUEST);
+        }
+
+        guideline.setGuidelines(request.getGuidelines());
+
+        guideline = guidelineRepo.save(guideline);
+
+        ApplicationGuidelineAndApprovalResponseDTO responseDto = ApplicationGuidelineAndApprovalResponseDTO.mapToResponseDTO(guideline);
+
+        BaseResponse response = new BaseResponse(true, "Guideline updated successfully", responseDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

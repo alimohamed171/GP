@@ -13,12 +13,12 @@ public class GuideLinesController {
     @Autowired
     private GuideLineService guideLineService;
 
-    @PostMapping("/admin/guidelines/{universityId}")
+    @PostMapping("/admin/add-guidelines/{universityId}")
     public ResponseEntity<Object> addGuideLines(@PathVariable int universityId, @Valid @RequestBody ApplicationGuidelineAndApprovalDTO request) {
         return guideLineService.addGuideLines(universityId, request);
     }
 
-    @GetMapping("/public/guidelines/{universityId}")
+    @GetMapping("/public/get-guidelines/{universityId}")
     public ResponseEntity<Object> getAllGuidelines(@PathVariable int universityId) {
         return guideLineService.getAllGuidelines(universityId);
     }
@@ -28,5 +28,13 @@ public class GuideLinesController {
             @RequestParam int universityId,
             @RequestParam int guidelineId) {
         return guideLineService.deleteGuideline(universityId, guidelineId);
+    }
+
+    @PutMapping("/admin/update-guidelines")
+    public ResponseEntity<Object> updateGuideline(
+            @RequestParam int universityId,
+            @RequestParam int guidelineId,
+            @Valid @RequestBody ApplicationGuidelineAndApprovalDTO request) {
+        return guideLineService.updateGuideline(universityId, guidelineId, request);
     }
 }
