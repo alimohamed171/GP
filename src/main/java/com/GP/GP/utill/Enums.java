@@ -10,4 +10,5 @@ public class Enums {
     public enum Religion {CHRISTIAN, MUSLIM, OTHER}
     public enum StudentType {LOCAL, EXPATRIATE}
     public enum  AdmissionRequestStatues{ACCEPTED, REJECTED, UNDER_REVIEW}
+    public enum AccommodationStatus {ACTIVE, TERMINATED, PENDING}
 }
