@@ -11,6 +11,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -33,24 +35,24 @@ public class AdmissionRequest {
     @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
+    @OneToOne(mappedBy = "admissionRequest", fetch = FetchType.EAGER)
+    private Accommodation accommodation;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "housing_type_id")
-    private String housingType;
+//    private String housingType;
 
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "student_type_id", nullable = false)
     private Enums.StudentType studentType;
 
-    @Column(name = "national_id", nullable = false, length = 14)
-    private String nationalId;
+    @OneToOne
+    @JoinColumn(name = "student_profile_id")
+    private StudentProfile studentProfile;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "residence_address",columnDefinition = "TEXT")
+    private String residenceAddress;
 
-    @Column(name = "date_of_birth", nullable = false)
-    private LocalDate dateOfBirth;
+    @Column(name = "detailed_address",columnDefinition = "TEXT")
+    private String detailedAddress;
 
     @Column(name = "place_of_birth")
     private String placeOfBirth;
@@ -60,18 +62,6 @@ public class AdmissionRequest {
 
     @Column(name = "religion")
     private Enums.Religion religion;
-
-    @Column(name = "residence_address",columnDefinition = "TEXT")
-    private String residenceAddress;
-
-    @Column(name = "detailed_address",columnDefinition = "TEXT")
-    private String detailedAddress;
-
-    @Column(name = "email", nullable = false)
-    private String email;
-
-    @Column(name = "mobile_number", length = 20)
-    private String mobileNumber;
 
     @Column(name = "father_name")
     private String fatherName;
@@ -103,11 +93,6 @@ public class AdmissionRequest {
     @Column(name = "status")
     private Enums.AdmissionRequestStatues status;
 
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "university_name", nullable = false, length = 70)
-    private String universityName;
 
     @Column(name = "housing_in_previous_years")
     private String housingInPreviousYears;
