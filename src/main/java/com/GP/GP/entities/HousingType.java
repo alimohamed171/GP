@@ -1,7 +1,9 @@
 package com.GP.GP.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,8 @@ import java.util.List;
 @Entity
 @Table(name = "housing_types")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class HousingType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
