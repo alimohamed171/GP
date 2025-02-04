@@ -1,6 +1,8 @@
 package com.GP.GP.roles.user.service.impl;
 
+import com.GP.GP.entities.Accommodation;
 import com.GP.GP.entities.University;
+import com.GP.GP.repository.AccommodationRepository;
 import com.GP.GP.repository.AdmissionRequestRepository;
 import com.GP.GP.roles.admin.service.contracts.UniversityService;
 import com.GP.GP.roles.user.service.contracts.AdmissionRequestService;
@@ -35,6 +37,8 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
     private UserRepository userRepository;
     @Autowired
     private UniversityService universityService;
+    @Autowired
+    AccommodationRepository accommodationRepository;
 
     @Override
     public ResponseEntity<Object> createAdmissionRequest(AdmissionRequestDTO admissionRequestDTO) {
@@ -68,16 +72,11 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
         }
         //I don't know what else could be updated :(
         existingRequest.setStudentType(admissionRequestDTO.getStudentType());
-        existingRequest.setNationalId(admissionRequestDTO.getNationalId());
-        existingRequest.setName(admissionRequestDTO.getName());
-        existingRequest.setDateOfBirth(admissionRequestDTO.getDateOfBirth());
         existingRequest.setPlaceOfBirth(admissionRequestDTO.getPlaceOfBirth());
         existingRequest.setGender(admissionRequestDTO.getGender());
         existingRequest.setReligion(admissionRequestDTO.getReligion());
         existingRequest.setResidenceAddress(admissionRequestDTO.getResidenceAddress());
         existingRequest.setDetailedAddress(admissionRequestDTO.getDetailedAddress());
-        existingRequest.setEmail(admissionRequestDTO.getEmail());
-        existingRequest.setMobileNumber(admissionRequestDTO.getMobileNumber());
         existingRequest.setFatherName(admissionRequestDTO.getFatherName());
         existingRequest.setFatherNationalId(admissionRequestDTO.getFatherNationalId());
         existingRequest.setFatherOccupation(admissionRequestDTO.getFatherOccupation());
@@ -136,15 +135,38 @@ public class AdmissionRequestImpl implements AdmissionRequestService {
 
     @Override
     public ResponseEntity<Object> updateAdmissionRequestStatues(int id, Enums.AdmissionRequestStatues status) {
+
         AdmissionRequest existingRequest = admissionRequestRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Admission request not found"));
 
-        existingRequest.setStatus(status);
-        existingRequest.setUpdatedAt(LocalDateTime.now());
-         AdmissionRequest updatedRequestStatus = admissionRequestRepository.save(existingRequest);
-        AdmissionRequestDTO dto =  AdmissionRequestMapper.toDTO(updatedRequestStatus);
-        BaseResponse response = new BaseResponse(true, "Admission request status updated successfully",dto);
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        if (status == Enums.AdmissionRequestStatues.ACCEPTED) {
+            if (existingRequest.getStatus() == Enums.AdmissionRequestStatues.ACCEPTED) {
+                throw new RuntimeException("Admission request is already approved");
+            }
+
+            existingRequest.setStatus(status);
+            existingRequest.setUpdatedAt(LocalDateTime.now());
+            System.out.println("it's kinda working I'm tired!!!");
+            Accommodation accommodation = Accommodation.builder()
+                    .admissionRequest(existingRequest)
+
+                    .studentProfile(existingRequest.getStudentProfile())
+                    .housingType(existingRequest.getAccommodation().getHousingType())
+                    .room(existingRequest.getAccommodation().getRoom())
+                    .status(Enums.AccommodationStatus.ACTIVE)
+                    .build();
+
+            accommodation = accommodationRepository.save(accommodation);
+            existingRequest.setAccommodation(accommodation);
+        } else {
+            existingRequest.setStatus(status);
+            existingRequest.setUpdatedAt(LocalDateTime.now());
+        }
+        AdmissionRequest updatedRequest = admissionRequestRepository.save(existingRequest);
+        AdmissionRequestDTO dto = AdmissionRequestMapper.toDTO(updatedRequest);
+
+        BaseResponse response = new BaseResponse(true, "Admission request status updated successfully", dto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
 

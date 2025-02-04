@@ -2,8 +2,17 @@ package com.GP.GP.entities;
 
 import com.GP.GP.utill.Enums;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "rooms")
 public class Room {
 
@@ -29,8 +38,8 @@ public class Room {
     @Column(length = 15)
     private Enums.RoomStatus status = Enums.RoomStatus.AVAILABLE;
 
-//    @OneToMany(mappedBy = "room")
-//    private List<User> users = new ArrayList<>();
+    @OneToMany(mappedBy = "room")
+    private List<Accommodation> accommodations = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "building_id", nullable = false)
     private Building building;

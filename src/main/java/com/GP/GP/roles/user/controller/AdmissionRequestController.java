@@ -40,7 +40,7 @@ public class AdmissionRequestController {
     }
 
     // update statues ->admin (admissionId, enum.Admission status )
-    @PatchMapping("/admin/admission-requests/{id}/status")
+    @PutMapping("/admin/admission-requests/{id}/status")
     public ResponseEntity<Object> updateAdmissionRequestStatus(@PathVariable int id, @RequestParam Enums.AdmissionRequestStatues status) {
         return admissionRequestService.updateAdmissionRequestStatues(id, status);
     }
