@@ -1,6 +1,7 @@
 package com.GP.GP.roles.Auth.controller;
 
 import com.GP.GP.entities.User;
+import com.GP.GP.roles.Auth.models.request.RegisterRequestDTO;
 import com.GP.GP.security.AuthenticationResponse;
 import com.GP.GP.roles.Auth.service.AuthenticationService;
 import org.springframework.http.ResponseEntity;
@@ -19,18 +20,18 @@ public class AuthenticationController {
 
 
     @PostMapping("public/register")
-    public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody User request
+    public ResponseEntity<Object> register(
+            @RequestBody RegisterRequestDTO request
             ) {
         return ResponseEntity.ok(authService.register(request));
     }
 
 
     @PostMapping("public/login")
-    public ResponseEntity<AuthenticationResponse> login(
+    public ResponseEntity<Object> login(
             @RequestBody User request
     ) {
-        return ResponseEntity.ok(authService.authenticate(request));
+        return ResponseEntity.ok(authService.login(request));
     }
 
 

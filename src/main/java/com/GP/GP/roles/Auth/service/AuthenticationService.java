@@ -1,14 +1,28 @@
 package com.GP.GP.roles.Auth.service;
 
 
+import com.GP.GP.entities.University;
 import com.GP.GP.entities.User;
 import com.GP.GP.repository.UserRepository;
+import com.GP.GP.roles.Auth.models.mapper.RegisterMapper;
+import com.GP.GP.roles.Auth.models.request.RegisterRequestDTO;
+import com.GP.GP.roles.Auth.models.response.LoginResponseDTO;
+import com.GP.GP.roles.Auth.models.response.RegisterResponseDTO;
+import com.GP.GP.roles.admin.models.dto.response.UniversityResponseDTO;
+import com.GP.GP.roles.admin.service.contracts.UniversityService;
 import com.GP.GP.security.AuthenticationResponse;
 import com.GP.GP.security.JwtService;
 import com.GP.GP.security.Token;
 import com.GP.GP.security.TokenRepository;
+import com.GP.GP.utill.base.BaseResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +36,8 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
+    @Autowired
+    private UniversityService universityService;
 
     public AuthenticationService(
             UserRepository repository,
@@ -37,35 +53,54 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
     }
 
-    public AuthenticationResponse register(User request) {
-// ali ********
-        if (repository.findByUsername(request.getUsername()).isPresent()) {
-            return new AuthenticationResponse(null, "User already exist");
-        }
-        User user = request;
 
+    public ResponseEntity<Object> register(RegisterRequestDTO request) {
+
+        if (repository.findByUsername(request.getUsername()).isPresent()) {
+            return new ResponseEntity<>(new BaseResponse(false, "User already exists"), HttpStatus.NOT_FOUND);
+        }
+
+        University university = universityService.findUniversityById(request.getUniversityId());
+
+        User user = RegisterMapper.toUserEntity(request, university);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole());
         user = repository.save(user);
+
         String jwt = jwtService.generateToken(user);
         saveUserToken(jwt, user);
-        return new AuthenticationResponse(jwt, "User registration was successful", user.getUsername(), user.getId(), user.getRole());
+
+        RegisterResponseDTO responseDTO = RegisterResponseDTO.mapToRegisterResponseDTO(user, jwt, university);
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
-    public AuthenticationResponse authenticate(User request) {
-        request.setUsername(request.getUsername());
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
-        User user = repository.findByUsername(request.getUsername()).orElseThrow();
-        String jwt = jwtService.generateToken(user);
-        revokeAllTokenByUser(user);
-        saveUserToken(jwt, user);
-        String userName = user.getUsername();
-        return new AuthenticationResponse(jwt, "User login was successful", userName, user.getId(), user.getRole());
+    public ResponseEntity<Object> login(User request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(),
+                            request.getPassword()
+                    )
+            );
+
+            User user = repository.findByUsername(request.getUsername())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+            String jwt = jwtService.generateToken(user);
+            revokeAllTokenByUser(user);
+            saveUserToken(jwt, user);
+
+            LoginResponseDTO loginResponseDTO = LoginResponseDTO.mapToResponseDTO(user, jwt);
+
+            return new ResponseEntity<>(new BaseResponse(true, "Login successful", loginResponseDTO), HttpStatus.OK);
+
+        } catch (BadCredentialsException e) {
+            return new ResponseEntity<>(new BaseResponse(false, "Invalid username or password"), HttpStatus.UNAUTHORIZED);
+        } catch (UsernameNotFoundException e) {
+            return new ResponseEntity<>(new BaseResponse(false, "User not found"), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new BaseResponse(false, "An unexpected error occurred. Please try again later"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private void revokeAllTokenByUser(User user) {
