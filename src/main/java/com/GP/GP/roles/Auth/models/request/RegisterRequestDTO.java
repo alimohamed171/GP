@@ -1,32 +1,42 @@
-package com.GP.GP.roles.user.dto;
+package com.GP.GP.roles.Auth.models.request;
+
+import com.GP.GP.security.Role;
 import com.GP.GP.utill.Enums;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AdmissionRequestDTO {
-    private int id;
-    private int userId;
-    private int universityId;
-    private Enums.StudentType studentType;
+public class RegisterRequestDTO {
+
+    private String firstName;
+    private String lastName;
+
+    @NotBlank(message = "Username is required")
+    private String username;
+
+    @NotBlank(message = "Password is required")
+    private String password;
+
+    @NotNull(message = "Role is required")
+    private Role role;
+
+    private Integer universityId;
     private String nationalId;
-    private String name;
+    private String mobileNumber;
+    private String faculty;
+    private String level;
     private LocalDate dateOfBirth;
+    private Enums.StudentType studentType;
+    private String residenceAddress;
+    private String detailedAddress;
     private String placeOfBirth;
     private Enums.Gender gender;
     private Enums.Religion religion;
-    private String residenceAddress;
-    private String detailedAddress;
-    private String email;
-    private String mobileNumber;
     private String fatherName;
     private String fatherNationalId;
     private String fatherOccupation;
@@ -37,7 +47,6 @@ public class AdmissionRequestDTO {
     private String parentsStatus;
     private Double previousAcademicYearGpa;
     private Enums.AdmissionRequestStatues status;
-    private String universityName;
     private String housingInPreviousYears;
     private Boolean familyAbroad;
     private Boolean specialNeeds;
@@ -45,8 +54,4 @@ public class AdmissionRequestDTO {
     private Float totalGradesHighSchool;
     private String passportNumber;
     private String passportIssuingAuthority;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private LocalDate date;
-
 }

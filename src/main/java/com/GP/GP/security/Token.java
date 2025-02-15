@@ -2,6 +2,7 @@ package com.GP.GP.security;
 
 
 import com.GP.GP.entities.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -21,6 +22,7 @@ public class Token {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+//    @JsonManagedReference
     private User user;
 
     public Integer getId() {

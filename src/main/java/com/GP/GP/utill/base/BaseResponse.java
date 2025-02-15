@@ -11,4 +11,9 @@ public class BaseResponse {
     private boolean success;
     private String message;
     private Object data;
+
+    public BaseResponse(boolean success, String message) {
+        this.message = message;
+        this.success = success;
+    }
 }

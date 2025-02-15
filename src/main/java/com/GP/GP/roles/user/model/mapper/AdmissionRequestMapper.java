@@ -1,7 +1,7 @@
-package com.GP.GP.roles.user.mapper;
+package com.GP.GP.roles.user.model.mapper;
 
 import com.GP.GP.entities.University;
-import com.GP.GP.roles.user.dto.AdmissionRequestDTO;
+import com.GP.GP.roles.user.model.dto.AdmissionRequestDTO;
 import com.GP.GP.entities.AdmissionRequest;
 import com.GP.GP.entities.User;
 import lombok.Builder;

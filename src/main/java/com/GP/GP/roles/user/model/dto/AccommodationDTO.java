@@ -1,4 +1,4 @@
-package com.GP.GP.roles.user.dto;
+package com.GP.GP.roles.user.model.dto;
 
 import com.GP.GP.utill.Enums;
 import lombok.AllArgsConstructor;

@@ -2,18 +2,31 @@ package com.GP.GP.entities;
 
 import com.GP.GP.security.Role;
 import com.GP.GP.security.Token;
+import com.GP.GP.utill.Enums;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
+import java.util.List;import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Builder
 @Table(name = "user")
 public class User implements UserDetails {
 
@@ -31,7 +44,6 @@ public class User implements UserDetails {
     @Column(name = "username")
     private String username;
 
-
     @Column(name = "password")
     private String password;
 
@@ -39,53 +51,109 @@ public class User implements UserDetails {
     private Role role;
 
     @OneToMany(mappedBy = "user")
+//    @JsonManagedReference
     private List<Token> tokens;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "university_id", nullable = false)
-//    private University university;
+    private Enums.StudentType studentType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "university_id", nullable = true)
+    private University university;
+
+    @Column(name = "national_id", nullable = true, length = 14)
+    private String nationalId;
+
+    @Column(name = "mobile_number", length = 20)
+    private String mobileNumber;
+
+    @Column(name = "faculty", length = 20)
+    private String faculty;
+
+    @Column(name = "level", length = 20)
+    private String level;
+    @Column(name = "date_of_birth", nullable = true)
+    private LocalDate dateOfBirth;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private Room room;
+
+    @Column(name = "residence_address",columnDefinition = "TEXT")
+    private String residenceAddress;
+
+    @Column(name = "detailed_address",columnDefinition = "TEXT")
+    private String detailedAddress;
+
+    @Column(name = "place_of_birth")
+    private String placeOfBirth;
+
+    @Column(name = "gender")
+    private Enums.Gender gender;
+
+    @Column(name = "religion")
+    private Enums.Religion religion;
+
+    @Column(name = "father_name")
+    private String fatherName;
+
+    @Column(name = "father_national_id", length = 14)
+    private String fatherNationalId;
+
+    @Column(name = "father_occupation")
+    private String fatherOccupation;
+
+    @Column(name = "father_phone_number", length = 20)
+    private String fatherPhoneNumber;
+
+    @Column(name = "guardian_name")
+    private String guardianName;
+
+    @Column(name = "guardian_national_id" )
+    private String guardianNationalId;
+
+    @Column(name = "guardian_phone_number", length = 20)
+    private String guardianPhoneNumber;
+
+    @Column(name = "parents_status")
+    private String parentsStatus;
+
+    @Column(name = "previous_academic_year_gpa",  scale = 2)
+    private Double previousAcademicYearGpa;
+
+    @Column(name = "status")
+    private Enums.AdmissionRequestStatues status;
+
+
+    @Column(name = "housing_in_previous_years")
+    private String housingInPreviousYears;
+
+    @Column(name = "family_abroad")
+    private Boolean familyAbroad;
+
+    @Column(name = "special_needs")
+    private Boolean specialNeeds;
+
+    @Column(name = "secondary_division")
+    private String secondaryDivision;
+
+    @Column(name = "total_grades_high_school")
+    private Float totalGradesHighSchool;
+
+    @Column(name = "passport_number")
+    private String passportNumber;
+
+    @Column(name = "passport_issuing_authority")
+    private String passportIssuingAuthority;
+
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+//    private AdmissionRequest admissionRequest;
 //
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "room_id")
-//    private Room room;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private AdmissionRequest admissionRequest;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private StudentProfile studentProfile;
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+//    private StudentProfile studentProfile;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -107,37 +175,9 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public List<Token> getTokens() {
-        return tokens;
-    }
-
-    public void setTokens(List<Token> tokens) {
-        this.tokens = tokens;
     }
 
 }
