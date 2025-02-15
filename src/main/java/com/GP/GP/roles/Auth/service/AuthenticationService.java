@@ -10,10 +10,7 @@ import com.GP.GP.roles.Auth.models.response.LoginResponseDTO;
 import com.GP.GP.roles.Auth.models.response.RegisterResponseDTO;
 import com.GP.GP.roles.admin.models.dto.response.UniversityResponseDTO;
 import com.GP.GP.roles.admin.service.contracts.UniversityService;
-import com.GP.GP.security.AuthenticationResponse;
-import com.GP.GP.security.JwtService;
-import com.GP.GP.security.Token;
-import com.GP.GP.security.TokenRepository;
+import com.GP.GP.security.*;
 import com.GP.GP.utill.base.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,23 +53,28 @@ public class AuthenticationService {
 
     public ResponseEntity<Object> register(RegisterRequestDTO request) {
 
+        // Check if username already exists
         if (repository.findByUsername(request.getUsername()).isPresent()) {
-            return new ResponseEntity<>(new BaseResponse(false, "User already exists"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new BaseResponse(false, "User already exists"), HttpStatus.CONFLICT);
         }
 
-        University university = universityService.findUniversityById(request.getUniversityId());
+        // Find university for non-admin users
+        University university = request.getRole() == Role.ADMIN ? null : universityService.findUniversityById(request.getUniversityId());
 
+        // Map user entity
         User user = RegisterMapper.toUserEntity(request, university);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user = repository.save(user);
 
+        // Generate JWT token
         String jwt = jwtService.generateToken(user);
         saveUserToken(jwt, user);
 
         RegisterResponseDTO responseDTO = RegisterResponseDTO.mapToRegisterResponseDTO(user, jwt, university);
-
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        BaseResponse response = new BaseResponse(true, "Admission request updated successfully", responseDTO);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
     public ResponseEntity<Object> login(User request) {
         try {

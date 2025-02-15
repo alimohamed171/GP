@@ -3,6 +3,7 @@ package com.GP.GP.entities;
 import com.GP.GP.security.Role;
 import com.GP.GP.security.Token;
 import com.GP.GP.utill.Enums;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,13 +17,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
+import java.util.List;import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Builder
 @Table(name = "user")
 public class User implements UserDetails {
@@ -48,15 +51,16 @@ public class User implements UserDetails {
     private Role role;
 
     @OneToMany(mappedBy = "user")
+//    @JsonManagedReference
     private List<Token> tokens;
 
     private Enums.StudentType studentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "university_id", nullable = false)
+    @JoinColumn(name = "university_id", nullable = true)
     private University university;
 
-    @Column(name = "national_id", nullable = false, length = 14)
+    @Column(name = "national_id", nullable = true, length = 14)
     private String nationalId;
 
     @Column(name = "mobile_number", length = 20)
@@ -67,7 +71,7 @@ public class User implements UserDetails {
 
     @Column(name = "level", length = 20)
     private String level;
-    @Column(name = "date_of_birth", nullable = false)
+    @Column(name = "date_of_birth", nullable = true)
     private LocalDate dateOfBirth;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -105,7 +109,7 @@ public class User implements UserDetails {
     @Column(name = "guardian_name")
     private String guardianName;
 
-    @Column(name = "guardian_national_id", length = 14)
+    @Column(name = "guardian_national_id" )
     private String guardianNationalId;
 
     @Column(name = "guardian_phone_number", length = 20)
@@ -149,7 +153,7 @@ public class User implements UserDetails {
 //    private StudentProfile studentProfile;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Override

@@ -31,5 +31,4 @@ public class ApplicationDeadline {
 
     @Column(name = "student_type")
     private String studentType;
-
 }

@@ -1,6 +1,7 @@
 package com.GP.GP.roles.user.controller;
 
-import com.GP.GP.roles.user.dto.AdmissionRequestDTO;
+import com.GP.GP.roles.user.model.dto.AdmissionRequestDTO;
+import com.GP.GP.roles.user.model.request.UpdateUserRequestDTO;
 import com.GP.GP.roles.user.service.contracts.AdmissionRequestService;
 import com.GP.GP.utill.Enums;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ public class UserController {
     }
 
     @PutMapping("/user/admission-requests/{id}")
-    public ResponseEntity<Object> updateRequest(@PathVariable int id, @RequestBody AdmissionRequestDTO dto) {
-        return admissionRequestService.updateAdmissionRequest(id, dto);
+    public ResponseEntity<Object> updateRequest(@PathVariable int id, @RequestBody UpdateUserRequestDTO dto) {
+        return admissionRequestService.updateUser(id, dto);
     }
 
     @GetMapping("/user/admission-requests/{id}/status")

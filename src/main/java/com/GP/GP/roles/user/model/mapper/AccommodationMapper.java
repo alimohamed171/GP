@@ -1,7 +1,7 @@
-package com.GP.GP.roles.user.mapper;
+package com.GP.GP.roles.user.model.mapper;
 
 import com.GP.GP.entities.*;
-import com.GP.GP.roles.user.dto.AccommodationDTO;
+import com.GP.GP.roles.user.model.dto.AccommodationDTO;
 import lombok.Builder;
 
 @Builder
