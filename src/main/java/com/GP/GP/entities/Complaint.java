@@ -21,9 +21,6 @@ public class Complaint {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "reviewed")
-    private Boolean reviewed = false;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
