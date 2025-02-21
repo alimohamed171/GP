@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +41,18 @@ public class Room {
     @Column(length = 15)
     private Enums.RoomStatus status = Enums.RoomStatus.AVAILABLE;
 
-    @OneToMany(mappedBy = "room")
-    private List<Accommodation> accommodations = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "building_id", nullable = false)
     private Building building;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.PERSIST)
+    private List<User> students;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     // Getters and Setters
 }
