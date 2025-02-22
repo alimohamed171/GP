@@ -3,6 +3,7 @@ package com.GP.GP.entities;
 import com.GP.GP.utill.Enums;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "rooms")
+@Builder
 public class Room {
 
     @Id
