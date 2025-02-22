@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BuildingServiceImpl implements BuildingService {
@@ -61,5 +62,22 @@ public class BuildingServiceImpl implements BuildingService {
         return new ResponseEntity<>(new BaseResponse(true, "Buildings retrieved successfully", responseDTOs), HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Object> deleteBuilding(int universityId, int buildingId) {
+        University university = universityService.findUniversityById(universityId);
+
+        if (university == null) {
+            return new ResponseEntity<>(new BaseResponse(false, "No university found", null), HttpStatus.NOT_FOUND);
+        }
+
+        Optional<Building> building = repository.findById(buildingId);
+
+        if (building.isEmpty() || building.get().getUniversity().getId() != universityId) {
+            return new ResponseEntity<>(new BaseResponse(false, "No building found with this university", null), HttpStatus.NOT_FOUND);
+        }
+
+        repository.delete(building.get());
+        return new ResponseEntity<>(new BaseResponse(true, "Building deleted successfully"), HttpStatus.OK);
+    }
 
 }
