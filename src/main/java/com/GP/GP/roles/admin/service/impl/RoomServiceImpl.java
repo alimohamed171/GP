@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,5 +39,26 @@ public class RoomServiceImpl implements RoomService {
 
         RoomResponseDTO responseDTO = RoomMapper.toRoomResponseDTO(room);
         return new ResponseEntity<>(new BaseResponse(true, "Room added successfully.", responseDTO), HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<Object> getAllRooms(int buildingId) {
+        Optional<Building> optionalBuilding = buildingRepository.findById(buildingId);
+
+        if (optionalBuilding.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "No building found"), HttpStatus.NOT_FOUND);
+        }
+
+        Building building = optionalBuilding.get();
+        List<Room> rooms = roomRepository.findByBuildingId(buildingId);
+        if (rooms.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "No rooms found for this building", null), HttpStatus.NOT_FOUND);
+        }
+
+        List<RoomResponseDTO> responseDTOs = rooms.stream()
+                .map(RoomMapper::toRoomResponseDTO)
+                .toList();
+
+        return new ResponseEntity<>(new BaseResponse(true, "Rooms retrieved successfully", responseDTOs), HttpStatus.OK);
     }
 }
