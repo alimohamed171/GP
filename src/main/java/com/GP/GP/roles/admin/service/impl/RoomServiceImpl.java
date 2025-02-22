@@ -52,7 +52,7 @@ public class RoomServiceImpl implements RoomService {
         Building building = optionalBuilding.get();
         List<Room> rooms = roomRepository.findByBuildingId(buildingId);
         if (rooms.isEmpty()) {
-            return new ResponseEntity<>(new BaseResponse(false, "No rooms found for this building", null), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new BaseResponse(false, "No rooms found for this building"), HttpStatus.NOT_FOUND);
         }
 
         List<RoomResponseDTO> responseDTOs = rooms.stream()
