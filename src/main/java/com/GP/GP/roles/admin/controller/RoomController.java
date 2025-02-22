@@ -24,4 +24,11 @@ public class RoomController {
     public ResponseEntity<Object> getAllRooms(@PathVariable int buildingId) {
         return roomService.getAllRooms(buildingId);
     }
+
+    @DeleteMapping("/admin/rooms/delete")
+    public ResponseEntity<Object> deleteRoom(
+            @RequestParam int buildingId,
+            @RequestParam int roomId) {
+        return roomService.deleteRoom(buildingId, roomId);
+    }
 }

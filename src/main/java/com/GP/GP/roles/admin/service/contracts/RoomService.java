@@ -6,4 +6,5 @@ import org.springframework.http.ResponseEntity;
 public interface RoomService {
     ResponseEntity<Object> addRoom(RoomRequestDTO dto);
     ResponseEntity<Object> getAllRooms(int buildingId);
+    ResponseEntity<Object> deleteRoom(int buildingId, int roomId);
 }

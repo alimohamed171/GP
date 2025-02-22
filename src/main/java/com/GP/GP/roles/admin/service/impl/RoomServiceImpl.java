@@ -61,4 +61,20 @@ public class RoomServiceImpl implements RoomService {
 
         return new ResponseEntity<>(new BaseResponse(true, "Rooms retrieved successfully", responseDTOs), HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Object> deleteRoom(int buildingId, int roomId) {
+        Optional<Building> optionalBuilding = buildingRepository.findById(buildingId);
+        if (optionalBuilding.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "No building found"), HttpStatus.NOT_FOUND);
+        }
+
+        Optional<Room> optionalRoom = roomRepository.findById(roomId);
+        if (optionalRoom.isEmpty() || optionalRoom.get().getBuilding().getId() != buildingId) {
+            return new ResponseEntity<>(new BaseResponse(false, "No rooms found for this building"), HttpStatus.NOT_FOUND);
+        }
+
+        roomRepository.delete(optionalRoom.get());
+        return new ResponseEntity<>(new BaseResponse(true, "Room deleted successfully"), HttpStatus.OK);
+    }
 }
