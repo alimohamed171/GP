@@ -60,4 +60,6 @@ public class BuildingServiceImpl implements BuildingService {
 
         return new ResponseEntity<>(new BaseResponse(true, "Buildings retrieved successfully", responseDTOs), HttpStatus.OK);
     }
+
+
 }
