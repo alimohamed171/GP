@@ -23,4 +23,11 @@ public class BuildingController {
     public ResponseEntity<Object> getAllBuildings(@PathVariable int universityId) {
         return buildingService.getAllBuildings(universityId);
     }
+
+    @DeleteMapping("/admin/delete-building")
+    public ResponseEntity<Object> deleteBuilding(
+            @RequestParam("universityId") int universityId,
+            @RequestParam("buildingId") int buildingId) {
+        return buildingService.deleteBuilding(universityId, buildingId);
+    }
 }
