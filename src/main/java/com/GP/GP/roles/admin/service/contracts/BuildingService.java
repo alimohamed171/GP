@@ -5,4 +5,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface BuildingService {
     ResponseEntity<Object> addBuilding(BuildingRequestDTO request);
+    ResponseEntity<Object> getAllBuildings(int universityId);
 }

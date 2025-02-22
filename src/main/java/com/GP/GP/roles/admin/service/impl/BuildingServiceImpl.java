@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BuildingServiceImpl implements BuildingService {
 
@@ -36,5 +38,26 @@ public class BuildingServiceImpl implements BuildingService {
 
         BuildingResponseDTO responseDto = BuildingMapper.mapBuildingResponseToDto(building);
         return new ResponseEntity<>(new BaseResponse(true, "Building added successfully", responseDto), HttpStatus.CREATED);
+    }
+
+
+    @Override
+    public ResponseEntity<Object> getAllBuildings(int universityId) {
+        University university = universityService.findUniversityById(universityId);
+
+        if (university == null) {
+            return new ResponseEntity<>(new BaseResponse(false, "No university found", null), HttpStatus.NOT_FOUND);
+        }
+
+        List<Building> buildings = repository.findByUniversity(university);
+        if (buildings.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "No buildings found for this university", null), HttpStatus.NOT_FOUND);
+        }
+
+        List<BuildingResponseDTO> responseDTOs = buildings.stream()
+                .map(BuildingMapper::mapBuildingResponseToDto)
+                .toList();
+
+        return new ResponseEntity<>(new BaseResponse(true, "Buildings retrieved successfully", responseDTOs), HttpStatus.OK);
     }
 }

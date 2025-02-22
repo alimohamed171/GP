@@ -5,10 +5,7 @@ import com.GP.GP.roles.admin.service.contracts.BuildingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("")
@@ -20,5 +17,10 @@ public class BuildingController {
     @PostMapping("/admin/add-buildings")
     public ResponseEntity<Object> addBuilding(@Valid @RequestBody BuildingRequestDTO request) {
         return buildingService.addBuilding(request);
+    }
+
+    @GetMapping("/public/get-buildings/{universityId}")
+    public ResponseEntity<Object> getAllBuildings(@PathVariable int universityId) {
+        return buildingService.getAllBuildings(universityId);
     }
 }
