@@ -67,13 +67,13 @@ public class BuildingServiceImpl implements BuildingService {
         University university = universityService.findUniversityById(universityId);
 
         if (university == null) {
-            return new ResponseEntity<>(new BaseResponse(false, "No university found", null), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new BaseResponse(false, "No university found"), HttpStatus.NOT_FOUND);
         }
 
         Optional<Building> building = repository.findById(buildingId);
 
         if (building.isEmpty() || building.get().getUniversity().getId() != universityId) {
-            return new ResponseEntity<>(new BaseResponse(false, "No building found with this university", null), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new BaseResponse(false, "No building found with this university"), HttpStatus.NOT_FOUND);
         }
 
         repository.delete(building.get());
