@@ -66,7 +66,7 @@ public class User implements UserDetails {
     @Column(name = "mobile_number", length = 20)
     private String mobileNumber;
 
-    @Column(name = "faculty", length = 100)
+    @Column(name = "faculty", length = 270)
     private String faculty;
 
     @Column(name = "level", length = 20)
