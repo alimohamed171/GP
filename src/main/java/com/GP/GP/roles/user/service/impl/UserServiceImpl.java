@@ -123,16 +123,23 @@ public class UserServiceImpl implements AdmissionRequestService {
 
     @Override
     public ResponseEntity<Object> updateAdmissionRequestStatues(int id, Enums.AdmissionRequestStatues status) {
-
-        User existingRequest = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Admission request not found"));
-
-        if (status == Enums.AdmissionRequestStatues.ACCEPTED) {
-            if (existingRequest.getStatus() == Enums.AdmissionRequestStatues.ACCEPTED) {
-                throw new RuntimeException("Admission request is already approved");
-            }
-            existingRequest.setStatus(status);
+        if (status == null) {
+            return new ResponseEntity<>(new BaseResponse(false, "Status cannot be null", null), HttpStatus.BAD_REQUEST);
         }
+
+
+        if (!userRepository.existsById(id)){
+            BaseResponse response= new BaseResponse(false, "Admission request not found", null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+        User existingRequest = userRepository.findById(id).get();
+
+        if (existingRequest.getStatus() == status) {
+            return new ResponseEntity<>(new BaseResponse(false, "Admission request is already in the requested state", null), HttpStatus.BAD_REQUEST);
+
+        }
+
+        existingRequest.setStatus(status);
 
         User updatedRequest = userRepository.save(existingRequest);
         UpdatedUserResponseDTO responseDTO = UserMapper.mapToUpdatedUserResponseDTO(updatedRequest);
