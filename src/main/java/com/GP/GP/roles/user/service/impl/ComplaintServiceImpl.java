@@ -73,7 +73,7 @@ public class ComplaintServiceImpl implements ComplaintService {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
         ComplaintResponseDTO complaintResponseDTO = ComplaintMapper.entityToResponse(complaint);
-        BaseResponse response = new BaseResponse(true, "Complaint retrieved successfully!", complaintResponseDTO);
+        BaseResponse response = new BaseResponse(true, "Complaint with ID:"+id+" retrieved successfully!", complaintResponseDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -113,7 +113,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         List<ComplaintResponseDTO> dtos = complaints.stream()
                 .map(ComplaintMapper::entityToResponse)
                 .toList();
-        BaseResponse response = new BaseResponse(true, "User complaints retrieved successfully", dtos);
+        BaseResponse response = new BaseResponse(true, "Complaints of user ID:"+userId+" retrieved successfully", dtos);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
