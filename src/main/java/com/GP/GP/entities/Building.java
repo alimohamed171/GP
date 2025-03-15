@@ -1,6 +1,7 @@
 package com.GP.GP.entities;
 
 import com.GP.GP.utill.Enums;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,6 +32,7 @@ public class Building {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_id", nullable = false)
+    @JsonBackReference
     private University university;
 
     @OneToMany(mappedBy = "building", cascade = CascadeType.PERSIST,orphanRemoval = false)
