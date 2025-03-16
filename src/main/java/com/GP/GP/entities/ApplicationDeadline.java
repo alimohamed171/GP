@@ -1,4 +1,5 @@
 package com.GP.GP.entities;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class ApplicationDeadline {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_id", nullable = false)
+    @JsonBackReference
     private University university;
 
     @Column(name = "application_start_date")

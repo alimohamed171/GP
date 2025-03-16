@@ -1,4 +1,5 @@
 package com.GP.GP.entities;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class ApplicationGuidelineAndApproval {
 
     @ManyToOne
     @JoinColumn(name = "university_id", nullable = false)
+    @JsonBackReference
     private University university;
 
 }

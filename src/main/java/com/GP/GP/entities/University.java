@@ -1,5 +1,7 @@
 package com.GP.GP.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,13 +28,17 @@ public class University {
     private String name;
 
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Building> buildings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // تغيير من OneToOne إلى OneToMany
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)// تغيير من OneToOne إلى OneToMany
+    @JsonManagedReference
     private List<ApplicationGuidelineAndApproval> applicationGuidelines = new ArrayList<>();
-    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<HousingFee> housingFees = new ArrayList<>();
 
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<HousingFee> housingFees = new ArrayList<>();
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<ApplicationDeadline> applicationDeadlines;
 }
