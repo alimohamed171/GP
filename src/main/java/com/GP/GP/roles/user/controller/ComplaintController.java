@@ -57,4 +57,9 @@ public class ComplaintController {
     public ResponseEntity<Object> getComplaintsByUser(@PathVariable int userId) {
         return complaintService.getComplaintsByUser(userId);
     }
+    // Get all complaints by a specific user (User)
+    @GetMapping("/user/my-complaints/{userId}")
+    public ResponseEntity<Object> getAllUserComplaints(@PathVariable int userId) {
+        return complaintService.getComplaintsByUser(userId);
+    }
 }
