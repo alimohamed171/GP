@@ -60,7 +60,7 @@ public class User implements UserDetails {
     @JoinColumn(name = "university_id", nullable = true)
     private University university;
 
-    @Column(name = "national_id", nullable = true, length = 14)
+    @Column(name = "national_id", length = 14, unique = true)
     private String nationalId;
 
     @Column(name = "mobile_number", length = 20)
