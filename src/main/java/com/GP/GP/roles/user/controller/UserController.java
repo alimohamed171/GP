@@ -6,6 +6,7 @@ import com.GP.GP.roles.user.service.contracts.AdmissionRequestService;
 import com.GP.GP.utill.Enums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -45,6 +46,11 @@ public class UserController {
     public ResponseEntity<Object> updateAdmissionRequestStatus(@PathVariable int id, @RequestParam Enums.AdmissionRequestStatues status) {
         return admissionRequestService.updateAdmissionRequestStatues(id, status);
     }
+    @GetMapping("/user/admission-requests/nid/{nationalId}/status")
+    public ResponseEntity<Object> checkApplicationStatus(@PathVariable String nationalId) {
+        return admissionRequestService.getApplicationStatusByNID(nationalId);
+    }
+
 
 
 }
