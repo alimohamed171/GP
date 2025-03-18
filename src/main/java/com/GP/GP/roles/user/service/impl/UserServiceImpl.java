@@ -4,8 +4,10 @@ import com.GP.GP.entities.University;
 import com.GP.GP.repository.AccommodationRepository;
 import com.GP.GP.repository.AdmissionRequestRepository;
 import com.GP.GP.roles.admin.service.contracts.UniversityService;
+import com.GP.GP.roles.user.model.mapper.AdmissionRequestInquiryMapper;
 import com.GP.GP.roles.user.model.request.UpdateUserRequestDTO;
 import com.GP.GP.roles.user.model.mapper.UserMapper;
+import com.GP.GP.roles.user.model.response.AdmissionRequestInquiryResponseDTO;
 import com.GP.GP.roles.user.model.response.UpdatedUserResponseDTO;
 import com.GP.GP.roles.user.service.contracts.AdmissionRequestService;
 import com.GP.GP.entities.AdmissionRequest;
@@ -24,6 +26,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -50,11 +56,11 @@ public class UserServiceImpl implements AdmissionRequestService {
     @Override
     public ResponseEntity<Object> createAdmissionRequest(AdmissionRequestDTO admissionRequestDTO) {
         User user = userRepository.findById(admissionRequestDTO.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with "+ admissionRequestDTO.getUserId()));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with " + admissionRequestDTO.getUserId()));
         University university = universityService.findUniversityById(admissionRequestDTO.getUniversityId());
         AdmissionRequest admissionRequest;
 
-        admissionRequest = AdmissionRequestMapper.toEntity(admissionRequestDTO, user,university);
+        admissionRequest = AdmissionRequestMapper.toEntity(admissionRequestDTO, user, university);
 
 // why do you need to put it in the DTO !! 
         admissionRequest.setStatus(Enums.AdmissionRequestStatues.UNDER_REVIEW);
@@ -66,7 +72,7 @@ public class UserServiceImpl implements AdmissionRequestService {
         BaseResponse response = new BaseResponse(true, "Admission request created successfully", dto);
 
 
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Override
@@ -128,8 +134,8 @@ public class UserServiceImpl implements AdmissionRequestService {
         }
 
 
-        if (!userRepository.existsById(id)){
-            BaseResponse response= new BaseResponse(false, "Admission request not found", null);
+        if (!userRepository.existsById(id)) {
+            BaseResponse response = new BaseResponse(false, "Admission request not found", null);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
         User existingRequest = userRepository.findById(id).get();
@@ -145,6 +151,18 @@ public class UserServiceImpl implements AdmissionRequestService {
         UpdatedUserResponseDTO responseDTO = UserMapper.mapToUpdatedUserResponseDTO(updatedRequest);
         BaseResponse response = new BaseResponse(true, "Admission request updated successfully", responseDTO);
 
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @Override
+    public ResponseEntity<Object> getApplicationStatusByNID(String nationalId) {
+
+        User admissionRequest = userRepository.findByNationalId(nationalId)
+                .orElseThrow(() -> new ResourceNotFoundException("No admission request found for National ID: " + nationalId));
+
+        AdmissionRequestInquiryResponseDTO responseDTO = AdmissionRequestInquiryMapper.entityToResponse(admissionRequest);
+        BaseResponse response = new BaseResponse(true, "Application status retrieved successfully", responseDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
