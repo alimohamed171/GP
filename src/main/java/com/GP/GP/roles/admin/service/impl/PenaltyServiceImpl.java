@@ -8,6 +8,7 @@ import com.GP.GP.roles.admin.models.dto.request.PenaltyDTO;
 import com.GP.GP.roles.admin.models.dto.response.PenaltyResponseDTO;
 import com.GP.GP.roles.admin.models.mapper.PenaltyMapper;
 import com.GP.GP.roles.admin.service.contracts.PenaltyService;
+import com.GP.GP.utill.Enums;
 import com.GP.GP.utill.base.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,12 +33,17 @@ public class PenaltyServiceImpl implements PenaltyService {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
         User user = userRepository.findById(penaltyDTO.getUserId()).get();
+
+
+        if (user.getStatus() != Enums.AdmissionRequestStatues.ACCEPTED) {
+            return new ResponseEntity<>(new BaseResponse(false, " User statues is: "+user.getStatus(), null), HttpStatus.BAD_REQUEST);
+
+        }
         Penalty penalty = PenaltyMapper.toEntity(penaltyDTO, user);
         penalty = penaltyRepository.save(penalty);
         PenaltyResponseDTO penaltyResponseDTO = PenaltyMapper.toDTO(penalty);
         BaseResponse response = new BaseResponse(true, "penalty submitted successfully!", penaltyResponseDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
-
     }
 
     @Override
