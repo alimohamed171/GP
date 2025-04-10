@@ -1,6 +1,8 @@
 package com.GP.GP.roles.admin.controller;
 
+import com.GP.GP.roles.admin.models.dto.request.RoomAssignmentRequestDTO;
 import com.GP.GP.roles.admin.models.dto.request.RoomRequestDTO;
+import com.GP.GP.roles.admin.service.contracts.RoomAssignmentService;
 import com.GP.GP.roles.admin.service.contracts.RoomService;
 import com.GP.GP.utill.Enums;
 import jakarta.validation.Valid;
@@ -14,6 +16,8 @@ public class RoomController {
 
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private RoomAssignmentService roomAssignmentService;
 
 
     @PostMapping("/admin/rooms/add")
@@ -43,5 +47,9 @@ public class RoomController {
             @PathVariable int buildingId,
             @PathVariable Enums.RoomType roomType) {
         return roomService.getAvailableRooms(buildingId, roomType);
+    }
+    @PostMapping("/admin/rooms/assign-room")
+    public ResponseEntity<Object> assignRoomToStudent(@RequestBody RoomAssignmentRequestDTO roomAssignmentRequestDTO) {
+        return roomAssignmentService.assignStudentToRoom(roomAssignmentRequestDTO);
     }
 }
