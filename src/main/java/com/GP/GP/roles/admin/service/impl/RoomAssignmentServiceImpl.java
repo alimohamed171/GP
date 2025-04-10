@@ -28,24 +28,24 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
     private RoomRepository roomRepository;
     @Autowired
     private BuildingRepository buildingRepository;
-    // Implement the methods from RoomAssignmentService interface here
+
     @Override
     public ResponseEntity<Object> assignStudentToRoom(RoomAssignmentRequestDTO dto) {
-        // 1. Get student by ID
+
         Optional<User> optionalStudent = userRepository.findById(dto.getUserId());
         if (optionalStudent.isEmpty()) {
             return new ResponseEntity<>(new BaseResponse(false, "Student not found"), HttpStatus.NOT_FOUND);
         }
         User student = optionalStudent.get();
-        // 2. Check if already assigned to a room
+
         if (student.getRoom() != null) {
             return new ResponseEntity<>(new BaseResponse(false, "Student already assigned to a room"), HttpStatus.BAD_REQUEST);
         }
-        // 3. Check if student is accepted
+
         if (student.getStatus() != Enums.AdmissionRequestStatues.ACCEPTED) {
             return new ResponseEntity<>(new BaseResponse(false, "Student is not accepted and cannot be assigned to a room"), HttpStatus.FORBIDDEN);
         }
-        // 3. Get building type from gender
+
         Enums.BuildingType buildingType = student.getGender() == Enums.Gender.FEMALE
                 ? Enums.BuildingType.FEMALE
                 : Enums.BuildingType.MALE;
@@ -57,25 +57,21 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
 
-
-        // 4. Find available room
         List<Room> rooms = roomRepository.findAvailableRoomsByGender(buildingType, dto.getRoomType());
         Optional<Room> optionalRoom = rooms.stream()
                 .filter(room -> room.getCurrentOccupancy() < room.getCapacity()
                         && room.getStatus() == Enums.RoomStatus.AVAILABLE)
                 .findFirst();
-        // 5. Handle no room found
+
         if (optionalRoom.isEmpty()) {
             return new ResponseEntity<>(new BaseResponse(false, "No available room matching criteria"), HttpStatus.NOT_FOUND);
         }
-        // 6. Assign room to student
         Room room = optionalRoom.get();
         room.setCurrentOccupancy(room.getCurrentOccupancy() + 1);
         student.setRoom(room);
 
         roomRepository.save(room);
         userRepository.save(student);
-        // 7. Map response DTO
         RoomAssignmentResponseDTO responseDTO = RoomAssignmentMapper.mapToRoomAssignmentResponseDTO(student, room);
         return new ResponseEntity<>(new BaseResponse(true, "Room assigned successfully", responseDTO), HttpStatus.OK);
     }
