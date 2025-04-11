@@ -39,7 +39,7 @@ public class RegisterResponseDTO {
                 .lastName(user.getLastName())
                 .username(user.getUsername())
                 .role(user.getRole())
-                .university(UniversityResponseDTO.mapToResponseDTO(user.getUniversity()))
+                .university(university != null ? UniversityResponseDTO.mapToResponseDTO(university) : null)
                 .faculty(user.getFaculty())
                 .level(user.getLevel())
                 .mobileNumber(user.getMobileNumber())
