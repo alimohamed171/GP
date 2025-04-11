@@ -78,7 +78,33 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
 
     @Override
     public ResponseEntity<Object> removeStudentFromRoom(int studentId, int roomId) {
-        return null;
+        Optional<User> optionalStudent = userRepository.findById(studentId);
+        if (optionalStudent.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "Student not found"), HttpStatus.NOT_FOUND);
+        }
+        User student = optionalStudent.get();
+
+        if (student.getRoom() == null) {
+            return new ResponseEntity<>(new BaseResponse(false, "Student is not assigned to any room"), HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Room> optionalRoom = roomRepository.findById(roomId);
+        if (optionalRoom.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "Room not found"), HttpStatus.NOT_FOUND);
+        }
+        Room room = optionalRoom.get();
+
+        if (!room.equals(student.getRoom())) {
+            return new ResponseEntity<>(new BaseResponse(false, "Student is not assigned to this room"), HttpStatus.BAD_REQUEST);
+        }
+
+        room.setCurrentOccupancy(room.getCurrentOccupancy() - 1);
+        student.setRoom(null);
+
+        roomRepository.save(room);
+        userRepository.save(student);
+
+        return new ResponseEntity<>(new BaseResponse(true, "Student removed from room "+ room.getRoomNumber()+" successfully"), HttpStatus.OK);
     }
 
 }

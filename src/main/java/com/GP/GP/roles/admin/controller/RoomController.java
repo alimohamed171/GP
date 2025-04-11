@@ -52,4 +52,10 @@ public class RoomController {
     public ResponseEntity<Object> assignRoomToStudent(@RequestBody RoomAssignmentRequestDTO roomAssignmentRequestDTO) {
         return roomAssignmentService.assignStudentToRoom(roomAssignmentRequestDTO);
     }
+    @DeleteMapping("/admin/rooms/remove-student")
+    public ResponseEntity<Object> removeStudentFromRoom(
+            @RequestParam int studentId,
+            @RequestParam int roomId) {
+        return roomAssignmentService.removeStudentFromRoom(studentId, roomId);
+    }
 }
