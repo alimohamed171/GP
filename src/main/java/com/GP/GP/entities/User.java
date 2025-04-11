@@ -76,6 +76,7 @@ public class User implements UserDetails {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
+    @JsonManagedReference
     private Room room;
 
     @Column(name = "residence_address",columnDefinition = "TEXT")

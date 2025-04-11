@@ -3,6 +3,7 @@ package com.GP.GP.roles.Auth.models.response;
 
 import com.GP.GP.entities.University;
 import com.GP.GP.entities.User;
+import com.GP.GP.roles.admin.models.dto.response.UniversityResponseDTO;
 import com.GP.GP.security.Role;
 import com.GP.GP.utill.Enums;
 import jakarta.validation.constraints.NotBlank;
@@ -24,7 +25,7 @@ public class RegisterResponseDTO {
     private String lastName;
     private String username;
     private Role role;
-    private University university;
+    private UniversityResponseDTO university;
     private String faculty;
     private String level;
     private String mobileNumber;
@@ -38,7 +39,7 @@ public class RegisterResponseDTO {
                 .lastName(user.getLastName())
                 .username(user.getUsername())
                 .role(user.getRole())
-                .university(university)
+                .university(university != null ? UniversityResponseDTO.mapToResponseDTO(university) : null)
                 .faculty(user.getFaculty())
                 .level(user.getLevel())
                 .mobileNumber(user.getMobileNumber())

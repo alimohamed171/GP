@@ -8,6 +8,7 @@ import com.GP.GP.roles.admin.models.dto.request.RoomRequestDTO;
 import com.GP.GP.roles.admin.models.dto.response.RoomResponseDTO;
 import com.GP.GP.roles.admin.models.mapper.RoomMapper;
 import com.GP.GP.roles.admin.service.contracts.RoomService;
+import com.GP.GP.utill.Enums;
 import com.GP.GP.utill.base.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RoomServiceImpl implements RoomService {
@@ -76,5 +78,44 @@ public class RoomServiceImpl implements RoomService {
 
         roomRepository.delete(optionalRoom.get());
         return new ResponseEntity<>(new BaseResponse(true, "Room deleted successfully"), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getRoomById(int buildingId, int roomId) {
+        Optional<Building> optionalBuilding = buildingRepository.findById(buildingId);
+        if (optionalBuilding.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "No building found"), HttpStatus.NOT_FOUND);
+        }
+
+        Optional<Room> optionalRoom = roomRepository.findById(roomId);
+        if (optionalRoom.isEmpty() || optionalRoom.get().getBuilding().getId() != buildingId) {
+            return new ResponseEntity<>(new BaseResponse(false, "No rooms found for this building"), HttpStatus.NOT_FOUND);
+        }
+
+        RoomResponseDTO responseDTO = RoomMapper.toRoomResponseDTO(optionalRoom.get());
+        return new ResponseEntity<>(new BaseResponse(true, "Room retrieved successfully", responseDTO), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> getAvailableRooms(int buildingId, Enums.RoomType roomType) {
+        Optional<Building> optionalBuilding = buildingRepository.findById(buildingId);
+        if (optionalBuilding.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "No building found"), HttpStatus.NOT_FOUND);
+        }
+        List<Room> availableRooms = roomRepository.findAvailableRoomsByGender(
+                optionalBuilding.get().getType(), roomType);
+
+        availableRooms = availableRooms.stream()
+                .filter(room -> room.getCurrentOccupancy() < room.getCapacity())
+                .toList();
+        if (availableRooms.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "No available rooms found"), HttpStatus.NOT_FOUND);
+        }
+        List<RoomResponseDTO> responseDTOs = availableRooms.stream()
+                .map(RoomMapper::toRoomResponseDTO)
+                .toList();
+
+        return new ResponseEntity<>(new BaseResponse(true, "Available rooms retrieved successfully", responseDTOs), HttpStatus.OK);
+
     }
 }

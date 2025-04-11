@@ -36,6 +36,7 @@ public class Building {
     private University university;
 
     @OneToMany(mappedBy = "building", cascade = CascadeType.PERSIST,orphanRemoval = false)
+    @JsonBackReference
     private List<Room> rooms = new ArrayList<>();
 
     @CreationTimestamp

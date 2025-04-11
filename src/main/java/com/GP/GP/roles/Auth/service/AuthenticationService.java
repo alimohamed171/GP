@@ -71,7 +71,7 @@ public class AuthenticationService {
         saveUserToken(jwt, user);
 
         RegisterResponseDTO responseDTO = RegisterResponseDTO.mapToRegisterResponseDTO(user, jwt, university);
-        BaseResponse response = new BaseResponse(true, "Admission request updated successfully", responseDTO);
+        BaseResponse response = new BaseResponse(true, "Admission request updated\"created\" successfully", responseDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
