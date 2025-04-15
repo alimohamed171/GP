@@ -63,6 +63,11 @@ public class User implements UserDetails {
     @Column(name = "national_id", length = 14, unique = true)
     private String nationalId;
 
+    @ManyToMany
+//    @JsonManagedReference
+    @JoinTable(name = "user_meals", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "meal_id"))
+    private List<Meal> meals;
+
     @Column(name = "mobile_number", length = 20)
     private String mobileNumber;
 
