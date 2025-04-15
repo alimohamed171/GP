@@ -58,4 +58,11 @@ public class RoomController {
             @RequestParam int roomId) {
         return roomAssignmentService.removeStudentFromRoom(studentId, roomId);
     }
+    @PostMapping("/admin/rooms/assign-student-specific-room")
+    public ResponseEntity<Object> assignStudentToSpecificRoom(
+            @RequestParam int studentId,
+            @RequestParam int roomId) {
+        return roomAssignmentService.assignStudentSpecificRoom(studentId, roomId);
+    }
+
 }
