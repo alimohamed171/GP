@@ -20,7 +20,7 @@ public class RoomController {
     private RoomAssignmentService roomAssignmentService;
 
 
-    @PostMapping("/admin/rooms/add")
+    @PostMapping("/admin/edit/rooms/add")
     public ResponseEntity<Object> addRoom(@Valid @RequestBody RoomRequestDTO dto) {
         return roomService.addRoom(dto);
     }
@@ -36,19 +36,19 @@ public class RoomController {
             @RequestParam int roomId) {
         return roomService.deleteRoom(buildingId, roomId);
     }
-    @GetMapping("/admin/rooms/get-room/{buildingId}/{roomId}")
+    @GetMapping("/admin/view/rooms/get-room/{buildingId}/{roomId}")
     public ResponseEntity<Object> getRoomById(
             @PathVariable int buildingId,
             @PathVariable int roomId) {
         return roomService.getRoomById(buildingId, roomId);
     }
-    @GetMapping("/admin/rooms/get-available/{buildingId}/{roomType}")
+    @GetMapping("/admin/view/rooms/get-available/{buildingId}/{roomType}")
     public ResponseEntity<Object> getAvailableRooms(
             @PathVariable int buildingId,
             @PathVariable Enums.RoomType roomType) {
         return roomService.getAvailableRooms(buildingId, roomType);
     }
-    @PostMapping("/admin/rooms/assign-room")
+    @PostMapping("/admin/edit/rooms/assign-room")
     public ResponseEntity<Object> assignRoomToStudent(@RequestBody RoomAssignmentRequestDTO roomAssignmentRequestDTO) {
         return roomAssignmentService.assignStudentToRoom(roomAssignmentRequestDTO);
     }
@@ -58,7 +58,7 @@ public class RoomController {
             @RequestParam int roomId) {
         return roomAssignmentService.removeStudentFromRoom(studentId, roomId);
     }
-    @PostMapping("/admin/rooms/assign-student-specific-room")
+    @PostMapping("/admin/edit/rooms/assign-student-specific-room")
     public ResponseEntity<Object> assignStudentToSpecificRoom(
             @RequestParam int studentId,
             @RequestParam int roomId) {

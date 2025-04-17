@@ -15,7 +15,7 @@ public class UniversityController {
     @Autowired
     private UniversityService universityService;
 
-    @PostMapping("/admin/university")
+    @PostMapping("/admin/edit/university")
     public ResponseEntity<Object> addUniversity(@Valid @RequestBody UniversityDTO request) {
         return universityService.addUniversity(request);
     }
@@ -25,7 +25,7 @@ public class UniversityController {
         return universityService.deleteUniversityById(id);
     }
 
-    @PutMapping("/admin/update_university/{id}")
+    @PutMapping("/admin/edit/update_university/{id}")
     public ResponseEntity<Object> updateUniversity(
             @PathVariable int id,
             @Valid @RequestBody UniversityDTO request) {

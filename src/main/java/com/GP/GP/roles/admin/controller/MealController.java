@@ -13,12 +13,12 @@ public class MealController {
     @Autowired
     private MealService mealService;
 
-    @PostMapping("admin/add-meals")
+    @PostMapping("admin/edit/add-meals")
     public ResponseEntity<Object> createMeal(@Valid @RequestBody MealRequestDTO mealRequestDTO) {
         return mealService.createMeal(mealRequestDTO);
     }
 
-    @GetMapping("admin/get-meals")
+    @GetMapping("admin/edit/get-meals")
     public ResponseEntity<Object> getAllMeals() {
         return mealService.getAllMeals();
     }
@@ -28,7 +28,7 @@ public class MealController {
         return mealService.deleteMealById(mealId);
     }
 
-    @PutMapping("admin/delete-meal/{mealId}")
+    @PutMapping("admin/edit/delete-meal/{mealId}")
     public ResponseEntity<Object> updateMeal(
             @PathVariable int mealId,
             @Valid @RequestBody MealRequestDTO mealRequestDTO) {

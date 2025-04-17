@@ -30,7 +30,7 @@ public class UserController {
     }
 
     // get all admission -> admin
-    @GetMapping("/admin/admission-requests")
+    @GetMapping("/admin/view/admission-requests")
     public ResponseEntity<Object> getAllAdmissionRequests() {
         return admissionRequestService.getAllAdmissionRequests();
     }
@@ -42,10 +42,11 @@ public class UserController {
     }
 
     // update statues ->admin (admissionId, enum.Admission status )
-    @PutMapping("/admin/admission-requests/{id}/status")
+    @PutMapping("/admin/edit/admission-requests/{id}/status")
     public ResponseEntity<Object> updateAdmissionRequestStatus(@PathVariable int id, @RequestParam Enums.AdmissionRequestStatues status) {
         return admissionRequestService.updateAdmissionRequestStatues(id, status);
     }
+
     @GetMapping("/public/admission-requests/nid/{nationalId}/status")
     public ResponseEntity<Object> checkApplicationStatus(@PathVariable String nationalId) {
         return admissionRequestService.getApplicationStatusByNID(nationalId);

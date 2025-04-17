@@ -10,20 +10,20 @@ import org.springframework.web.bind.annotation.*;
 public class PenaltyController {
     @Autowired
     private PenaltyService penaltyService;
-    @PostMapping("/admin/add-penalty")
+    @PostMapping("/admin/edit/add-penalty")
     public ResponseEntity<Object> createPenalty(@RequestBody PenaltyDTO penaltyDTO) {
         return penaltyService.createPenalty(penaltyDTO);
     }
     //admin and user
-    @GetMapping("/admin/get-penalty/{id}")
+    @GetMapping("/admin/view/get-penalty/{id}")
     public ResponseEntity<Object> getPenaltyById(@PathVariable int id) {
         return penaltyService.getPenaltyById(id);
     }
-    @GetMapping("/admin/get-all-penalties")
+    @GetMapping("/admin/view/get-all-penalties")
     public ResponseEntity<Object> getAllPenalties() {
         return penaltyService.getAllPenalties();
     }
-    @GetMapping("/admin/get-all-user-penalties/{userId}")
+    @GetMapping("/admin/view/get-all-user-penalties/{userId}")
     public ResponseEntity<Object> getPenaltiesByUserId(@PathVariable int userId) {
         return penaltyService.getPenaltiesByUserId(userId);
     }

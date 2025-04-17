@@ -108,7 +108,8 @@ public class UserServiceImpl implements AdmissionRequestService {
 
     @Override
     public ResponseEntity<Object> getAllAdmissionRequests() {
-        List<User> requests = userRepository.findByRoleNot(Role.ADMIN);
+        List<Role> adminRoles = List.of(Role.ADMIN, Role.EDIT_ADMIN, Role.ViEW_ADMIN);
+        List<User> requests = userRepository.findByRoleNotIn(adminRoles);
         List<UpdatedUserResponseDTO> dtos = requests.stream()
                 .map(UserMapper::mapToUpdatedUserResponseDTO)
                 .collect(Collectors.toList());
