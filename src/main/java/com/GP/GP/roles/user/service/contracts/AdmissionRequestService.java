@@ -11,6 +11,7 @@ public interface AdmissionRequestService {
     ResponseEntity<Object> checkApplicationStatus(int id, int userId);
     ResponseEntity<Object> getAllAdmissionRequests();
     ResponseEntity<Object> getAdmissionRequestByUserId(int uerId);
+    ResponseEntity<Object> getAdmissionRequestById(int id);
     ResponseEntity<Object> updateAdmissionRequestStatues(int id, Enums.AdmissionRequestStatues status);
     ResponseEntity<Object> getApplicationStatusByNID(String nationalId);
 

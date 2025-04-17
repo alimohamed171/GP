@@ -129,6 +129,16 @@ public class UserServiceImpl implements AdmissionRequestService {
     }
 
     @Override
+    public ResponseEntity<Object> getAdmissionRequestById(int userId) {
+        User request = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Admission request not found for id: " + userId));
+
+        UpdatedUserResponseDTO dto = UserMapper.mapToUpdatedUserResponseDTO(request);
+        BaseResponse response = new BaseResponse(true, "Admission request retrieved successfully", dto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<Object> updateAdmissionRequestStatues(int id, Enums.AdmissionRequestStatues status) {
         if (status == null) {
             return new ResponseEntity<>(new BaseResponse(false, "Status cannot be null", null), HttpStatus.BAD_REQUEST);

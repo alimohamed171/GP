@@ -41,6 +41,12 @@ public class UserController {
         return admissionRequestService.getAdmissionRequestByUserId(userId);
     }
 
+    // need to add to collection
+    @GetMapping("/public/admission-requests/{id}")
+    public ResponseEntity<Object> getAdmissionRequestById(@PathVariable int id) {
+        return admissionRequestService.getAdmissionRequestById(id);
+    }
+
     // update statues ->admin (admissionId, enum.Admission status )
     @PutMapping("/admin/edit/admission-requests/{id}/status")
     public ResponseEntity<Object> updateAdmissionRequestStatus(@PathVariable int id, @RequestParam Enums.AdmissionRequestStatues status) {
