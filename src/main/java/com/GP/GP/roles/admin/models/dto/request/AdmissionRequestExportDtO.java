@@ -44,4 +44,5 @@ public class AdmissionRequestExportDtO {
     private Float totalGradesHighSchool;
     private String passportNumber;
     private String passportIssuingAuthority;
+    private Enums.SecurityCheckStatues securityCheck;
 }

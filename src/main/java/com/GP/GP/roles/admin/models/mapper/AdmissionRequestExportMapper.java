@@ -52,6 +52,7 @@ public class AdmissionRequestExportMapper {
                     .totalGradesHighSchool(request.getTotalGradesHighSchool())
                     .passportNumber(request.getPassportNumber())
                     .passportIssuingAuthority(request.getPassportIssuingAuthority())
+                    .securityCheck(request.getSecurityCheck())
                     .build();
         }
        return builder.build();

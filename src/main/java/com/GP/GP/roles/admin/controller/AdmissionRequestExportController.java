@@ -19,10 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
-import static org.apache.poi.ss.util.DateParser.parseDate;
 
 @RestController
 @RequestMapping("")
@@ -30,7 +28,7 @@ public class AdmissionRequestExportController {
     @Autowired
     private AdmissionRequestExportService exportService;
 
-    @GetMapping("/admin/export-admission-requests")
+    @GetMapping("/admin/view/export-admission-requests")
     public void exportToExcel(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; filename=admission_requests.xlsx");
@@ -39,7 +37,7 @@ public class AdmissionRequestExportController {
         IOUtils.copy(excelFile, response.getOutputStream());
         response.flushBuffer();
     }
-    @GetMapping("/admin/admission-requests/export")
+    @GetMapping("/admin/view/admission-requests/export")
     public ResponseEntity<Object> exportAdmissionRequestsToExcel(
             @RequestParam(required = false) LocalDateTime from,
             @RequestParam(required = false) LocalDateTime to,
@@ -50,7 +48,6 @@ public class AdmissionRequestExportController {
             @RequestParam(required = false) String level,
             @RequestParam(required = false) Boolean specialNeeds) throws IOException {
 
-        // Convert the "from" and "to" dates into Date objects if they are provided
         LocalDateTime startDate = from;
         LocalDateTime endDate = to;
 

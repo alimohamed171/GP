@@ -41,6 +41,7 @@ public class RegisterMapper {
                     .parentsStatus(dto.getParentsStatus())
                     .previousAcademicYearGpa(dto.getPreviousAcademicYearGpa())
                     .status(dto.getStatus())
+                    .securityCheck(dto.getSecurityCheck())
                     .housingInPreviousYears(dto.getHousingInPreviousYears())
                     .familyAbroad(dto.getFamilyAbroad())
                     .specialNeeds(dto.getSpecialNeeds())
@@ -48,7 +49,7 @@ public class RegisterMapper {
                     .totalGradesHighSchool(dto.getTotalGradesHighSchool())
                     .passportNumber(dto.getPassportNumber())
                     .passportIssuingAuthority(dto.getPassportIssuingAuthority())
-                    .university(university);  // Keep university assignment
+                    .university(university);// Keep university assignment
         }
         return builder.build();
     }
