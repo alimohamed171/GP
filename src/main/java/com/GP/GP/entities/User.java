@@ -152,6 +152,9 @@ public class User implements UserDetails {
     @Column(name = "passport_issuing_authority")
     private String passportIssuingAuthority;
 
+    @Column(name = "security_check")
+    private Enums.SecurityCheckStatues securityCheck = Enums.SecurityCheckStatues.PENDING;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Penalty> penalties;
 

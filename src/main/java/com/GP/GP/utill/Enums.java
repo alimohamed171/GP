@@ -12,5 +12,5 @@ public class Enums {
     public enum AdmissionRequestStatues{ACCEPTED, REJECTED, UNDER_REVIEW}
     public enum AccommodationStatus {ACTIVE, TERMINATED, PENDING}
     public enum BuildingType { MALE, FEMALE }
-
+    public enum SecurityCheckStatues{ACCEPTED, REJECTED, PENDING}
 }

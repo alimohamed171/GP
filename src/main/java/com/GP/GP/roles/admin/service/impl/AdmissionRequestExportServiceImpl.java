@@ -7,7 +7,6 @@ import com.GP.GP.roles.admin.models.dto.request.AdmissionRequestFilterDTO;
 import com.GP.GP.roles.admin.models.mapper.AdmissionRequestExportMapper;
 import com.GP.GP.roles.admin.service.contracts.AdmissionRequestExportService;
 import com.GP.GP.security.Role;
-import com.GP.GP.utill.Enums;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -70,6 +69,7 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
             header.createCell(27).setCellValue("مجموع الثانوية العامة");
             header.createCell(28).setCellValue("رقم الجواز");
             header.createCell(29).setCellValue("جهة إصدار الجواز");
+            header.createCell(30).setCellValue("الفحص الامني");
 
             int rowIdx = 1;
             for (AdmissionRequestExportDtO dto : dtos) {
@@ -104,6 +104,8 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
                 row.createCell(27).setCellValue(dto.getTotalGradesHighSchool() != null ? dto.getTotalGradesHighSchool().toString() : "");
                 row.createCell(28).setCellValue(dto.getPassportNumber());
                 row.createCell(29).setCellValue(dto.getPassportIssuingAuthority());
+                row.createCell(30).setCellValue(dto.getSecurityCheck() != null ? dto.getSecurityCheck().toString() : "");
+
             }
             workbook.write(out);
             return new ByteArrayInputStream(out.toByteArray());
@@ -167,6 +169,7 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
             header.createCell(27).setCellValue("مجموع الثانوية العامة");
             header.createCell(28).setCellValue("رقم الجواز");
             header.createCell(29).setCellValue("جهة إصدار الجواز");
+            header.createCell(30).setCellValue("الفحص الامني");
 
             int rowIdx = 1;
             for (AdmissionRequestExportDtO dto : dtos) {
@@ -201,6 +204,7 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
                 row.createCell(27).setCellValue(dto.getTotalGradesHighSchool() != null ? dto.getTotalGradesHighSchool().toString() : "");
                 row.createCell(28).setCellValue(dto.getPassportNumber());
                 row.createCell(29).setCellValue(dto.getPassportIssuingAuthority());
+                row.createCell(30).setCellValue(dto.getSecurityCheck() != null ? dto.getSecurityCheck().toString() : "");
             }
             workbook.write(out);
             return new ByteArrayInputStream(out.toByteArray());
