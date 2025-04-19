@@ -20,5 +20,6 @@ public class AdmissionRequestFilterDTO {
     private Boolean specialNeeds;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private String studentType;
+    private Enums.StudentType studentType;
+    private Enums.SecurityCheckStatues securityCheck;
 }

@@ -46,7 +46,9 @@ public class AdmissionRequestExportController {
             @RequestParam(required = false) String universityName,
             @RequestParam(required = false) String faculty,
             @RequestParam(required = false) String level,
-            @RequestParam(required = false) Boolean specialNeeds) throws IOException {
+            @RequestParam(required = false) Boolean specialNeeds,
+            @RequestParam(required = false) String studentType,
+            @RequestParam(required = false) String securityCheck) throws IOException {
 
         LocalDateTime startDate = from;
         LocalDateTime endDate = to;

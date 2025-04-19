@@ -129,10 +129,24 @@ public class UserServiceImpl implements AdmissionRequestService {
     }
 
     @Override
-    public ResponseEntity<Object> getAdmissionRequestById(int userId) {
-        User request = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Admission request not found for id: " + userId));
+    public ResponseEntity<Object> getAdmissionRequestById(int id) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String loggedInUsername;
+        if (principal instanceof UserDetails) {
+            loggedInUsername = ((UserDetails) principal).getUsername();
+        } else {
+            loggedInUsername = principal.toString();
+        }
 
+        User loggedInUser = userRepository.findByUsername(loggedInUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        User request = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Admission request not found for id: " + id));
+        if (!loggedInUser.getId().equals(request.getId())) {
+            BaseResponse response = new BaseResponse(false, "You are not authorized to access this application.", null);
+            return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+        }
         UpdatedUserResponseDTO dto = UserMapper.mapToUpdatedUserResponseDTO(request);
         BaseResponse response = new BaseResponse(true, "Admission request retrieved successfully", dto);
         return new ResponseEntity<>(response, HttpStatus.OK);

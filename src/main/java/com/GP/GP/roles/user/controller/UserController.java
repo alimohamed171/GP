@@ -35,14 +35,14 @@ public class UserController {
         return admissionRequestService.getAllAdmissionRequests();
     }
 
-    //get admission by user Id -> user(get admission request to update it same to )
-    @GetMapping("/user/admission-requests/{userId}")
+    //get admission by user Id -> for admin
+    @GetMapping("/admin/view/admission-requests/{userId}")
     public ResponseEntity<Object> getAdmissionRequestByUserId(@PathVariable int userId) {
         return admissionRequestService.getAdmissionRequestByUserId(userId);
     }
 
-    // need to add to collection
-    @GetMapping("/public/admission-requests/{id}")
+    // need to add to collection for users
+    @GetMapping("/user/admission-requests/{id}")
     public ResponseEntity<Object> getAdmissionRequestById(@PathVariable int id) {
         return admissionRequestService.getAdmissionRequestById(id);
     }
