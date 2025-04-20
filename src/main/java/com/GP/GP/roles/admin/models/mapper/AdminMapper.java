@@ -11,6 +11,7 @@ public class AdminMapper {
     public static ApplicationGuidelineAndApprovalDTO toApplicationGuidelineAndApprovalDTO(ApplicationGuidelineAndApproval entity) {
         return ApplicationGuidelineAndApprovalDTO.builder()
                 .guidelines(entity.getGuidelines())
+                .media(entity.getMedia())
                 .build();
     }
 
@@ -18,6 +19,7 @@ public class AdminMapper {
         return ApplicationGuidelineAndApproval.builder()
                 .guidelines(dto.getGuidelines())
                 .university(university)
+                .media(dto.getMedia())
                 .build();
     }
 

@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class ApplicationGuidelineAndApprovalDTO {
     @NotBlank(message = "Guidelines cannot be empty")
     private String guidelines;
+    private String media;
 }
