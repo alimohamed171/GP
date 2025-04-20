@@ -1,6 +1,7 @@
 package com.GP.GP.roles.Auth.controller;
 
 import com.GP.GP.entities.User;
+import com.GP.GP.roles.Auth.models.request.LoginRequestDTO;
 import com.GP.GP.roles.Auth.models.request.RegisterRequestDTO;
 import com.GP.GP.security.AuthenticationResponse;
 import com.GP.GP.roles.Auth.service.AuthenticationService;
@@ -28,9 +29,7 @@ public class AuthenticationController {
 
 
     @PostMapping("public/login")
-    public ResponseEntity<Object> login(
-            @RequestBody User request
-    ) {
+    public ResponseEntity<Object> login(@RequestBody LoginRequestDTO request) {
         return ResponseEntity.ok(authService.login(request));
     }
 

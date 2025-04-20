@@ -5,6 +5,7 @@ import com.GP.GP.entities.University;
 import com.GP.GP.entities.User;
 import com.GP.GP.repository.UserRepository;
 import com.GP.GP.roles.Auth.models.mapper.RegisterMapper;
+import com.GP.GP.roles.Auth.models.request.LoginRequestDTO;
 import com.GP.GP.roles.Auth.models.request.RegisterRequestDTO;
 import com.GP.GP.roles.Auth.models.response.LoginResponseDTO;
 import com.GP.GP.roles.Auth.models.response.RegisterResponseDTO;
@@ -79,7 +80,7 @@ public class AuthenticationService {
     }
 
 
-    public ResponseEntity<Object> login(User request) {
+    public ResponseEntity<Object> login(LoginRequestDTO request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -96,7 +97,6 @@ public class AuthenticationService {
             saveUserToken(jwt, user);
 
             LoginResponseDTO loginResponseDTO = LoginResponseDTO.mapToResponseDTO(user, jwt);
-
             return new ResponseEntity<>(new BaseResponse(true, "Login successful", loginResponseDTO), HttpStatus.OK);
 
         } catch (BadCredentialsException e) {
@@ -107,6 +107,7 @@ public class AuthenticationService {
             return new ResponseEntity<>(new BaseResponse(false, "An unexpected error occurred. Please try again later"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     private void revokeAllTokenByUser(User user) {
         List<Token> validTokens = tokenRepository.findAllTokensByUser(user.getId());

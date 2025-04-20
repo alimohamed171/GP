@@ -52,7 +52,7 @@ public class User implements UserDetails {
     private Role role;
 
     @OneToMany(mappedBy = "user")
-//    @JsonManagedReference
+    @JsonManagedReference("user-token")
     private List<Token> tokens;
 
     private Enums.StudentType studentType;
@@ -82,7 +82,7 @@ public class User implements UserDetails {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
-    @JsonManagedReference
+    @JsonManagedReference("user-room")
     private Room room;
 
     @Column(name = "residence_address",columnDefinition = "TEXT")

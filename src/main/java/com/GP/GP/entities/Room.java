@@ -2,6 +2,7 @@ package com.GP.GP.entities;
 
 import com.GP.GP.utill.Enums;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,7 +50,7 @@ public class Room {
     private Building building;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.PERSIST)
-    @JsonBackReference
+    @JsonManagedReference("user-room")
     private List<User> students;
 
     @CreationTimestamp
