@@ -31,7 +31,7 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
     @Override
     public ByteArrayInputStream exportAllAdmissionRequestsToExcel() {
 
-        List<User> requests = admissionRequestRepository.findByRoleNot(Role.ADMIN);
+        List<User> requests = admissionRequestRepository.findByRole(Role.USER);
 
         List<AdmissionRequestExportDtO> dtos = exportMapper.toDtoList(requests);
 
@@ -134,7 +134,7 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
 
     @Override
     public ByteArrayInputStream exportFilteredAdmissionRequestsToExcel(List<User> filteredRequests) {
-        List<User> requests = admissionRequestRepository.findByRoleNot(Role.ADMIN);
+        List<User> requests = admissionRequestRepository.findByRole(Role.USER);
         List<AdmissionRequestExportDtO> dtos = exportMapper.toDtoList(filteredRequests);
 
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
