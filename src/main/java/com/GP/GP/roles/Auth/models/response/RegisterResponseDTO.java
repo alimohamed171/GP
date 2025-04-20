@@ -30,6 +30,7 @@ public class RegisterResponseDTO {
     private String level;
     private String mobileNumber;
     private Enums.Gender gender;
+    private Enums.SecurityCheckStatues securityCheck;
     private String token;
     private String media;
 
@@ -45,6 +46,7 @@ public class RegisterResponseDTO {
                 .level(user.getLevel())
                 .mobileNumber(user.getMobileNumber())
                 .gender(user.getGender())
+                .securityCheck(user.getSecurityCheck())
                 .token(token)
                 .userID(user.getId())
                 .media(user.getMedia())

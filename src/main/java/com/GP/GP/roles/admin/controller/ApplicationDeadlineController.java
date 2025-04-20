@@ -14,7 +14,7 @@ public class ApplicationDeadlineController {
     @Autowired
     private ApplicationDeadlineService applicationDeadlineService;
 
-    @PostMapping("/admin/application-deadline/{universityId}")
+    @PostMapping("/admin/edit/application-deadline/{universityId}")
     ResponseEntity<Object> addApplicationDeadline(@PathVariable int universityId, @Valid @RequestBody ApplicationDeadlineDTO dto){
         return applicationDeadlineService.addApplicationDeadline(universityId, dto);
     }
@@ -29,7 +29,7 @@ public class ApplicationDeadlineController {
         return applicationDeadlineService.getAllAppDeadlinesByUniversityId(universityId);
     }
 
-    @PutMapping("/admin/update-application-deadline")
+    @PutMapping("/admin/edit/update-application-deadline")
     public ResponseEntity<Object> updateApplicationDeadline(
             @RequestParam int deadlineId,
             @RequestParam int universityId,

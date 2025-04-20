@@ -47,7 +47,8 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50) // or longer if needed
     private Role role;
 
     @OneToMany(mappedBy = "user")
@@ -62,6 +63,11 @@ public class User implements UserDetails {
 
     @Column(name = "national_id", length = 14, unique = true)
     private String nationalId;
+
+    @ManyToMany
+//    @JsonManagedReference
+    @JoinTable(name = "user_meals", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "meal_id"))
+    private List<Meal> meals;
 
     @Column(name = "mobile_number", length = 20)
     private String mobileNumber;
@@ -148,6 +154,9 @@ public class User implements UserDetails {
 
     @Column(name = "media", columnDefinition = "TEXT")
     private String media;
+
+    @Column(name = "security_check")
+    private Enums.SecurityCheckStatues securityCheck = Enums.SecurityCheckStatues.PENDING;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Penalty> penalties;

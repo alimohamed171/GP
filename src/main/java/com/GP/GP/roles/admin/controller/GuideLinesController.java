@@ -13,7 +13,7 @@ public class GuideLinesController {
     @Autowired
     private GuideLineService guideLineService;
 
-    @PostMapping("/admin/add-guidelines/{universityId}")
+    @PostMapping("/admin/edit/add-guidelines/{universityId}")
     public ResponseEntity<Object> addGuideLines(@PathVariable int universityId, @Valid @RequestBody ApplicationGuidelineAndApprovalDTO request) {
         return guideLineService.addGuideLines(universityId, request);
     }
@@ -30,7 +30,7 @@ public class GuideLinesController {
         return guideLineService.deleteGuideline(universityId, guidelineId);
     }
 
-    @PutMapping("/admin/update-guidelines")
+    @PutMapping("/admin/edit/update-guidelines")
     public ResponseEntity<Object> updateGuideline(
             @RequestParam int universityId,
             @RequestParam int guidelineId,

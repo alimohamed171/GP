@@ -14,7 +14,7 @@ public class BuildingController {
     @Autowired
     private BuildingService buildingService;
 
-    @PostMapping("/admin/add-buildings")
+    @PostMapping("/admin/edit/add-buildings")
     public ResponseEntity<Object> addBuilding(@Valid @RequestBody BuildingRequestDTO request) {
         return buildingService.addBuilding(request);
     }

@@ -27,13 +27,13 @@ public class ComplaintController {
     }
 
     // Get all complaints (Admin)
-    @GetMapping("/admin/get-all-complaints")
+    @GetMapping("/admin/view/get-all-complaints")
     public ResponseEntity<Object> getAllComplaints() {
         return complaintService.getAllComplaints();
     }
 
     // Get a complaint by ID (Admin)
-    @GetMapping("/admin/get-complaint/{id}")
+    @GetMapping("/admin/view/get-complaint/{id}")
     public ResponseEntity<Object> getComplaintById(@PathVariable int id) {
         return complaintService.getComplaintById(id);
     }
@@ -53,7 +53,7 @@ public class ComplaintController {
     }
 
     // Get all complaints by a specific user (Admin)
-    @GetMapping("/admin/get-user-complaints/{userId}")
+    @GetMapping("/admin/view/get-user-complaints/{userId}")
     public ResponseEntity<Object> getComplaintsByUser(@PathVariable int userId) {
         return complaintService.getComplaintsByUser(userId);
     }

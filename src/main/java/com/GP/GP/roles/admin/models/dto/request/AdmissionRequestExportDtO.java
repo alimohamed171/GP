@@ -1,9 +1,11 @@
-package com.GP.GP.roles.Auth.models.request;
+package com.GP.GP.roles.admin.models.dto.request;
 
-import com.GP.GP.security.Role;
+import com.GP.GP.roles.admin.models.dto.response.UniversityResponseDTO;
 import com.GP.GP.utill.Enums;
-import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
@@ -11,21 +13,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegisterRequestDTO {
-
-    private String firstName;
-    private String lastName;
-
-    @NotBlank(message = "Username is required")
-    private String username;
-
-    @NotBlank(message = "Password is required")
-    private String password;
-
-    @NotNull(message = "Role is required")
-    private Role role;
-
-    private Integer universityId;
+public class AdmissionRequestExportDtO {
+    private String fullName;
+    private String email;
+    private String universityName;
     private String nationalId;
     private String mobileNumber;
     private String faculty;
@@ -44,7 +35,6 @@ public class RegisterRequestDTO {
     private String guardianName;
     private String guardianNationalId;
     private String guardianPhoneNumber;
-    private String parentsStatus;
     private Double previousAcademicYearGpa;
     private Enums.AdmissionRequestStatues status;
     private String housingInPreviousYears;
@@ -54,6 +44,5 @@ public class RegisterRequestDTO {
     private Float totalGradesHighSchool;
     private String passportNumber;
     private String passportIssuingAuthority;
-    private String media;
     private Enums.SecurityCheckStatues securityCheck;
 }

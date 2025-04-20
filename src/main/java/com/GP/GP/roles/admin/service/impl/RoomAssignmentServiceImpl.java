@@ -53,7 +53,7 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
         Optional<Building> building = buildingRepository.findByType(buildingType);
 
         if (building.isEmpty()) {
-            BaseResponse response = new BaseResponse(false, "No building found for the specified gender type: " + buildingType, null);
+            BaseResponse response = new BaseResponse(false, "No building found for the specified gender type: " + buildingType);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
 
@@ -106,5 +106,52 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
 
         return new ResponseEntity<>(new BaseResponse(true, "Student removed from room "+ room.getRoomNumber()+" successfully"), HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Object> assignStudentSpecificRoom(int studentId, int roomId) {
+        Optional<User> optionalStudent = userRepository.findById(studentId);
+        if (optionalStudent.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "Student not found"), HttpStatus.NOT_FOUND);
+        }
+        User student = optionalStudent.get();
+
+        if (student.getRoom() != null) {
+            return new ResponseEntity<>(new BaseResponse(false, "Student already assigned to a room"), HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Room> optionalRoom = roomRepository.findById(roomId);
+        if (optionalRoom.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "Room not found"), HttpStatus.NOT_FOUND);
+        }
+        Room room = optionalRoom.get();
+
+        if (room.getCurrentOccupancy() >= room.getCapacity()) {
+            return new ResponseEntity<>(new BaseResponse(false, "Room is full"), HttpStatus.BAD_REQUEST);
+        }
+        Enums.BuildingType buildingType = student.getGender() == Enums.Gender.FEMALE
+                ? Enums.BuildingType.FEMALE
+                : Enums.BuildingType.MALE;
+
+        Optional<Building> building = buildingRepository.findByType(buildingType);
+
+        if (building.isEmpty()) {
+            BaseResponse response = new BaseResponse(false, "No building found for the specified gender type: " + buildingType);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+        if (!room.getBuilding().getType().equals(buildingType)) {
+            return new ResponseEntity<>(new BaseResponse(false, "Room does not belong to the correct building type for the student"), HttpStatus.BAD_REQUEST);
+        }
+
+        room.setCurrentOccupancy(room.getCurrentOccupancy() + 1);
+        student.setRoom(room);
+
+        roomRepository.save(room);
+        userRepository.save(student);
+
+        RoomAssignmentResponseDTO responseDTO = RoomAssignmentMapper.mapToRoomAssignmentResponseDTO(student, room);
+        return new ResponseEntity<>(new BaseResponse(true, "Room assigned successfully", responseDTO), HttpStatus.OK);
+    }
+
+
 
 }

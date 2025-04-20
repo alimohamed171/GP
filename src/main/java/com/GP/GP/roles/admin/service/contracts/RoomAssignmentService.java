@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 public interface RoomAssignmentService {
     ResponseEntity<Object> assignStudentToRoom(RoomAssignmentRequestDTO dto);
     ResponseEntity<Object> removeStudentFromRoom(int studentId, int roomId);
+    ResponseEntity <Object> assignStudentSpecificRoom (int studentId, int roomId);
 
 
 }

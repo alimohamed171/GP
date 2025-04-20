@@ -1,11 +1,13 @@
 package com.GP.GP.repository;
 
 import com.GP.GP.entities.AdmissionRequest;
+import com.GP.GP.utill.Enums;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +20,6 @@ public interface AdmissionRequestRepository extends JpaRepository<AdmissionReque
     @Query("SELECT ar FROM AdmissionRequest ar WHERE ar.user.id = :userId")
     Optional<AdmissionRequest> findByUserId(
             @Param("userId") Integer userId);
+
+    List<AdmissionRequest> findAllByStatus(Enums.AdmissionRequestStatues status);
 }

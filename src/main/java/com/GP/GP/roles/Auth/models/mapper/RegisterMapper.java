@@ -41,6 +41,7 @@ public class RegisterMapper {
                     .parentsStatus(dto.getParentsStatus())
                     .previousAcademicYearGpa(dto.getPreviousAcademicYearGpa())
                     .status(dto.getStatus())
+                    .securityCheck(dto.getSecurityCheck())
                     .housingInPreviousYears(dto.getHousingInPreviousYears())
                     .familyAbroad(dto.getFamilyAbroad())
                     .specialNeeds(dto.getSpecialNeeds())

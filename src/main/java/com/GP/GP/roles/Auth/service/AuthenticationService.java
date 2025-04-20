@@ -59,7 +59,10 @@ public class AuthenticationService {
         }
 
         // Find university for non-admin users
-        University university = request.getRole() == Role.ADMIN ? null : universityService.findUniversityById(request.getUniversityId());
+        University university =
+                (request.getRole() == Role.ADMIN || request.getRole() == Role.EDIT_ADMIN
+                || request.getRole() == Role.ViEW_ADMIN)
+                ? null : universityService.findUniversityById(request.getUniversityId());
 
         // Map user entity
         User user = RegisterMapper.toUserEntity(request, university);
