@@ -48,7 +48,8 @@ public class RegisterMapper {
                     .totalGradesHighSchool(dto.getTotalGradesHighSchool())
                     .passportNumber(dto.getPassportNumber())
                     .passportIssuingAuthority(dto.getPassportIssuingAuthority())
-                    .university(university);  // Keep university assignment
+                    .university(university)
+                    .media(dto.getMedia());
         }
         return builder.build();
     }

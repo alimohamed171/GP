@@ -31,6 +31,7 @@ public class RegisterResponseDTO {
     private String mobileNumber;
     private Enums.Gender gender;
     private String token;
+    private String media;
 
     public static RegisterResponseDTO mapToRegisterResponseDTO(User user, String token, University university) {
         return RegisterResponseDTO.builder()
@@ -46,6 +47,7 @@ public class RegisterResponseDTO {
                 .gender(user.getGender())
                 .token(token)
                 .userID(user.getId())
+                .media(user.getMedia())
                 .build();
     }
 

@@ -26,4 +26,7 @@ public class ApplicationGuidelineAndApproval {
     @JsonBackReference
     private University university;
 
+    @Column(name = "media", columnDefinition = "TEXT")
+    private String media;
+
 }

@@ -26,4 +26,6 @@ public class ApplicationDeadlineDTO {
 
     @NotBlank(message = "Student type is required")
     private String studentType;
+
+    private String media;
 }

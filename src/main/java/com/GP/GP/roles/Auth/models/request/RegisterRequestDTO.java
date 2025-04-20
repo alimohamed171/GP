@@ -54,4 +54,5 @@ public class RegisterRequestDTO {
     private Float totalGradesHighSchool;
     private String passportNumber;
     private String passportIssuingAuthority;
+    private String media;
 }

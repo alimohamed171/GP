@@ -146,6 +146,9 @@ public class User implements UserDetails {
     @Column(name = "passport_issuing_authority")
     private String passportIssuingAuthority;
 
+    @Column(name = "media", columnDefinition = "TEXT")
+    private String media;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Penalty> penalties;
 
