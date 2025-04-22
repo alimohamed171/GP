@@ -45,6 +45,7 @@ public class UserMapper {
         existingUser.setTotalGradesHighSchool(dto.getTotalGradesHighSchool());
         existingUser.setPassportNumber(dto.getPassportNumber());
         existingUser.setPassportIssuingAuthority(dto.getPassportIssuingAuthority());
+
     }
     public static UpdatedUserResponseDTO mapToUpdatedUserResponseDTO(User user) {
         return UpdatedUserResponseDTO.builder()
@@ -82,6 +83,8 @@ public class UserMapper {
                 .totalGradesHighSchool(user.getTotalGradesHighSchool())
                 .passportNumber(user.getPassportNumber())
                 .passportIssuingAuthority(user.getPassportIssuingAuthority())
+                .securityCheckStatues(user.getSecurityCheck())
+                .notes(user.getNote())
                 .build();
     }
 }
