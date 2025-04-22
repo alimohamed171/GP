@@ -158,6 +158,9 @@ public class User implements UserDetails {
     @Column(name = "security_check")
     private Enums.SecurityCheckStatues securityCheck = Enums.SecurityCheckStatues.PENDING;
 
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String note;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Penalty> penalties;
 

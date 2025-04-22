@@ -97,4 +97,6 @@ public class UpdatedUserResponseDTO {
     private String passportNumber;
 
     private String passportIssuingAuthority;
+    private Enums.SecurityCheckStatues securityCheckStatues;
+    private String notes;
 }
