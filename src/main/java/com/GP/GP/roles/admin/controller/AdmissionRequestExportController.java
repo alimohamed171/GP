@@ -88,4 +88,14 @@ public class AdmissionRequestExportController {
                 .headers(headers)
                 .body(excelFile.readAllBytes());
     }
+    @GetMapping("/admin/view/security-check/template")
+    public void downloadSecurityCheckTemplate(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=security_check_template.xlsx");
+
+        ByteArrayInputStream template = exportService.generateSecurityCheckTemplate();
+        IOUtils.copy(template, response.getOutputStream());
+        response.flushBuffer();
+    }
+
 }

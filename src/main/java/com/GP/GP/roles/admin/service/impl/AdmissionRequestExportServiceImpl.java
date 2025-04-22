@@ -215,6 +215,34 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
             throw new RuntimeException("Failed to export Excel file", e);
         }
     }
+
+    @Override
+    public ByteArrayInputStream generateSecurityCheckTemplate() {
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("Admission Requests Security Check Template");
+
+            Row header = sheet.createRow(0);
+            header.createCell(0).setCellValue("اسم الطالب");
+            header.createCell(1).setCellValue("الرقم القومي");
+            header.createCell(2).setCellValue("الفحص الأمني");
+            header.createCell(3).setCellValue("الملاحظات");
+
+            Row exampleRow = sheet.createRow(1);
+            exampleRow.createCell(0).setCellValue("بسنت حيدر محمد احمد");
+            exampleRow.createCell(1).setCellValue("30210190104442");
+            exampleRow.createCell(2).setCellValue("REJECTED"); // or REJECTED
+            exampleRow.createCell(3).setCellValue("اسباب سريه للفايه");
+            workbook.write(out);
+            for (int i = 0; i < 4; i++) {
+                sheet.autoSizeColumn(i);
+            }
+            return new ByteArrayInputStream(out.toByteArray());
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to export Excel file", e);
+        }
+
+    }
 }
 
 
