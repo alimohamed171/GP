@@ -26,7 +26,7 @@ public class UpdateUserRequestDTO {
     @NotBlank(message = "Username is required")
     private String username;
 
-    @NotBlank(message = "Password is required")
+    //@NotBlank(message = "Password is required")
     private String password;
 
     @NotNull(message = "University ID is required")

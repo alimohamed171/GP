@@ -14,8 +14,9 @@ public class UserMapper {
         existingUser.setFirstName(dto.getFirstName());
         existingUser.setLastName(dto.getLastName());
         existingUser.setUsername(dto.getUsername());
-        existingUser.setPassword(passwordEncoder.encode(dto.getPassword())); // Encrypt password
-        existingUser.setUniversity(university);
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            existingUser.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }        existingUser.setUniversity(university);
         existingUser.setNationalId(dto.getNationalId());
         existingUser.setMobileNumber(dto.getMobileNumber());
         existingUser.setFaculty(dto.getFaculty());
