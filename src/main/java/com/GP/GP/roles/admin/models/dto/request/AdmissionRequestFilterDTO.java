@@ -23,4 +23,5 @@ public class AdmissionRequestFilterDTO {
     private LocalDateTime endDate;
     private Enums.StudentType studentType;
     private List<Enums.SecurityCheckStatues> securityCheck;
+    private Boolean hasPenalty;
 }
