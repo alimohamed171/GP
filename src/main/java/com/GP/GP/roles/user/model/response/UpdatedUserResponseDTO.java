@@ -34,6 +34,8 @@ public class UpdatedUserResponseDTO {
 
     private UniversityResponseDTO university;
 
+    private Integer penaltiesCount;
+
     @NotBlank(message = "National ID is required")
     @Size(min = 14, max = 14, message = "National ID must be 14 characters")
     private String nationalId;

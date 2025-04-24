@@ -50,7 +50,8 @@ public class AdmissionRequestExportController {
             @RequestParam(required = false) String level,
             @RequestParam(required = false) Boolean specialNeeds,
             @RequestParam(required = false) String studentType,
-            @RequestParam(required = false) String securityCheck) throws IOException {
+            @RequestParam(required = false) String securityCheck,
+            @RequestParam(required = false) Boolean hasPenalty) throws IOException {
 
         // Create a DTO with the filter parameters
         AdmissionRequestFilterDTO filterDTO = new AdmissionRequestFilterDTO();
@@ -82,6 +83,7 @@ public class AdmissionRequestExportController {
                     .map(s -> Enums.SecurityCheckStatues.valueOf(s.trim().toUpperCase()))
                     .collect(Collectors.toList()));
         }
+        filterDTO.setHasPenalty(hasPenalty);
 
         // Fetch filtered data from the service
         List<User> filteredRequests = exportService.filterAdmissionRequests(filterDTO);

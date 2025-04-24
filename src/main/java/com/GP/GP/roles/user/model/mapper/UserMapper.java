@@ -59,6 +59,7 @@ public class UserMapper {
                 .mobileNumber(user.getMobileNumber())
                 .faculty(user.getFaculty())
                 .level(user.getLevel())
+                .penaltiesCount(user.getPenalties().size())
                 .dateOfBirth(user.getDateOfBirth())
 //                .roomId(null) // If not needed, set it as null
                 .studentType(user.getStudentType())

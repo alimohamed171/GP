@@ -129,6 +129,9 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
                 .filter(user -> filterDTO.getEndDate() == null || !user.getCreatedAt().isBefore(filterDTO.getEndDate()))
                 .filter(user -> filterDTO.getStudentType() == null || user.getStudentType()==filterDTO.getStudentType())
                 .filter(user -> filterDTO.getSecurityCheck() == null || filterDTO.getSecurityCheck().contains(user.getSecurityCheck()))
+                .filter(user -> filterDTO.getHasPenalty() == null
+                        || (filterDTO.getHasPenalty() ? user.getPenalties() != null && !user.getPenalties().isEmpty()
+                        : user.getPenalties() == null || user.getPenalties().isEmpty()))
                 .collect(Collectors.toList());
     }
 
