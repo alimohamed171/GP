@@ -117,7 +117,7 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
 
     @Override
     public List<User> filterAdmissionRequests(AdmissionRequestFilterDTO filterDTO) {
-        List<User> requests = admissionRequestRepository.findAll();
+        List<User> requests = admissionRequestRepository.findByRole(Role.USER);
         return requests.stream()
                 .filter(user -> filterDTO.getStatus() == null || user.getStatus() == filterDTO.getStatus())
                 .filter(user -> filterDTO.getGender() == null || user.getGender() == filterDTO.getGender())
