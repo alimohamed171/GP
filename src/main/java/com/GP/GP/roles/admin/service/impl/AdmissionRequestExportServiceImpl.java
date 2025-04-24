@@ -119,16 +119,16 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
     public List<User> filterAdmissionRequests(AdmissionRequestFilterDTO filterDTO) {
         List<User> requests = admissionRequestRepository.findByRole(Role.USER);
         return requests.stream()
-                .filter(user -> filterDTO.getStatus() == null || user.getStatus() == filterDTO.getStatus())
+                .filter(user -> filterDTO.getStatus() == null || filterDTO.getStatus().contains(user.getStatus()))
                 .filter(user -> filterDTO.getGender() == null || user.getGender() == filterDTO.getGender())
-                .filter(user -> filterDTO.getUniversityName() == null || user.getUniversity().getName().equals(filterDTO.getUniversityName()))
-                .filter(user -> filterDTO.getFaculty() == null || user.getFaculty().equals(filterDTO.getFaculty()))
-                .filter(user -> filterDTO.getLevel() == null || user.getLevel().equals(filterDTO.getLevel()))
+                .filter(user -> filterDTO.getUniversityName() == null || filterDTO.getUniversityName().contains(user.getUniversity().getName()))
+                .filter(user -> filterDTO.getFaculty() == null || filterDTO.getFaculty().contains(user.getFaculty()))
+                .filter(user -> filterDTO.getLevel() == null || filterDTO.getLevel().contains(user.getLevel()))
                 .filter(user -> filterDTO.getSpecialNeeds() == null || user.getSpecialNeeds().equals(filterDTO.getSpecialNeeds()))
-                .filter(user -> filterDTO.getStartDate() == null || user.getCreatedAt().isAfter(filterDTO.getStartDate()))
-                .filter(user -> filterDTO.getEndDate() == null || user.getCreatedAt().isBefore(filterDTO.getEndDate()))
+                .filter(user -> filterDTO.getStartDate() == null || !user.getCreatedAt().isAfter(filterDTO.getStartDate()))
+                .filter(user -> filterDTO.getEndDate() == null || !user.getCreatedAt().isBefore(filterDTO.getEndDate()))
                 .filter(user -> filterDTO.getStudentType() == null || user.getStudentType()==filterDTO.getStudentType())
-                .filter(user -> filterDTO.getSecurityCheck() == null || user.getSecurityCheck() == filterDTO.getSecurityCheck())
+                .filter(user -> filterDTO.getSecurityCheck() == null || filterDTO.getSecurityCheck().contains(user.getSecurityCheck()))
                 .collect(Collectors.toList());
     }
 

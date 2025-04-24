@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -50,23 +52,36 @@ public class AdmissionRequestExportController {
             @RequestParam(required = false) String studentType,
             @RequestParam(required = false) String securityCheck) throws IOException {
 
-        LocalDateTime startDate = from;
-        LocalDateTime endDate = to;
-
         // Create a DTO with the filter parameters
         AdmissionRequestFilterDTO filterDTO = new AdmissionRequestFilterDTO();
         if (status != null) {
-            filterDTO.setStatus(Enums.AdmissionRequestStatues.valueOf(status.toUpperCase()));
+            filterDTO.setStatus(Arrays.stream(status.split(","))
+                    .map(s -> Enums.AdmissionRequestStatues.valueOf(s.trim().toUpperCase()))
+                    .collect(Collectors.toList()));
         }
         if (gender != null) {
             filterDTO.setGender(Enums.Gender.valueOf(gender.toUpperCase()));
         }
-        filterDTO.setUniversityName(universityName);
-        filterDTO.setFaculty(faculty);
-        filterDTO.setLevel(level);
+        if (universityName != null) {
+            filterDTO.setUniversityName(Arrays.asList(universityName.split(",")));
+        }
+        if (faculty != null) {
+            filterDTO.setFaculty(Arrays.asList(faculty.split(",")));
+        }
+        if (level != null) {
+            filterDTO.setLevel(Arrays.asList(level.split(",")));
+        }
         filterDTO.setSpecialNeeds(specialNeeds);
-        filterDTO.setStartDate(startDate);
-        filterDTO.setEndDate(endDate);
+        filterDTO.setStartDate(from);
+        filterDTO.setEndDate(to);
+        if (studentType != null) {
+            filterDTO.setStudentType(Enums.StudentType.valueOf(studentType.toUpperCase()));
+        }
+        if (securityCheck != null) {
+            filterDTO.setSecurityCheck(Arrays.stream(securityCheck.split(","))
+                    .map(s -> Enums.SecurityCheckStatues.valueOf(s.trim().toUpperCase()))
+                    .collect(Collectors.toList()));
+        }
 
         // Fetch filtered data from the service
         List<User> filteredRequests = exportService.filterAdmissionRequests(filterDTO);
