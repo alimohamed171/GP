@@ -28,7 +28,7 @@ public class MealController {
         return mealService.deleteMealById(mealId);
     }
 
-    @PutMapping("admin/edit/delete-meal/{mealId}")
+    @PutMapping("admin/edit/update-meal/{mealId}")
     public ResponseEntity<Object> updateMeal(
             @PathVariable int mealId,
             @Valid @RequestBody MealRequestDTO mealRequestDTO) {
