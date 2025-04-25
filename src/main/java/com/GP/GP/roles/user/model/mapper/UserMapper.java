@@ -68,20 +68,26 @@ public class UserMapper {
                 .level(user.getLevel())
                 .penaltiesCount(user.getPenalties().size())
                 .dateOfBirth(user.getDateOfBirth())
-                .room(new RoomResponseForUserDTO(
-                        room.getId(),
-                        room.getRoomNumber(),
-                        room.getCapacity(),
-                        room.getCurrentOccupancy(),           // Add this
-                        room.getType(),                       // Add this
-                        room.getStatus(),
-                        new BuildingResponseForUserDTO(              // Assuming you want to include the building details too
-                                room.getBuilding().getId(),
-                                room.getBuilding().getName(),
-                                room.getBuilding().getType()
-                                // Adjust based on actual BuildingResponseDTO constructor
+                .room(
+                        room != null
+                                ? new RoomResponseForUserDTO(
+                                room.getId(),
+                                room.getRoomNumber(),
+                                room.getCapacity(),
+                                room.getCurrentOccupancy(),
+                                room.getType(),
+                                room.getStatus(),
+                                room.getBuilding() != null
+                                        ? new BuildingResponseForUserDTO(
+                                        room.getBuilding().getId(),
+                                        room.getBuilding().getName(),
+                                        room.getBuilding().getType()
+                                )
+                                        : null
                         )
-                )).studentType(user.getStudentType())
+                                : null
+                )
+                .studentType(user.getStudentType())
                 .residenceAddress(user.getResidenceAddress())
                 .detailedAddress(user.getDetailedAddress())
                 .placeOfBirth(user.getPlaceOfBirth())
