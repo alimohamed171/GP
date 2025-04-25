@@ -1,6 +1,6 @@
 package com.GP.GP.roles.user.model.response;
 
-import com.GP.GP.entities.University;
+import com.GP.GP.roles.admin.models.dto.response.RoomResponseForUserDTO;
 import com.GP.GP.roles.admin.models.dto.response.UniversityResponseDTO;
 import com.GP.GP.utill.Enums;
 import jakarta.validation.constraints.NotBlank;
@@ -51,7 +51,7 @@ public class UpdatedUserResponseDTO {
     @NotNull(message = "Date of birth is required")
     private LocalDate dateOfBirth;
 
-    private Integer roomId;
+    private RoomResponseForUserDTO room;
 
     private Enums.StudentType studentType;
 

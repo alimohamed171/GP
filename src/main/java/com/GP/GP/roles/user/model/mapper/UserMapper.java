@@ -1,7 +1,11 @@
 package com.GP.GP.roles.user.model.mapper;
 
+import com.GP.GP.entities.Room;
 import com.GP.GP.entities.University;
 import com.GP.GP.entities.User;
+import com.GP.GP.roles.admin.models.dto.response.BuildingResponseDTO;
+import com.GP.GP.roles.admin.models.dto.response.BuildingResponseForUserDTO;
+import com.GP.GP.roles.admin.models.dto.response.RoomResponseForUserDTO;
 import com.GP.GP.roles.admin.models.dto.response.UniversityResponseDTO;
 import com.GP.GP.roles.user.model.request.UpdateUserRequestDTO;
 import com.GP.GP.roles.user.model.response.UpdatedUserResponseDTO;
@@ -16,13 +20,14 @@ public class UserMapper {
         existingUser.setUsername(dto.getUsername());
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             existingUser.setPassword(passwordEncoder.encode(dto.getPassword()));
-        }        existingUser.setUniversity(university);
+        }
+        existingUser.setUniversity(university);
         existingUser.setNationalId(dto.getNationalId());
         existingUser.setMobileNumber(dto.getMobileNumber());
         existingUser.setFaculty(dto.getFaculty());
         existingUser.setLevel(dto.getLevel());
         existingUser.setDateOfBirth(dto.getDateOfBirth());
-       // existingUser.setRoomId(dto.getRoomId());
+        // existingUser.setRoomId(dto.getRoomId());
         existingUser.setStudentType(dto.getStudentType());
         existingUser.setResidenceAddress(dto.getResidenceAddress());
         existingUser.setDetailedAddress(dto.getDetailedAddress());
@@ -48,20 +53,40 @@ public class UserMapper {
         existingUser.setPassportIssuingAuthority(dto.getPassportIssuingAuthority());
 
     }
+
     public static UpdatedUserResponseDTO mapToUpdatedUserResponseDTO(User user) {
+        Room room = user.getRoom();
         return UpdatedUserResponseDTO.builder()
                 .userId(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .username(user.getUsername())
-                .university(new UniversityResponseDTO(user.getUniversity().getId(),user.getUniversity().getName()))
+                .university(new UniversityResponseDTO(user.getUniversity().getId(), user.getUniversity().getName()))
                 .nationalId(user.getNationalId())
                 .mobileNumber(user.getMobileNumber())
                 .faculty(user.getFaculty())
                 .level(user.getLevel())
                 .penaltiesCount(user.getPenalties().size())
                 .dateOfBirth(user.getDateOfBirth())
-//                .roomId(null) // If not needed, set it as null
+                .room(
+                        room != null
+                                ? new RoomResponseForUserDTO(
+                                room.getId(),
+                                room.getRoomNumber(),
+                                room.getCapacity(),
+                                room.getCurrentOccupancy(),
+                                room.getType(),
+                                room.getStatus(),
+                                room.getBuilding() != null
+                                        ? new BuildingResponseForUserDTO(
+                                        room.getBuilding().getId(),
+                                        room.getBuilding().getName(),
+                                        room.getBuilding().getType()
+                                )
+                                        : null
+                        )
+                                : null
+                )
                 .studentType(user.getStudentType())
                 .residenceAddress(user.getResidenceAddress())
                 .detailedAddress(user.getDetailedAddress())
