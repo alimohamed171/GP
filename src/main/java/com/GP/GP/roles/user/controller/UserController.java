@@ -1,13 +1,22 @@
 package com.GP.GP.roles.user.controller;
 
+import com.GP.GP.entities.User;
 import com.GP.GP.roles.user.model.dto.AdmissionRequestDTO;
 import com.GP.GP.roles.user.model.request.UpdateUserRequestDTO;
+import com.GP.GP.roles.user.model.request.UserFilterDTO;
 import com.GP.GP.roles.user.service.contracts.AdmissionRequestService;
 import com.GP.GP.utill.Enums;
+import com.GP.GP.utill.base.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -31,8 +40,29 @@ public class UserController {
 
     // get all admission -> admin
     @GetMapping("/admin/view/admission-requests")
-    public ResponseEntity<Object> getAllAdmissionRequests() {
-        return admissionRequestService.getAllAdmissionRequests();
+    public ResponseEntity<Object> getAllAdmissionRequests(
+                                                           @RequestParam(required = false) String status,
+                                                           @RequestParam(required = false) String securityCheck,
+                                                           @RequestParam(required = false) Boolean hasPenalty) {
+        UserFilterDTO filterDTO = new UserFilterDTO();
+        if (status != null) {
+            filterDTO.setStatus(Arrays.stream(status.split(","))
+                    .map(s -> Enums.AdmissionRequestStatues.valueOf(s.trim().toUpperCase()))
+                    .collect(Collectors.toList()));
+        }
+        if (securityCheck != null) {
+            filterDTO.setSecurityCheck(Arrays.stream(securityCheck.split(","))
+                    .map(s -> Enums.SecurityCheckStatues.valueOf(s.trim().toUpperCase()))
+                    .collect(Collectors.toList()));
+        }
+        filterDTO.setHasPenalty(hasPenalty);
+
+        List<User> filteredRequests = admissionRequestService.filterAdmissionRequests(filterDTO);
+        if (filteredRequests.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse(true,"No data found", HttpStatus.NO_CONTENT));
+        }
+
+        return admissionRequestService.getAllAdmissionRequests(filteredRequests);
     }
 
     //get admission by user Id -> for admin
