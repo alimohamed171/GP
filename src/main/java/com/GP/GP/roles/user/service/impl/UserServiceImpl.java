@@ -7,6 +7,7 @@ import com.GP.GP.roles.admin.service.contracts.UniversityService;
 import com.GP.GP.roles.user.model.mapper.AdmissionRequestInquiryMapper;
 import com.GP.GP.roles.user.model.request.UpdateUserRequestDTO;
 import com.GP.GP.roles.user.model.mapper.UserMapper;
+import com.GP.GP.roles.user.model.request.UserFilterDTO;
 import com.GP.GP.roles.user.model.response.AdmissionRequestInquiryResponseDTO;
 import com.GP.GP.roles.user.model.response.UpdatedUserResponseDTO;
 import com.GP.GP.roles.user.service.contracts.AdmissionRequestService;
@@ -107,10 +108,8 @@ public class UserServiceImpl implements AdmissionRequestService {
     }
 
     @Override
-    public ResponseEntity<Object> getAllAdmissionRequests() {
-        List<Role> adminRoles = List.of(Role.ADMIN, Role.EDIT_ADMIN, Role.ViEW_ADMIN);
-        List<User> requests = userRepository.findByRoleNotIn(adminRoles);
-        List<UpdatedUserResponseDTO> dtos = requests.stream()
+    public ResponseEntity<Object> getAllAdmissionRequests(List<User> filteredRequests) {
+        List<UpdatedUserResponseDTO> dtos = filteredRequests.stream()
                 .map(UserMapper::mapToUpdatedUserResponseDTO)
                 .collect(Collectors.toList());
 
@@ -189,6 +188,19 @@ public class UserServiceImpl implements AdmissionRequestService {
         AdmissionRequestInquiryResponseDTO responseDTO = AdmissionRequestInquiryMapper.entityToResponse(admissionRequest);
         BaseResponse response = new BaseResponse(true, "Application status retrieved successfully", responseDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
+    public List<User> filterAdmissionRequests(UserFilterDTO filterDTO) {
+        List<Role> adminRoles = List.of(Role.ADMIN, Role.EDIT_ADMIN, Role.ViEW_ADMIN);
+        List<User> requests = userRepository.findByRoleNotIn(adminRoles);
+        return requests.stream()
+                .filter(user -> filterDTO.getStatus() == null || filterDTO.getStatus().contains(user.getStatus()))
+                .filter(user -> filterDTO.getSecurityCheck() == null || filterDTO.getSecurityCheck().contains(user.getSecurityCheck()))
+                .filter(user -> filterDTO.getHasPenalty() == null
+                        || (filterDTO.getHasPenalty() ? user.getPenalties() != null && !user.getPenalties().isEmpty()
+                        : user.getPenalties() == null || user.getPenalties().isEmpty()))
+                .collect(Collectors.toList());
     }
 }
 
