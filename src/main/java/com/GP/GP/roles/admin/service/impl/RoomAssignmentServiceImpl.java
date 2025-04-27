@@ -50,18 +50,10 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
                 ? Enums.BuildingType.FEMALE
                 : Enums.BuildingType.MALE;
 
-        Optional<Building> building = buildingRepository.findByType(buildingType);
 
-        if (building.isEmpty()) {
-            BaseResponse response = new BaseResponse(false, "No building found for the specified gender type: " + buildingType);
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
+        List<Room> rooms = roomRepository.findAvailableRoomsByBuildingTypeAndRoomType(buildingType, dto.getRoomType());
 
-        List<Room> rooms = roomRepository.findAvailableRoomsByGender(buildingType, dto.getRoomType());
-        Optional<Room> optionalRoom = rooms.stream()
-                .filter(room -> room.getCurrentOccupancy() < room.getCapacity()
-                        && room.getStatus() == Enums.RoomStatus.AVAILABLE)
-                .findFirst();
+        Optional<Room> optionalRoom = rooms.stream().findFirst();
 
         if (optionalRoom.isEmpty()) {
             return new ResponseEntity<>(new BaseResponse(false, "No available room matching criteria"), HttpStatus.NOT_FOUND);
@@ -132,12 +124,7 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
                 ? Enums.BuildingType.FEMALE
                 : Enums.BuildingType.MALE;
 
-        Optional<Building> building = buildingRepository.findByType(buildingType);
 
-        if (building.isEmpty()) {
-            BaseResponse response = new BaseResponse(false, "No building found for the specified gender type: " + buildingType);
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
         if (!room.getBuilding().getType().equals(buildingType)) {
             return new ResponseEntity<>(new BaseResponse(false, "Room does not belong to the correct building type for the student"), HttpStatus.BAD_REQUEST);
         }

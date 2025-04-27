@@ -11,11 +11,36 @@ import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Integer> {
     List<Room> findByBuildingId(int buildingId);
-    @Query("SELECT r FROM Room r " +
+
+/*    @Query("SELECT r FROM Room r " +
             "WHERE r.status = com.GP.GP.utill.Enums.RoomStatus.AVAILABLE " +
             "AND r.currentOccupancy < r.capacity " +
             "AND r.building.type = :buildingType " +
             "AND r.type = :roomType")
     List<Room> findAvailableRoomsByGender(@Param("buildingType") Enums.BuildingType buildingType,
-                                          @Param("roomType") Enums.RoomType roomType);
+                                          @Param("roomType") Enums.RoomType roomType);*/
+
+    @Query("""
+            SELECT r
+            FROM Room r
+            WHERE r.building.id = :buildingId
+              AND r.type = :roomType
+              AND r.status = 'AVAILABLE'
+              AND r.currentOccupancy < r.capacity""")
+    List<Room> findAvailableRoomsByBuildingAndRoomType(
+            @Param("buildingId") int buildingId,
+            @Param("roomType") Enums.RoomType roomType);
+
+    @Query("""
+            SELECT r
+            FROM Room r
+            JOIN r.building b
+            WHERE b.type = :buildingType
+              AND r.type = :roomType
+              AND r.status = 'AVAILABLE'
+              AND r.currentOccupancy < r.capacity""")
+    List<Room> findAvailableRoomsByBuildingTypeAndRoomType(
+            @Param("buildingType") Enums.BuildingType buildingType,
+            @Param("roomType") Enums.RoomType roomType);
 }
+
