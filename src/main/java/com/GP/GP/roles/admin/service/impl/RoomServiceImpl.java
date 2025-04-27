@@ -102,12 +102,8 @@ public class RoomServiceImpl implements RoomService {
         if (optionalBuilding.isEmpty()) {
             return new ResponseEntity<>(new BaseResponse(false, "No building found"), HttpStatus.NOT_FOUND);
         }
-        List<Room> availableRooms = roomRepository.findAvailableRoomsByGender(
-                optionalBuilding.get().getType(), roomType);
+        List<Room> availableRooms = roomRepository.findAvailableRoomsByBuildingAndRoomType(buildingId, roomType);
 
-        availableRooms = availableRooms.stream()
-                .filter(room -> room.getCurrentOccupancy() < room.getCapacity())
-                .toList();
         if (availableRooms.isEmpty()) {
             return new ResponseEntity<>(new BaseResponse(false, "No available rooms found"), HttpStatus.NOT_FOUND);
         }
