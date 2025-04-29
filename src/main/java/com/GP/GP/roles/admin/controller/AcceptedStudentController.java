@@ -14,7 +14,7 @@ public class AcceptedStudentController {
     @Autowired
     private AcceptedStudentService acceptedStudentService;
 
-    @GetMapping("/public/accepted-students")
+    @GetMapping("/admin/view/accepted-students")
     public ResponseEntity<Object> getAcceptedStudents() {
         return acceptedStudentService.getAcceptedStudents();
     }
