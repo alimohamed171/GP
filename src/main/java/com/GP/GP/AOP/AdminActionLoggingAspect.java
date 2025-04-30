@@ -20,7 +20,7 @@ public class AdminActionLoggingAspect {
     @Autowired
     private AdminActionLogRepository logRepository;
 
-    @Pointcut("execution(* com.GP.GP.roles.admin.controller..*(..))")
+    @Pointcut("execution(* com.GP.GP.roles.admin.controller..*(..)) || execution(* com.GP.GP.roles.user.controller.ComplaintController.*(..))")
     public void adminControllerMethods() {}
 
     @After("adminControllerMethods()")
