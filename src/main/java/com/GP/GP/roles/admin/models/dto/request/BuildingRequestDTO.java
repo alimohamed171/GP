@@ -19,6 +19,12 @@ public class BuildingRequestDTO {
     @NotNull(message = "Building type is required")
     private Enums.BuildingType type;
 
+    @NotNull(message = "Floors count is required")
+    private Integer floorsCount;
+
+    @NotNull(message = "Wings count is required")
+    private Integer wingsCount;
+
     @NotNull(message = "University ID is required")
     private Integer universityId;
 }

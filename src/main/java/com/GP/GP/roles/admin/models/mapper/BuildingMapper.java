@@ -15,6 +15,8 @@ public class BuildingMapper {
                 .id(building.getId())
                 .name(building.getName())
                 .type(building.getType())
+                .floorsCount(building.getFloorsCount())
+                .wingsCount(building.getWingsCount())
                 .university(UniversityResponseDTO.mapToResponseDTO(building.getUniversity()))
                 .build();
     }
@@ -23,6 +25,8 @@ public class BuildingMapper {
         return Building.builder()
                 .name(dto.getName())
                 .type(dto.getType())
+                .wingsCount(dto.getWingsCount())
+                .floorsCount(dto.getFloorsCount())
                 .university(university)
                 .build();
     }
