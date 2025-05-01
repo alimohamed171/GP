@@ -56,4 +56,5 @@ public class RegisterRequestDTO {
     private String passportIssuingAuthority;
     private String media;
     private Enums.SecurityCheckStatues securityCheck;
+    private Enums.AnnualGrade annualGrade;
 }
