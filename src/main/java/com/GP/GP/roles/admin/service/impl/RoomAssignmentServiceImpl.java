@@ -12,6 +12,7 @@ import com.GP.GP.roles.admin.models.mapper.RoomAssignmentMapper;
 import com.GP.GP.roles.admin.service.contracts.RoomAssignmentService;
 import com.GP.GP.utill.Enums;
 import com.GP.GP.utill.base.BaseResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
     private BuildingRepository buildingRepository;
 
     @Override
+    @Transactional
     public ResponseEntity<Object> assignStudentToRoom(RoomAssignmentRequestDTO dto) {
 
         Optional<User> optionalStudent = userRepository.findById(dto.getUserId());
@@ -60,6 +62,7 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
         }
         Room room = optionalRoom.get();
         room.setCurrentOccupancy(room.getCurrentOccupancy() + 1);
+        room.setOccupiedBeds(room.getOccupiedBeds() + 1);
         student.setRoom(room);
 
         roomRepository.save(room);
@@ -91,6 +94,7 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
         }
 
         room.setCurrentOccupancy(room.getCurrentOccupancy() - 1);
+        room.setOccupiedBeds(room.getOccupiedBeds() - 1);
         student.setRoom(null);
 
         roomRepository.save(room);
@@ -130,6 +134,7 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
         }
 
         room.setCurrentOccupancy(room.getCurrentOccupancy() + 1);
+        room.setOccupiedBeds(room.getOccupiedBeds() + 1);
         student.setRoom(room);
 
         roomRepository.save(room);
