@@ -17,5 +17,9 @@ public class RoomResponseDTO {
     private Integer currentOccupancy;
     private Enums.RoomType type;
     private Enums.RoomStatus status;
-    private BuildingResponseDTO building;
+    private BuildingSummaryResponseDTO building;
+    private Integer floorNumber;
+    private String wing;
+    private Integer bedCount;
+    private Integer occupiedBeds;
 }
