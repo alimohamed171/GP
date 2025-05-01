@@ -129,7 +129,6 @@ public class User implements UserDetails {
     @Column(name = "status")
     private Enums.AdmissionRequestStatues status;
 
-
     @Column(name = "housing_in_previous_years")
     private String housingInPreviousYears;
 
@@ -163,11 +162,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Penalty> penalties;
 
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-//    private AdmissionRequest admissionRequest;
-//
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-//    private StudentProfile studentProfile;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "annual_grade", length = 50)
+    private Enums.AnnualGrade annualGrade;
 
     @CreationTimestamp
     @Column(name = "created_at")

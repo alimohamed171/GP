@@ -8,4 +8,5 @@ public interface MealService {
     ResponseEntity<Object> getAllMeals();
     ResponseEntity<Object> deleteMealById(int mealId);
     ResponseEntity<Object> updateMeal(int mealId,MealRequestDTO requestDTO);
+    ResponseEntity<Object> assignMealToStudent(int studentId, int mealId);
 }

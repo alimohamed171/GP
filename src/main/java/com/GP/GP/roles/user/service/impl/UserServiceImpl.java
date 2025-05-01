@@ -63,7 +63,7 @@ public class UserServiceImpl implements AdmissionRequestService {
 
         admissionRequest = AdmissionRequestMapper.toEntity(admissionRequestDTO, user, university);
 
-// why do you need to put it in the DTO !! 
+        // why do you need to put it in the DTO !!
         admissionRequest.setStatus(Enums.AdmissionRequestStatues.UNDER_REVIEW);
         admissionRequest.setCreatedAt(LocalDateTime.now());
 

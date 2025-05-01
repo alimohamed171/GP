@@ -25,9 +25,9 @@ public class UserMapper {
         existingUser.setNationalId(dto.getNationalId());
         existingUser.setMobileNumber(dto.getMobileNumber());
         existingUser.setFaculty(dto.getFaculty());
+        existingUser.setAnnualGrade(dto.getAnnualGrade());
         existingUser.setLevel(dto.getLevel());
         existingUser.setDateOfBirth(dto.getDateOfBirth());
-        // existingUser.setRoomId(dto.getRoomId());
         existingUser.setStudentType(dto.getStudentType());
         existingUser.setResidenceAddress(dto.getResidenceAddress());
         existingUser.setDetailedAddress(dto.getDetailedAddress());

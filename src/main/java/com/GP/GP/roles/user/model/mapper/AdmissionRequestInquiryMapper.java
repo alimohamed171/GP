@@ -35,6 +35,7 @@ public class AdmissionRequestInquiryMapper {
                 .username(admissionRequest.getUsername())
                 .faculty(admissionRequest.getFaculty())
                 .level(admissionRequest.getLevel())
+                .annualGrade(admissionRequest.getAnnualGrade())
                 .university(universityDTO)
                 .build();
 
