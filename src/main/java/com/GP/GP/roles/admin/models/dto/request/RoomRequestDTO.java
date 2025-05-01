@@ -4,6 +4,7 @@ import com.GP.GP.utill.Enums;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,9 +25,23 @@ public class RoomRequestDTO {
     @NotNull(message = "Room type is required.")
     private Enums.RoomType type;
 
-    private Integer currentOccupancy;
+    private Integer currentOccupancy = 0; // default value to 0
 
-    private Enums.RoomStatus status;
+    private Enums.RoomStatus status = Enums.RoomStatus.AVAILABLE; // default status
+
+    @NotNull(message = "Floor number is required.")
+    @Min(value = 0, message = "Floor number must be at least 0.")
+    private Integer floorNumber;
+
+    @Pattern(regexp = "^[A-Za-z]+$", message = "Wing must only contain alphabetic characters.")
+    private String wing;
+
+    @NotNull(message = "Bed count is required.")
+    @Min(value = 1, message = "Bed count must be at least 1.")
+    private Integer bedCount;
+
+    @Min(value = 0, message = "Occupied beds cannot be negative.")
+    private Integer occupiedBeds = 0; // default value to 0 if not provided
 
     @NotNull(message = "Building ID is required.")
     private Integer buildingId;

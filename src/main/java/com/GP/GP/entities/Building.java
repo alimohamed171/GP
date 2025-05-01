@@ -26,6 +26,12 @@ public class Building {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "floors_count")
+    private Integer floorsCount;
+
+    @Column(name = "wings_count")
+    private Integer wingsCount;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     private Enums.BuildingType type; // MALE, FEMALE

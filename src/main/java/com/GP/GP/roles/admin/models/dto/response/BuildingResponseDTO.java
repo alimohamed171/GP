@@ -15,4 +15,6 @@ public class BuildingResponseDTO {
     private String name;
     private Enums.BuildingType type;
     private UniversityResponseDTO university;
+    private Integer floorsCount;
+    private Integer wingsCount;
 }

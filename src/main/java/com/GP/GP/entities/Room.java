@@ -37,6 +37,18 @@ public class Room {
     @Column(name = "current_occupancy")
     private Integer currentOccupancy = 0;
 
+    @Column(name = "floor_number", nullable = false)
+    private Integer floorNumber;
+
+    @Column(name = "wing", length = 10) // e.g., "A", "B"
+    private String wing;
+
+    @Column(name = "bed_count", nullable = false)
+    private Integer bedCount;
+
+    @Column(name = "occupied_beds", nullable = false)
+    private Integer occupiedBeds = 0;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     private Enums.RoomType type;
