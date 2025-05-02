@@ -10,7 +10,7 @@ public interface AdmissionRequestExportService {
     ByteArrayInputStream exportAllAdmissionRequestsToExcel();
 
     List<User> filterAdmissionRequests(AdmissionRequestFilterDTO filterDTO);
-    ByteArrayInputStream exportFilteredAdmissionRequestsToExcel(List<User> filteredRequests);
+    ByteArrayInputStream exportFilteredAdmissionRequestsToExcel(List<User> filteredRequests, List<String> selectedColumns);
     ByteArrayInputStream generateSecurityCheckTemplate();
 
 }

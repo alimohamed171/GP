@@ -39,6 +39,7 @@ public class AdmissionRequestExportController {
         IOUtils.copy(excelFile, response.getOutputStream());
         response.flushBuffer();
     }
+
     @GetMapping("/admin/view/admission-requests/export")
     public ResponseEntity<Object> exportAdmissionRequestsToExcel(
             @RequestParam(required = false) LocalDateTime from,
@@ -51,7 +52,9 @@ public class AdmissionRequestExportController {
             @RequestParam(required = false) Boolean specialNeeds,
             @RequestParam(required = false) String studentType,
             @RequestParam(required = false) String securityCheck,
-            @RequestParam(required = false) Boolean hasPenalty) throws IOException {
+            @RequestParam(required = false) Boolean hasPenalty,
+            @RequestParam(required = false) String columns
+    ) throws IOException {
 
         // Create a DTO with the filter parameters
         AdmissionRequestFilterDTO filterDTO = new AdmissionRequestFilterDTO();
@@ -89,15 +92,17 @@ public class AdmissionRequestExportController {
         List<User> filteredRequests = exportService.filterAdmissionRequests(filterDTO);
 
         if (filteredRequests.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse(false,"No data found", HttpStatus.NO_CONTENT));
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new BaseResponse(false, "No data found", HttpStatus.NO_CONTENT));
         }
-
+        List<String> selectedColumns = columns != null && !columns.isBlank()
+                ? Arrays.asList(columns.split(","))
+                : null;
         // Generate Excel file
-        ByteArrayInputStream excelFile = exportService.exportFilteredAdmissionRequestsToExcel(filteredRequests);
+        ByteArrayInputStream excelFile = exportService.exportFilteredAdmissionRequestsToExcel(filteredRequests, selectedColumns);
 
         // Set response headers for file download
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "attachment; filename=admission_requests_filtered.xlsx");
+        headers.add("Content-Disposition", "attachment; filename=admission_requests_filtered_" + ".xlsx");
 
         // Return the file as the response
         return ResponseEntity
@@ -105,6 +110,7 @@ public class AdmissionRequestExportController {
                 .headers(headers)
                 .body(excelFile.readAllBytes());
     }
+
     @GetMapping("/admin/view/security-check/template")
     public void downloadSecurityCheckTemplate(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
