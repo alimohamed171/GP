@@ -10,9 +10,7 @@ import com.GP.GP.roles.admin.service.contracts.RoomAssignmentExcelService;
 import com.GP.GP.roles.admin.service.contracts.RoomAssignmentService;
 import com.GP.GP.utill.Enums;
 import com.GP.GP.utill.base.BaseResponse;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,7 +44,6 @@ public class RoomAssignmentExcelServiceImpl implements RoomAssignmentExcelServic
         }
 
         List<String> errors = new ArrayList<>();
-
         try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
 
@@ -55,7 +52,9 @@ public class RoomAssignmentExcelServiceImpl implements RoomAssignmentExcelServic
                 if (row == null) continue;
 
                 try {
-                    String nationalId = row.getCell(9).getStringCellValue();
+                    DataFormatter formatter = new DataFormatter();
+                    Cell cell = row.getCell(9);
+                    String nationalId = formatter.formatCellValue(cell).trim();
                     int roomId = (int) row.getCell(0).getNumericCellValue();
 
                     Optional<User> optionalUser = userRepository.findByNationalId(nationalId);

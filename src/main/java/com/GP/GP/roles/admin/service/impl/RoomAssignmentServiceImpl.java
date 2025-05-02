@@ -95,6 +95,10 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
 
         room.setCurrentOccupancy(room.getCurrentOccupancy() - 1);
         room.setOccupiedBeds(room.getOccupiedBeds() - 1);
+        if (room.getStatus() == Enums.RoomStatus.OCCUPIED &&
+                room.getCurrentOccupancy() < room.getCapacity()) {
+            room.setStatus(Enums.RoomStatus.AVAILABLE);
+        }
         student.setRoom(null);
 
         roomRepository.save(room);
@@ -120,9 +124,8 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
             return new ResponseEntity<>(new BaseResponse(false, "Room not found"), HttpStatus.NOT_FOUND);
         }
         Room room = optionalRoom.get();
-
-        if (room.getCurrentOccupancy() >= room.getCapacity()) {
-            return new ResponseEntity<>(new BaseResponse(false, "Room is full"), HttpStatus.BAD_REQUEST);
+        if (room.getStatus() != Enums.RoomStatus.AVAILABLE) {
+            return new ResponseEntity<>(new BaseResponse(false, "Room is not available"), HttpStatus.BAD_REQUEST);
         }
         Enums.BuildingType buildingType = student.getGender() == Enums.Gender.FEMALE
                 ? Enums.BuildingType.FEMALE
@@ -135,6 +138,10 @@ public class RoomAssignmentServiceImpl implements RoomAssignmentService {
 
         room.setCurrentOccupancy(room.getCurrentOccupancy() + 1);
         room.setOccupiedBeds(room.getOccupiedBeds() + 1);
+        if (room.getCurrentOccupancy() >= room.getCapacity()) {
+            room.setStatus(Enums.RoomStatus.OCCUPIED);
+        }
+
         student.setRoom(room);
 
         roomRepository.save(room);
