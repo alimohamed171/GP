@@ -4,11 +4,13 @@ import com.GP.GP.entities.University;
 import com.GP.GP.repository.AccommodationRepository;
 import com.GP.GP.repository.AdmissionRequestRepository;
 import com.GP.GP.roles.admin.service.contracts.UniversityService;
-import com.GP.GP.roles.user.model.mapper.AdmissionRequestInquiryMapper;
+import com.GP.GP.roles.user.model.dto.StudentDto;
+import com.GP.GP.roles.user.model.dto.StudentPriorityDto;
+import com.GP.GP.roles.user.model.mapper.*;
 import com.GP.GP.roles.user.model.request.UpdateUserRequestDTO;
-import com.GP.GP.roles.user.model.mapper.UserMapper;
 import com.GP.GP.roles.user.model.request.UserFilterDTO;
 import com.GP.GP.roles.user.model.response.AdmissionRequestInquiryResponseDTO;
+import com.GP.GP.roles.user.model.response.StudentsGroupedResponseDTO;
 import com.GP.GP.roles.user.model.response.UpdatedUserResponseDTO;
 import com.GP.GP.roles.user.service.contracts.AdmissionRequestService;
 import com.GP.GP.entities.AdmissionRequest;
@@ -17,7 +19,6 @@ import com.GP.GP.repository.UserRepository;
 import com.GP.GP.roles.user.model.dto.AdmissionRequestDTO;
 import com.GP.GP.roles.user.exception.InvalidOperationException;
 import com.GP.GP.roles.user.exception.ResourceNotFoundException;
-import com.GP.GP.roles.user.model.mapper.AdmissionRequestMapper;
 import com.GP.GP.security.Role;
 import com.GP.GP.utill.Enums;
 import com.GP.GP.utill.base.BaseResponse;
@@ -35,7 +36,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -63,7 +66,7 @@ public class UserServiceImpl implements AdmissionRequestService {
 
         admissionRequest = AdmissionRequestMapper.toEntity(admissionRequestDTO, user, university);
 
-// why do you need to put it in the DTO !! 
+        // why do you need to put it in the DTO !!
         admissionRequest.setStatus(Enums.AdmissionRequestStatues.UNDER_REVIEW);
         admissionRequest.setCreatedAt(LocalDateTime.now());
 
@@ -202,5 +205,72 @@ public class UserServiceImpl implements AdmissionRequestService {
                         : user.getPenalties() == null || user.getPenalties().isEmpty()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public ResponseEntity<Object> getSortedApplicants() {
+        List<User> users = userRepository.findAll().stream()
+                .filter(user -> user.getSecurityCheck() == Enums.SecurityCheckStatues.ACCEPTED)
+                .collect(Collectors.toList());
+
+        List<User> newUsers = users.stream()
+                .filter(user -> "First Year".equalsIgnoreCase(user.getLevel()))
+                .collect(Collectors.toList());
+
+        List<User> oldUsers = users.stream()
+                .filter(user -> !"First Year".equalsIgnoreCase(user.getLevel()))
+                .collect(Collectors.toList());
+
+        newUsers.sort((u1, u2) -> {
+            int gradeComparison = Float.compare(u2.getTotalGradesHighSchool(), u1.getTotalGradesHighSchool());
+            if (gradeComparison != 0) return gradeComparison;
+
+            int ageComparison = u1.getDateOfBirth().compareTo(u2.getDateOfBirth());
+            if (ageComparison != 0) return ageComparison;
+
+            return Integer.compare(u2.getResidenceAddress().length(), u1.getResidenceAddress().length());
+        });
+
+        oldUsers.sort((u1, u2) -> {
+            int levelDiff = Integer.compare(getLevelDiff(u2.getLevel()), getLevelDiff(u1.getLevel()));
+            if (levelDiff != 0) return levelDiff;
+
+            int gpaComparison = Double.compare(u2.getPreviousAcademicYearGpa(), u1.getPreviousAcademicYearGpa());
+            if (gpaComparison != 0) return gpaComparison;
+
+            int ageComparison = u1.getDateOfBirth().compareTo(u2.getDateOfBirth());
+            if (ageComparison != 0) return ageComparison;
+
+            return Integer.compare(u2.getResidenceAddress().length(), u1.getResidenceAddress().length());
+        });
+
+
+        List<StudentDto> oldStudentDtos = newUsers.stream()
+                .map(StudentMapper::toDto)
+                .collect(Collectors.toList());
+
+        List<StudentDto> newStudentDtos = oldUsers.stream()
+                .map(StudentMapper::toDto)
+                .collect(Collectors.toList());
+
+
+        StudentsGroupedResponseDTO groupedResponse = new StudentsGroupedResponseDTO(newStudentDtos, oldStudentDtos);
+        BaseResponse response = new BaseResponse(true, "Applicants sorted successfully", groupedResponse);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    private Integer getLevelDiff(String level) {
+        // Map the level names (e.g., "First Year") to numeric values for sorting
+        Map<String, Integer> levelMapping = Map.of(
+                "First Year", 1,
+                "Second Year", 2,
+                "Third Year", 3,
+                "Fourth Year", 4,
+                "Fifth Year", 5
+        );
+
+        // Get the corresponding numeric value for the level, defaulting to 0 if not found
+        return levelMapping.getOrDefault(level, 0);
+    }
+
 }
 

@@ -1,6 +1,7 @@
 package com.GP.GP.roles.user.model.response;
 
 import com.GP.GP.roles.admin.models.dto.response.UniversityResponseDTO;
+import com.GP.GP.utill.Enums;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +18,6 @@ public class AdmissionRequestInquiryResponseDTO {
     private String username;
     private String faculty;
     private String level;
+    private Enums.AnnualGrade annualGrade;
     private UniversityResponseDTO university;
 }

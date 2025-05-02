@@ -48,5 +48,5 @@ public class AdmissionRequestDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDate date;
-
+    private Enums.AnnualGrade annualGrade;
 }

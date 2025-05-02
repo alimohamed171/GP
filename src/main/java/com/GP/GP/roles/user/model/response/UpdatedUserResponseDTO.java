@@ -101,4 +101,6 @@ public class UpdatedUserResponseDTO {
     private String passportIssuingAuthority;
     private Enums.SecurityCheckStatues securityCheckStatues;
     private String notes;
+
+    private Enums.AnnualGrade annualGrade;
 }

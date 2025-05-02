@@ -29,9 +29,12 @@ public class MealController {
     }
 
     @PutMapping("admin/edit/update-meal/{mealId}")
-    public ResponseEntity<Object> updateMeal(
-            @PathVariable int mealId,
-            @Valid @RequestBody MealRequestDTO mealRequestDTO) {
+    public ResponseEntity<Object> updateMeal(@PathVariable int mealId, @Valid @RequestBody MealRequestDTO mealRequestDTO) {
         return mealService.updateMeal(mealId, mealRequestDTO);
+    }
+
+    @PostMapping("/admin/edit/meals/assign-student-specific-meal")
+    public ResponseEntity<Object> assignMealToStudent(@RequestParam("studentId") int studentId, @RequestParam("mealId") int mealId) {
+        return mealService.assignMealToStudent(studentId, mealId);
     }
 }

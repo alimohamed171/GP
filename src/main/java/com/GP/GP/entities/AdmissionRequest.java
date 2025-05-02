@@ -126,4 +126,7 @@ public class AdmissionRequest {
 
     @Column(name = "date", nullable = false)
     private LocalDate date ;
+
+    @Column(name = "annual_grade", nullable = false)
+    private Enums.AnnualGrade annualGrade;
 }

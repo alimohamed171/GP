@@ -95,4 +95,6 @@ public class UpdateUserRequestDTO {
     private String passportNumber;
 
     private String passportIssuingAuthority;
+
+    private Enums.AnnualGrade annualGrade;
 }

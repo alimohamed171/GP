@@ -50,7 +50,8 @@ public class RegisterMapper {
                     .passportNumber(dto.getPassportNumber())
                     .passportIssuingAuthority(dto.getPassportIssuingAuthority())
                     .university(university)
-                    .media(dto.getMedia());
+                    .media(dto.getMedia())
+                    .annualGrade(dto.getAnnualGrade());
         }
         return builder.build();
     }

@@ -39,6 +39,7 @@ public class AdmissionRequestMapper {
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .date(entity.getDate())
+                .annualGrade(entity.getAnnualGrade())
                 .build();
     }
 
@@ -73,6 +74,7 @@ public class AdmissionRequestMapper {
                 .createdAt(dto.getCreatedAt())
                 .updatedAt(dto.getUpdatedAt())
                 .date(dto.getDate())
+                .annualGrade(dto.getAnnualGrade())
                 .build();
 
 

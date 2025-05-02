@@ -88,7 +88,10 @@ public class UserController {
         return admissionRequestService.getApplicationStatusByNID(nationalId);
     }
 
-
+    @GetMapping("/admin/view/sorted-applicants")
+    public ResponseEntity<Object> getSortedApplicants() {
+        return admissionRequestService.getSortedApplicants();
+    }
 
 }
 

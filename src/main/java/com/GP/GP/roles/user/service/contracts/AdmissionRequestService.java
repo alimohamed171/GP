@@ -20,5 +20,7 @@ public interface AdmissionRequestService {
     ResponseEntity<Object> getApplicationStatusByNID(String nationalId);
     List <User> filterAdmissionRequests(UserFilterDTO filteredRequests);
 
+    ResponseEntity<Object> getSortedApplicants();
+
 
 }
