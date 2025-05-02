@@ -130,6 +130,9 @@ public class User implements UserDetails {
     @Column(name = "status")
     private Enums.AdmissionRequestStatues status;
 
+    @Column(name = "admission_request_status_notes",columnDefinition = "TEXT")
+    private String AdmissionRequestStatusNotes;
+
     @Column(name = "housing_in_previous_years")
     private String housingInPreviousYears;
 
@@ -157,8 +160,8 @@ public class User implements UserDetails {
     @Column(name = "security_check")
     private Enums.SecurityCheckStatues securityCheck = Enums.SecurityCheckStatues.PENDING;
 
-    @Column(name = "notes", columnDefinition = "TEXT")
-    private String note;
+    @Column(name = "security_check_notes", columnDefinition = "TEXT")
+    private String securityCheckNotes;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Penalty> penalties;

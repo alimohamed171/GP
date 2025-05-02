@@ -3,7 +3,6 @@ package com.GP.GP.roles.user.model.mapper;
 import com.GP.GP.entities.Room;
 import com.GP.GP.entities.University;
 import com.GP.GP.entities.User;
-import com.GP.GP.roles.admin.models.dto.response.BuildingResponseDTO;
 import com.GP.GP.roles.admin.models.dto.response.BuildingResponseForUserDTO;
 import com.GP.GP.roles.admin.models.dto.response.RoomResponseForUserDTO;
 import com.GP.GP.roles.admin.models.dto.response.UniversityResponseDTO;
@@ -113,7 +112,8 @@ public class UserMapper {
                 .passportNumber(user.getPassportNumber())
                 .passportIssuingAuthority(user.getPassportIssuingAuthority())
                 .securityCheckStatues(user.getSecurityCheck())
-                .notes(user.getNote())
+                .securityCheckNotes(user.getSecurityCheckNotes())
+                .AdmissionRequestStatusNotes(user.getAdmissionRequestStatusNotes())
                 .studentCode(user.getStudentCode())
                 .guardianRelationship(user.getGuardianRelationship())
                 .phoneNumber(user.getPhoneNumber())
