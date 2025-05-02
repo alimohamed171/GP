@@ -63,7 +63,7 @@ public class StudentPriorityMapper {
 
         dto.setMedia(user.getMedia());
         dto.setSecurityCheck(user.getSecurityCheck());
-        dto.setNote(user.getNote());
+        dto.setNote(user.getSecurityCheckNotes());
         dto.setCreatedAt(user.getCreatedAt());
         return dto;
     }
