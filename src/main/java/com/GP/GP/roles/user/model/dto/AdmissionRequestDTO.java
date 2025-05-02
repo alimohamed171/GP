@@ -49,4 +49,8 @@ public class AdmissionRequestDTO {
     private LocalDateTime updatedAt;
     private LocalDate date;
     private Enums.AnnualGrade annualGrade;
+    private String studentCode;
+    private String guardianRelationship;
+    private String phoneNumber;
+    private String houseTypeName;
 }

@@ -103,4 +103,8 @@ public class UpdatedUserResponseDTO {
     private String notes;
 
     private Enums.AnnualGrade annualGrade;
+    private String studentCode;
+    private String guardianRelationship;
+    private String phoneNumber;
+    private String houseTypeName;
 }

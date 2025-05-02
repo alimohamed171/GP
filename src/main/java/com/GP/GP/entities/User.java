@@ -17,8 +17,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @Data
@@ -41,7 +42,7 @@ public class User implements UserDetails {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "username",unique = true)
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "password")
@@ -84,10 +85,10 @@ public class User implements UserDetails {
     @JsonManagedReference("user-room")
     private Room room;
 
-    @Column(name = "residence_address",columnDefinition = "TEXT")
+    @Column(name = "residence_address", columnDefinition = "TEXT")
     private String residenceAddress;
 
-    @Column(name = "detailed_address",columnDefinition = "TEXT")
+    @Column(name = "detailed_address", columnDefinition = "TEXT")
     private String detailedAddress;
 
     @Column(name = "place_of_birth")
@@ -114,7 +115,7 @@ public class User implements UserDetails {
     @Column(name = "guardian_name")
     private String guardianName;
 
-    @Column(name = "guardian_national_id" )
+    @Column(name = "guardian_national_id")
     private String guardianNationalId;
 
     @Column(name = "guardian_phone_number", length = 20)
@@ -123,7 +124,7 @@ public class User implements UserDetails {
     @Column(name = "parents_status")
     private String parentsStatus;
 
-    @Column(name = "previous_academic_year_gpa",  scale = 2)
+    @Column(name = "previous_academic_year_gpa", scale = 2)
     private Double previousAcademicYearGpa;
 
     @Column(name = "status")
@@ -164,6 +165,18 @@ public class User implements UserDetails {
 
     @Column(name = "annual_grade", length = 50)
     private Enums.AnnualGrade annualGrade;
+
+    @Column(name = "student_code", columnDefinition = "TEXT")
+    private String studentCode;
+
+    @Column(name = "Guardian_relationship ", columnDefinition = "TEXT")
+    private String guardianRelationship;
+
+    @Column(name = "phone_umber", columnDefinition = "TEXT")
+    private String phoneNumber;
+
+    @Column(name = "house_type_name", unique = true, length = 50)
+    private String houseTypeName;
 
     @CreationTimestamp
     @Column(name = "created_at")

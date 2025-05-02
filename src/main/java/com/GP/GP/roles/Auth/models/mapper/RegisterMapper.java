@@ -16,7 +16,7 @@ public class RegisterMapper {
                 .role(dto.getRole());
 
         if (dto.getRole() != Role.ADMIN) {
-            builder
+            User.UserBuilder userBuilder = builder
                     .firstName(dto.getFirstName())
                     .lastName(dto.getLastName())
                     .username(dto.getUsername())
@@ -51,7 +51,11 @@ public class RegisterMapper {
                     .passportIssuingAuthority(dto.getPassportIssuingAuthority())
                     .university(university)
                     .media(dto.getMedia())
-                    .annualGrade(dto.getAnnualGrade());
+                    .annualGrade(dto.getAnnualGrade())
+                    .studentCode(dto.getStudentCode())
+                    .guardianRelationship(dto.getGuardianRelationship())
+                    .phoneNumber(dto.getPhoneNumber())
+                    .houseTypeName(dto.getHouseTypeName());
         }
         return builder.build();
     }

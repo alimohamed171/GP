@@ -51,6 +51,10 @@ public class UserMapper {
         existingUser.setTotalGradesHighSchool(dto.getTotalGradesHighSchool());
         existingUser.setPassportNumber(dto.getPassportNumber());
         existingUser.setPassportIssuingAuthority(dto.getPassportIssuingAuthority());
+        existingUser.setStudentCode(dto.getStudentCode());
+        existingUser.setGuardianRelationship(dto.getGuardianRelationship());
+        existingUser.setPhoneNumber(dto.getPhoneNumber());
+        existingUser.setHouseTypeName(dto.getHouseTypeName());
 
     }
 
@@ -112,6 +116,11 @@ public class UserMapper {
                 .passportIssuingAuthority(user.getPassportIssuingAuthority())
                 .securityCheckStatues(user.getSecurityCheck())
                 .notes(user.getNote())
+                .studentCode(user.getStudentCode())
+                .guardianRelationship(user.getGuardianRelationship())
+                .phoneNumber(user.getPhoneNumber())
+                .houseTypeName(user.getHouseTypeName())
+                .annualGrade(user.getAnnualGrade())
                 .build();
     }
 }

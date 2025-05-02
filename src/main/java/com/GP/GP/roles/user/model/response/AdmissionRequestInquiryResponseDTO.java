@@ -20,4 +20,8 @@ public class AdmissionRequestInquiryResponseDTO {
     private String level;
     private Enums.AnnualGrade annualGrade;
     private UniversityResponseDTO university;
+    private String studentCode;
+    private String guardianRelationship;
+    private String phoneNumber;
+    private String houseTypeName;
 }

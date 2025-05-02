@@ -2,6 +2,7 @@ package com.GP.GP.roles.Auth.models.request;
 
 import com.GP.GP.security.Role;
 import com.GP.GP.utill.Enums;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -57,4 +58,8 @@ public class RegisterRequestDTO {
     private String media;
     private Enums.SecurityCheckStatues securityCheck;
     private Enums.AnnualGrade annualGrade;
+    private String studentCode;
+    private String guardianRelationship;
+    private String phoneNumber;
+    private String houseTypeName;
 }

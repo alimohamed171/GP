@@ -97,4 +97,8 @@ public class UpdateUserRequestDTO {
     private String passportIssuingAuthority;
 
     private Enums.AnnualGrade annualGrade;
+    private String studentCode;
+    private String guardianRelationship;
+    private String phoneNumber;
+    private String houseTypeName;
 }
