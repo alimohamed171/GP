@@ -208,8 +208,39 @@ public class UserServiceImpl implements AdmissionRequestService {
 
     @Override
     public ResponseEntity<Object> getSortedApplicants() {
+        Map<String, Double> governorateDistances = Map.ofEntries(
+                Map.entry("Giza", 19.27),
+                Map.entry("Cairo", 20.13),
+                Map.entry("Qalyubia", 51.68),
+                Map.entry("Fayoum", 77.10),
+                Map.entry("Menoufia", 86.96),
+                Map.entry("Beni Suef", 88.41),
+                Map.entry("Beheira", 89.45),
+                Map.entry("Sharqia", 103.44),
+                Map.entry("Suez", 119.56),
+                Map.entry("Ismailia", 123.03),
+                Map.entry("Gharbia", 125.80),
+                Map.entry("Dakahlia", 131.30),
+                Map.entry("Kafr El Sheikh", 142.67),
+                Map.entry("Damietta", 178.39),
+                Map.entry("Port Said", 181.54),
+                Map.entry("Alexandria", 199.70),
+                Map.entry("Minya", 202.43),
+                Map.entry("North Sinai", 230.58),
+                Map.entry("Assiut", 298.04),
+                Map.entry("South Sinai", 322.55),
+                Map.entry("Sohag", 369.52),
+                Map.entry("Red Sea", 378.38),
+                Map.entry("Matrouh", 424.49),
+                Map.entry("Qena", 433.74),
+                Map.entry("Luxor", 481.17),
+                Map.entry("New Valley", 495.46),
+                Map.entry("Aswan", 659.20)
+        );
+
         List<User> users = userRepository.findAll().stream()
                 .filter(user -> user.getSecurityCheck() == Enums.SecurityCheckStatues.ACCEPTED)
+                .filter(this::shouldIncludeUser)
                 .collect(Collectors.toList());
 
         List<User> newUsers = users.stream()
@@ -227,7 +258,9 @@ public class UserServiceImpl implements AdmissionRequestService {
             int ageComparison = u1.getDateOfBirth().compareTo(u2.getDateOfBirth());
             if (ageComparison != 0) return ageComparison;
 
-            return Integer.compare(u2.getResidenceAddress().length(), u1.getResidenceAddress().length());
+            double dist1 = governorateDistances.getOrDefault(u1.getResidenceAddress(), 0.0);
+            double dist2 = governorateDistances.getOrDefault(u2.getResidenceAddress(), 0.0);
+            return Double.compare(dist2, dist1);
         });
 
         oldUsers.sort((u1, u2) -> {
@@ -240,37 +273,44 @@ public class UserServiceImpl implements AdmissionRequestService {
             int ageComparison = u1.getDateOfBirth().compareTo(u2.getDateOfBirth());
             if (ageComparison != 0) return ageComparison;
 
-            return Integer.compare(u2.getResidenceAddress().length(), u1.getResidenceAddress().length());
+            double dist1 = governorateDistances.getOrDefault(u1.getResidenceAddress(), 0.0);
+            double dist2 = governorateDistances.getOrDefault(u2.getResidenceAddress(), 0.0);
+            return Double.compare(dist2, dist1);
         });
 
-
-        List<StudentDto> oldStudentDtos = newUsers.stream()
-                .map(StudentMapper::toDto)
-                .collect(Collectors.toList());
-
-        List<StudentDto> newStudentDtos = oldUsers.stream()
-                .map(StudentMapper::toDto)
-                .collect(Collectors.toList());
-
+        List<StudentDto> oldStudentDtos = newUsers.stream().map(StudentMapper::toDto).collect(Collectors.toList());
+        List<StudentDto> newStudentDtos = oldUsers.stream().map(StudentMapper::toDto).collect(Collectors.toList());
 
         StudentsGroupedResponseDTO groupedResponse = new StudentsGroupedResponseDTO(newStudentDtos, oldStudentDtos);
         BaseResponse response = new BaseResponse(true, "Applicants sorted successfully", groupedResponse);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    private Integer getLevelDiff(String level) {
-        // Map the level names (e.g., "First Year") to numeric values for sorting
-        Map<String, Integer> levelMapping = Map.of(
-                "First Year", 1,
-                "Second Year", 2,
-                "Third Year", 3,
-                "Fourth Year", 4,
-                "Fifth Year", 5
-        );
+    private boolean shouldIncludeUser(User user) {
+        String address = user.getResidenceAddress();
+        if (address == null) return false;
+        String normalized = address.toLowerCase();
 
-        // Get the corresponding numeric value for the level, defaulting to 0 if not found
-        return levelMapping.getOrDefault(level, 0);
+        if (normalized.contains("الواحات") || normalized.contains("el wahat")) return true;
+        if (normalized.contains("كفر شكر") || normalized.contains("kafr shukr")) return true;
+
+        if (normalized.contains("الجيزة") || normalized.contains("giza")) return false;
+        if (normalized.contains("القاهرة") || normalized.contains("cairo")) return false;
+        if (normalized.contains("القليوبية") || normalized.contains("qalyubia")) return false;
+
+        return true;
     }
+
+    private int getLevelDiff(String level) {
+        return switch (level.toLowerCase()) {
+            case "first year" -> 1;
+            case "second year" -> 2;
+            case "third year" -> 3;
+            case "fourth year" -> 4;
+            default -> 0;
+        };
+    }
+
 
 }
 
