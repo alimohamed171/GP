@@ -162,7 +162,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Penalty> penalties;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "annual_grade", length = 50)
     private Enums.AnnualGrade annualGrade;
 
