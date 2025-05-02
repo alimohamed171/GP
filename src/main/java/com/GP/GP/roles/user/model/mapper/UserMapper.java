@@ -55,7 +55,7 @@ public class UserMapper {
         existingUser.setGuardianRelationship(dto.getGuardianRelationship());
         existingUser.setPhoneNumber(dto.getPhoneNumber());
         existingUser.setHouseTypeName(dto.getHouseTypeName());
-
+        existingUser.setWantFood(dto.getWantFood());
     }
 
     public static UpdatedUserResponseDTO mapToUpdatedUserResponseDTO(User user) {
@@ -86,10 +86,8 @@ public class UserMapper {
                                         room.getBuilding().getId(),
                                         room.getBuilding().getName(),
                                         room.getBuilding().getType()
-                                )
-                                        : null
-                        )
-                                : null
+                                ) : null
+                        ) : null
                 )
                 .studentType(user.getStudentType())
                 .residenceAddress(user.getResidenceAddress())
@@ -121,6 +119,7 @@ public class UserMapper {
                 .phoneNumber(user.getPhoneNumber())
                 .houseTypeName(user.getHouseTypeName())
                 .annualGrade(user.getAnnualGrade())
+                .wantFood(user.getWantFood())
                 .build();
     }
 }

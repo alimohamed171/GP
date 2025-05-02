@@ -175,8 +175,11 @@ public class User implements UserDetails {
     @Column(name = "phone_umber", columnDefinition = "TEXT")
     private String phoneNumber;
 
-    @Column(name = "house_type_name", unique = true, length = 50)
+    @Column(name = "house_type_name", length = 50)
     private String houseTypeName;
+
+    @Column(name = "want_food")
+    private Boolean wantFood;
 
     @CreationTimestamp
     @Column(name = "created_at")

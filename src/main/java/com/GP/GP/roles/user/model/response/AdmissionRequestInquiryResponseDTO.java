@@ -24,4 +24,5 @@ public class AdmissionRequestInquiryResponseDTO {
     private String guardianRelationship;
     private String phoneNumber;
     private String houseTypeName;
+    private Boolean wantFood;
 }

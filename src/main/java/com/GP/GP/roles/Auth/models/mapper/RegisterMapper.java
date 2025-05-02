@@ -55,6 +55,7 @@ public class RegisterMapper {
                     .studentCode(dto.getStudentCode())
                     .guardianRelationship(dto.getGuardianRelationship())
                     .phoneNumber(dto.getPhoneNumber())
+                    .wantFood(dto.getWantFood())
                     .houseTypeName(dto.getHouseTypeName());
         }
         return builder.build();
