@@ -17,11 +17,9 @@ public class RoomAssignmentMapper {
                 .roomType(room.getType())
                 .buildingName(room.getBuilding().getName())
                 .studentName(student.getFirstName() + " " + student.getLastName())
-                .studentEmail(student.getUsername())
-                .studentPhoneNumber(student.getMobileNumber())
-                .studentGender(student.getGender())
-                .faculty(student.getFaculty())
-                .level(student.getLevel())
+                .wing(room.getWing())
+                .floorNumber(room.getFloorNumber())
+                .bedNumber(room.getOccupiedBeds())
                 .build();
     }
     public static RoomAssignmentRequestDTO mapToRoomAssignmentRequestDTO(Room room, int userId) {

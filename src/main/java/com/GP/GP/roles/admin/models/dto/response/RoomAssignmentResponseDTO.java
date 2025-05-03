@@ -11,15 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class RoomAssignmentResponseDTO {
+    private String studentName;
     private int roomId;
     private int buildingId;
     private String roomNumber;
-    private Enums.RoomType roomType;
     private String buildingName;
-    private String studentName;
-    private String studentEmail;
-    private String studentPhoneNumber;
-    private Enums.Gender studentGender;
-    private String faculty;
-    private String level;
+    private Enums.RoomType roomType;
+    private String wing;
+    private int floorNumber;
+    private int bedNumber;
+
 }

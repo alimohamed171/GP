@@ -9,11 +9,15 @@ import com.GP.GP.roles.user.model.mapper.ComplaintMapper;
 import com.GP.GP.roles.user.model.request.ComplaintRequestDTO;
 import com.GP.GP.roles.user.model.response.ComplaintResponseDTO;
 import com.GP.GP.roles.user.service.contracts.ComplaintService;
+import com.GP.GP.security.Role;
 import com.GP.GP.utill.base.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -34,13 +38,24 @@ public class ComplaintServiceImpl implements ComplaintService {
     @Override
     public ResponseEntity<Object> createComplaint(ComplaintRequestDTO request, int userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        System.out.println(user.getUsername());
+        String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+
+
+        User loggedInUser = userRepository.findByUsername(loggedInUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
+
+        if (loggedInUser.getId() != userId) {
+            return new ResponseEntity<>(
+                    new BaseResponse(false, "You are not authorized to create a complaint for this user.", null),
+                    HttpStatus.FORBIDDEN);
+        }
+
+        User targetUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Target user not found"));
 
         Complaint complaint = ComplaintMapper.requestToEntity(request);
-        complaint.setUser(user);
+        complaint.setUser(targetUser);
         complaint.setCreatedAt(LocalDateTime.now());
 
         Complaint savedComplaint = complaintRepository.save(complaint);
@@ -105,11 +120,25 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     public ResponseEntity<Object> getComplaintsByUser(int userId) {
-        if (!userRepository.existsById(userId)) {
-            BaseResponse response = new BaseResponse(false, "Complaint not found.", null);
+        String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User loggedInUser = userRepository.findByUsername(loggedInUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
+
+        if (loggedInUser.getId() != userId) {
+            return new ResponseEntity<>(
+                    new BaseResponse(false, "You are not authorized to access  complaints for this user.", null),
+                    HttpStatus.FORBIDDEN);
+        }
+
+        User targetUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Target user not found"));
+
+        List<Complaint> complaints = complaintRepository.findByUserId(targetUser.getId());
+        if (complaints.isEmpty()) {
+            BaseResponse response = new BaseResponse(false, "No complaints found for this user.", null);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
-        List<Complaint> complaints = complaintRepository.findByUserId(userId);
         List<ComplaintResponseDTO> dtos = complaints.stream()
                 .map(ComplaintMapper::entityToResponse)
                 .toList();

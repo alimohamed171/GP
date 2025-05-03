@@ -100,7 +100,7 @@ public class UpdatedUserResponseDTO {
 
     private String passportIssuingAuthority;
     private Enums.SecurityCheckStatues securityCheckStatues;
-    private String notes;
+    private String securityCheckNotes;
 
     private Enums.AnnualGrade annualGrade;
     private String studentCode;
@@ -108,4 +108,5 @@ public class UpdatedUserResponseDTO {
     private String phoneNumber;
     private String houseTypeName;
     private Boolean wantFood;
+    private String AdmissionRequestStatusNotes;
 }
