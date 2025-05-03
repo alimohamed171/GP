@@ -120,11 +120,25 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     public ResponseEntity<Object> getComplaintsByUser(int userId) {
-        if (!userRepository.existsById(userId)) {
-            BaseResponse response = new BaseResponse(false, "Complaint not found.", null);
+        String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User loggedInUser = userRepository.findByUsername(loggedInUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
+
+        if (loggedInUser.getId() != userId) {
+            return new ResponseEntity<>(
+                    new BaseResponse(false, "You are not authorized to access  complaints for this user.", null),
+                    HttpStatus.FORBIDDEN);
+        }
+
+        User targetUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Target user not found"));
+
+        List<Complaint> complaints = complaintRepository.findByUserId(targetUser.getId());
+        if (complaints.isEmpty()) {
+            BaseResponse response = new BaseResponse(false, "No complaints found for this user.", null);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
-        List<Complaint> complaints = complaintRepository.findByUserId(userId);
         List<ComplaintResponseDTO> dtos = complaints.stream()
                 .map(ComplaintMapper::entityToResponse)
                 .toList();
