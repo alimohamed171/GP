@@ -61,4 +61,48 @@ public class RegisterMapper {
         return builder.build();
     }
 
+    public static void updateUserEntity(User user, RegisterRequestDTO dto, University university) {
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setUsername(dto.getUsername());
+        user.setNationalId(dto.getNationalId());
+        user.setMobileNumber(dto.getMobileNumber());
+        user.setFaculty(dto.getFaculty());
+        user.setLevel(dto.getLevel());
+        user.setDateOfBirth(dto.getDateOfBirth());
+        user.setResidenceAddress(dto.getResidenceAddress());
+        user.setDetailedAddress(dto.getDetailedAddress());
+        user.setPlaceOfBirth(dto.getPlaceOfBirth());
+        user.setGender(dto.getGender());
+        user.setReligion(dto.getReligion());
+        user.setFatherName(dto.getFatherName());
+        user.setFatherNationalId(dto.getFatherNationalId());
+        user.setFatherOccupation(dto.getFatherOccupation());
+        user.setFatherPhoneNumber(dto.getFatherPhoneNumber());
+        user.setGuardianName(dto.getGuardianName());
+        user.setGuardianNationalId(dto.getGuardianNationalId());
+        user.setGuardianPhoneNumber(dto.getGuardianPhoneNumber());
+        user.setParentsStatus(dto.getParentsStatus());
+        user.setPreviousAcademicYearGpa(dto.getPreviousAcademicYearGpa());
+        user.setStatus(dto.getStatus());
+        user.setSecurityCheck(dto.getSecurityCheck());
+        user.setHousingInPreviousYears(dto.getHousingInPreviousYears());
+        user.setFamilyAbroad(dto.getFamilyAbroad());
+        user.setSpecialNeeds(dto.getSpecialNeeds());
+        user.setSecondaryDivision(dto.getSecondaryDivision());
+        user.setTotalGradesHighSchool(dto.getTotalGradesHighSchool());
+        user.setPassportNumber(dto.getPassportNumber());
+        user.setPassportIssuingAuthority(dto.getPassportIssuingAuthority());
+        user.setUniversity(university);
+        user.setMedia(dto.getMedia());
+        user.setAnnualGrade(dto.getAnnualGrade());
+        user.setStudentCode(dto.getStudentCode());
+        user.setGuardianRelationship(dto.getGuardianRelationship());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setWantFood(dto.getWantFood());
+        user.setHouseTypeName(dto.getHouseTypeName());
+        user.setRole(dto.getRole());
+    }
+
+
 }

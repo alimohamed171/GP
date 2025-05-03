@@ -33,6 +33,7 @@ public class RegisterResponseDTO {
     private Enums.SecurityCheckStatues securityCheck;
     private String token;
     private String media;
+    private String AdmissionRequestStatusNotes;
 
     public static RegisterResponseDTO mapToRegisterResponseDTO(User user, String token, University university) {
         return RegisterResponseDTO.builder()
@@ -50,6 +51,7 @@ public class RegisterResponseDTO {
                 .token(token)
                 .userID(user.getId())
                 .media(user.getMedia())
+                .AdmissionRequestStatusNotes(user.getAdmissionRequestStatusNotes())
                 .build();
     }
 
