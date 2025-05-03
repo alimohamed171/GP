@@ -1,8 +1,10 @@
 package com.GP.GP.roles.Auth.service;
 
 
+import com.GP.GP.entities.Penalty;
 import com.GP.GP.entities.University;
 import com.GP.GP.entities.User;
+import com.GP.GP.repository.PenaltyRepository;
 import com.GP.GP.repository.UserRepository;
 import com.GP.GP.roles.Auth.models.mapper.RegisterMapper;
 import com.GP.GP.roles.Auth.models.request.LoginRequestDTO;
@@ -12,6 +14,7 @@ import com.GP.GP.roles.Auth.models.response.RegisterResponseDTO;
 import com.GP.GP.roles.admin.models.dto.response.UniversityResponseDTO;
 import com.GP.GP.roles.admin.service.contracts.UniversityService;
 import com.GP.GP.security.*;
+import com.GP.GP.utill.Enums;
 import com.GP.GP.utill.base.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthenticationService {
@@ -34,6 +38,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
+    PenaltyRepository penaltyRepository;
     @Autowired
     private UniversityService universityService;
 
@@ -42,40 +47,70 @@ public class AuthenticationService {
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
             TokenRepository tokenRepository,
-            AuthenticationManager authenticationManager
+            AuthenticationManager authenticationManager,
+            PenaltyRepository penaltyRepository
     ) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.tokenRepository = tokenRepository;
         this.authenticationManager = authenticationManager;
+        this.penaltyRepository = penaltyRepository;
     }
 
 
     public ResponseEntity<Object> register(RegisterRequestDTO request) {
+        Optional<User> existingUser = repository.findByUsernameAndNationalId(request.getUsername(), request.getNationalId());
 
-        // Check if username already exists
-        if (repository.findByUsername(request.getUsername()).isPresent()) {
-            return new ResponseEntity<>(new BaseResponse(false, "User already exists"), HttpStatus.CONFLICT);
+        University university = (request.getRole() == Role.ADMIN || request.getRole() == Role.EDIT_ADMIN || request.getRole() == Role.ViEW_ADMIN)
+                ? null
+                : universityService.findUniversityById(request.getUniversityId());
+
+        User user = existingUser.map(u -> {
+            // Update old user info
+            RegisterMapper.updateUserEntity(u, request, university);
+            u.setPassword(passwordEncoder.encode(request.getPassword()));
+            return u;
+        }).orElseGet(() -> {
+            // New user
+            User newUser = RegisterMapper.toUserEntity(request, university);
+            newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+            return newUser;
+        });
+
+        boolean isNewStudent = "First Year".equalsIgnoreCase(request.getLevel());
+        String place = request.getPlaceOfBirth() != null ? request.getPlaceOfBirth().trim().toLowerCase() : "";
+        boolean isFailed = request.getAnnualGrade() == Enums.AnnualGrade.FAIL;
+
+        List<Penalty> penalties = existingUser
+                .map(value -> penaltyRepository.findByUserId(value.getId()))
+                .orElse(List.of());
+
+        boolean hasPenalty = !penalties.isEmpty();
+
+        if (!isNewStudent && (isFailed || hasPenalty)) {
+            user.setStatus(Enums.AdmissionRequestStatues.REJECTED);
+            String reason = hasPenalty
+                    ? "Student has a penalty: " + penalties.get(0).getPenaltyTitle() + " (" + penalties.get(0).getReason() + ")"
+                    : "Student has failed the previous academic year.";
+            user.setAdmissionRequestStatusNotes(reason);
+        } else if (isNewStudent && (place.contains("cairo") || place.contains("giza") || place.contains("qalyubia"))
+                && !(place.contains("kafr shukr") || place.contains("el wahat"))) {
+            user.setStatus(Enums.AdmissionRequestStatues.REJECTED);
+            user.setAdmissionRequestStatusNotes("Rejected due to restricted place of birth.");
+        } else {
+            user.setStatus(Enums.AdmissionRequestStatues.UNDER_REVIEW);
+            user.setAdmissionRequestStatusNotes("Your request is under review.");
         }
 
-        // Find university for non-admin users
-        University university =
-                (request.getRole() == Role.ADMIN || request.getRole() == Role.EDIT_ADMIN
-                || request.getRole() == Role.ViEW_ADMIN)
-                ? null : universityService.findUniversityById(request.getUniversityId());
-
-        // Map user entity
-        User user = RegisterMapper.toUserEntity(request, university);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user = repository.save(user);
 
-        // Generate JWT token
         String jwt = jwtService.generateToken(user);
         saveUserToken(jwt, user);
 
         RegisterResponseDTO responseDTO = RegisterResponseDTO.mapToRegisterResponseDTO(user, jwt, university);
-        BaseResponse response = new BaseResponse(true, "Admission request updated\"created\" successfully", responseDTO);
+        BaseResponse response = new BaseResponse(true, "User registered successfully", responseDTO);
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
