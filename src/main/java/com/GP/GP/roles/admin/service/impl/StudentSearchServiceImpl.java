@@ -32,14 +32,11 @@ public class StudentSearchServiceImpl implements StudentSearchService {
         String usernamePattern = "%" + request.getUsername() + "%";
         String nationalIdPattern = "%" + request.getNationalId() + "%";
 
-        // Log البحث قبل الاستعلام
         logger.info("Searching for students with username like {} and nationalId like {}", usernamePattern, nationalIdPattern);
 
-        // البحث باستخدام LIKE
         List<User> students = userRepository.findByUsernameLikeAndNationalIdLike(usernamePattern, nationalIdPattern);
 
         if (students.isEmpty()) {
-            // Log عدم وجود أي نتائج
             logger.warn("No students found with the provided criteria");
             return new ResponseEntity<>(new BaseResponse(false, "No students found"), HttpStatus.NOT_FOUND);
         }
