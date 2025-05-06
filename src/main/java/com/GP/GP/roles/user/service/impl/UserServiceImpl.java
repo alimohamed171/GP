@@ -251,37 +251,25 @@ public class UserServiceImpl implements AdmissionRequestService {
                 .filter(user -> !"First Year".equalsIgnoreCase(user.getLevel()))
                 .collect(Collectors.toList());
 
-        newUsers.sort((u1, u2) -> {
-            int gradeComparison = Float.compare(u2.getTotalGradesHighSchool(), u1.getTotalGradesHighSchool());
-            if (gradeComparison != 0) return gradeComparison;
+        Comparator<User> newStudentComparator = Comparator
+                .comparingDouble(User::getTotalGradesHighSchool).reversed()
+                .thenComparing(User::getDateOfBirth, Comparator.reverseOrder())
+                .thenComparing((User u) -> governorateDistances.getOrDefault(u.getPlaceOfBirth(), 0.0), Comparator.reverseOrder());
 
-            int ageComparison = u1.getDateOfBirth().compareTo(u2.getDateOfBirth());
-            if (ageComparison != 0) return ageComparison;
+        Comparator<User> oldStudentComparator = Comparator
+                .comparingInt((User u) -> getLevelDiff(u.getLevel()))
+                .thenComparingDouble(User::getPreviousAcademicYearGpa).reversed()
+                .thenComparing(User::getDateOfBirth, Comparator.reverseOrder())
+                .thenComparing((User u) -> governorateDistances.getOrDefault(u.getPlaceOfBirth(), 0.0), Comparator.reverseOrder());
 
-            double dist1 = governorateDistances.getOrDefault(u1.getResidenceAddress(), 0.0);
-            double dist2 = governorateDistances.getOrDefault(u2.getResidenceAddress(), 0.0);
-            return Double.compare(dist2, dist1);
-        });
 
-        oldUsers.sort((u1, u2) -> {
-            int levelDiff = Integer.compare(getLevelDiff(u2.getLevel()), getLevelDiff(u1.getLevel()));
-            if (levelDiff != 0) return levelDiff;
+        newUsers.sort(newStudentComparator);
+        oldUsers.sort(oldStudentComparator);
 
-            int gpaComparison = Double.compare(u2.getPreviousAcademicYearGpa(), u1.getPreviousAcademicYearGpa());
-            if (gpaComparison != 0) return gpaComparison;
+        List<StudentDto> newStudentDtos = newUsers.stream().map(StudentMapper::toDto).collect(Collectors.toList());
+        List<StudentDto> oldStudentDtos = oldUsers.stream().map(StudentMapper::toDto).collect(Collectors.toList());
 
-            int ageComparison = u1.getDateOfBirth().compareTo(u2.getDateOfBirth());
-            if (ageComparison != 0) return ageComparison;
-
-            double dist1 = governorateDistances.getOrDefault(u1.getResidenceAddress(), 0.0);
-            double dist2 = governorateDistances.getOrDefault(u2.getResidenceAddress(), 0.0);
-            return Double.compare(dist2, dist1);
-        });
-
-        List<StudentDto> oldStudentDtos = newUsers.stream().map(StudentMapper::toDto).collect(Collectors.toList());
-        List<StudentDto> newStudentDtos = oldUsers.stream().map(StudentMapper::toDto).collect(Collectors.toList());
-
-        StudentsGroupedResponseDTO groupedResponse = new StudentsGroupedResponseDTO(newStudentDtos, oldStudentDtos);
+        StudentsGroupedResponseDTO groupedResponse = new StudentsGroupedResponseDTO(oldStudentDtos,newStudentDtos );
         BaseResponse response = new BaseResponse(true, "Applicants sorted successfully", groupedResponse);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -310,6 +298,7 @@ public class UserServiceImpl implements AdmissionRequestService {
             default -> 0;
         };
     }
+
 
 
 }
