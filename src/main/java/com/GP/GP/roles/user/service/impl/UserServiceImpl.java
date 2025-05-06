@@ -209,33 +209,33 @@ public class UserServiceImpl implements AdmissionRequestService {
     @Override
     public ResponseEntity<Object> getSortedApplicants() {
         Map<String, Double> governorateDistances = Map.ofEntries(
-                Map.entry("Giza", 19.27),
-                Map.entry("Cairo", 20.13),
-                Map.entry("Qalyubia", 51.68),
-                Map.entry("Fayoum", 77.10),
-                Map.entry("Menoufia", 86.96),
-                Map.entry("Beni Suef", 88.41),
-                Map.entry("Beheira", 89.45),
-                Map.entry("Sharqia", 103.44),
-                Map.entry("Suez", 119.56),
-                Map.entry("Ismailia", 123.03),
-                Map.entry("Gharbia", 125.80),
-                Map.entry("Dakahlia", 131.30),
-                Map.entry("Kafr El Sheikh", 142.67),
-                Map.entry("Damietta", 178.39),
-                Map.entry("Port Said", 181.54),
-                Map.entry("Alexandria", 199.70),
-                Map.entry("Minya", 202.43),
-                Map.entry("North Sinai", 230.58),
-                Map.entry("Assiut", 298.04),
-                Map.entry("South Sinai", 322.55),
-                Map.entry("Sohag", 369.52),
-                Map.entry("Red Sea", 378.38),
-                Map.entry("Matrouh", 424.49),
-                Map.entry("Qena", 433.74),
-                Map.entry("Luxor", 481.17),
-                Map.entry("New Valley", 495.46),
-                Map.entry("Aswan", 659.20)
+                Map.entry("الجيزة", 19.27),
+                Map.entry("القاهرة", 20.13),
+                Map.entry("القليوبية", 51.68),
+                Map.entry("الفيوم", 77.10),
+                Map.entry("المنوفية", 86.96),
+                Map.entry("بني سويف", 88.41),
+                Map.entry("البحيرة", 89.45),
+                Map.entry("الشرقية", 103.44),
+                Map.entry("السويس", 119.56),
+                Map.entry("الإسماعيلية", 123.03),
+                Map.entry("الغربية", 125.80),
+                Map.entry("الدقهلية", 131.30),
+                Map.entry("كفر الشيخ", 142.67),
+                Map.entry("دمياط", 178.39),
+                Map.entry("بورسعيد", 181.54),
+                Map.entry("الإسكندرية", 199.70),
+                Map.entry("المنيا", 202.43),
+                Map.entry("شمال سيناء", 230.58),
+                Map.entry("أسيوط", 298.04),
+                Map.entry("جنوب سيناء", 322.55),
+                Map.entry("سوهاج", 369.52),
+                Map.entry("البحر الأحمر", 378.38),
+                Map.entry("مطروح", 424.49),
+                Map.entry("قنا", 433.74),
+                Map.entry("الأقصر", 481.17),
+                Map.entry("الوادي الجديد", 495.46),
+                Map.entry("أسوان", 659.20)
         );
 
         List<User> users = userRepository.findAll().stream()
@@ -244,11 +244,11 @@ public class UserServiceImpl implements AdmissionRequestService {
                 .collect(Collectors.toList());
 
         List<User> newUsers = users.stream()
-                .filter(user -> "First Year".equalsIgnoreCase(user.getLevel()))
+                .filter(user -> "first".equalsIgnoreCase(user.getLevel()))
                 .collect(Collectors.toList());
 
         List<User> oldUsers = users.stream()
-                .filter(user -> !"First Year".equalsIgnoreCase(user.getLevel()))
+                .filter(user -> !"first".equalsIgnoreCase(user.getLevel()))
                 .collect(Collectors.toList());
 
         Comparator<User> newStudentComparator = Comparator
@@ -262,14 +262,13 @@ public class UserServiceImpl implements AdmissionRequestService {
                 .thenComparing(User::getDateOfBirth, Comparator.reverseOrder())
                 .thenComparing((User u) -> governorateDistances.getOrDefault(u.getPlaceOfBirth(), 0.0), Comparator.reverseOrder());
 
-
         newUsers.sort(newStudentComparator);
         oldUsers.sort(oldStudentComparator);
 
         List<StudentDto> newStudentDtos = newUsers.stream().map(StudentMapper::toDto).collect(Collectors.toList());
         List<StudentDto> oldStudentDtos = oldUsers.stream().map(StudentMapper::toDto).collect(Collectors.toList());
 
-        StudentsGroupedResponseDTO groupedResponse = new StudentsGroupedResponseDTO(oldStudentDtos,newStudentDtos );
+        StudentsGroupedResponseDTO groupedResponse = new StudentsGroupedResponseDTO(oldStudentDtos, newStudentDtos);
         BaseResponse response = new BaseResponse(true, "Applicants sorted successfully", groupedResponse);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -291,13 +290,14 @@ public class UserServiceImpl implements AdmissionRequestService {
 
     private int getLevelDiff(String level) {
         return switch (level.toLowerCase()) {
-            case "first year" -> 1;
-            case "second year" -> 2;
-            case "third year" -> 3;
-            case "fourth year" -> 4;
+            case "first" -> 1;
+            case "second" -> 2;
+            case "third" -> 3;
+            case "fourth" -> 4;
             default -> 0;
         };
     }
+
 
 
 
