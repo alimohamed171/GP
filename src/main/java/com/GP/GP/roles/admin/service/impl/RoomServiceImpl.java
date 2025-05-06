@@ -30,13 +30,22 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public ResponseEntity<Object> addRoom(RoomRequestDTO dto) {
-        Optional<Building> building = buildingRepository.findById(dto.getBuildingId());
+        Optional<Building> buildingOpt = buildingRepository.findById(dto.getBuildingId());
 
-        if (building.isEmpty()) {
+        if (buildingOpt.isEmpty()) {
             return new ResponseEntity<>(new BaseResponse(false, "Building not found."), HttpStatus.NOT_FOUND);
         }
-
-        Room room = RoomMapper.toRoomEntity(dto, building.get());
+        Building building = buildingOpt.get();
+        if (dto.getFloorNumber() > building.getFloorsCount() || dto.getFloorNumber()< 1) {
+            return new ResponseEntity<>(
+                    new BaseResponse(false, "Invalid floor number. Building has only " + building.getFloorsCount() + " floors."),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+        if (roomRepository.existsByRoomNumberAndBuildingId(dto.getRoomNumber(), dto.getBuildingId())) {
+            return new ResponseEntity<>(new BaseResponse(false, "Room number already exists in this building."), HttpStatus.BAD_REQUEST);
+        }
+        Room room = RoomMapper.toRoomEntity(dto, buildingOpt.get());
         room = roomRepository.save(room);
 
         RoomResponseDTO responseDTO = RoomMapper.toRoomResponseDTO(room);

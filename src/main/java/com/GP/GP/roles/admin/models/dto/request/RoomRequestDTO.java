@@ -25,9 +25,9 @@ public class RoomRequestDTO {
     @NotNull(message = "Room type is required.")
     private Enums.RoomType type;
 
-    private Integer currentOccupancy = 0; // default value to 0
+    private Integer currentOccupancy = 0;
 
-    private Enums.RoomStatus status = Enums.RoomStatus.AVAILABLE; // default status
+    private Enums.RoomStatus status = Enums.RoomStatus.AVAILABLE;
 
     @NotNull(message = "Floor number is required.")
     @Min(value = 0, message = "Floor number must be at least 0.")
@@ -41,7 +41,7 @@ public class RoomRequestDTO {
     private Integer bedCount;
 
     @Min(value = 0, message = "Occupied beds cannot be negative.")
-    private Integer occupiedBeds = 0; // default value to 0 if not provided
+    private Integer occupiedBeds = 0;
 
     @NotNull(message = "Building ID is required.")
     private Integer buildingId;

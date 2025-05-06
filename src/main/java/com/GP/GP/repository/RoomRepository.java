@@ -37,5 +37,7 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
     List<Room> findAvailableRoomsByBuildingTypeAndRoomType(
             @Param("buildingType") Enums.BuildingType buildingType,
             @Param("roomType") Enums.RoomType roomType);
+
+    boolean existsByRoomNumberAndBuildingId(String roomNumber, Integer buildingId);
 }
 
