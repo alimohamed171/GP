@@ -35,10 +35,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -241,7 +243,7 @@ public class UserServiceImpl implements AdmissionRequestService {
         List<User> users = userRepository.findAll().stream()
                 .filter(user -> user.getSecurityCheck() == Enums.SecurityCheckStatues.ACCEPTED)
                 .filter(this::shouldIncludeUser)
-                .collect(Collectors.toList());
+                .toList();
 
         List<User> newUsers = users.stream()
                 .filter(user -> "first".equalsIgnoreCase(user.getLevel()))
@@ -252,14 +254,16 @@ public class UserServiceImpl implements AdmissionRequestService {
                 .collect(Collectors.toList());
 
         Comparator<User> newStudentComparator = Comparator
-                .comparingDouble(User::getTotalGradesHighSchool).reversed()
-                .thenComparing(User::getDateOfBirth, Comparator.reverseOrder())
+                .comparingDouble((User u) -> Optional.ofNullable(u.getTotalGradesHighSchool()).orElse(0.0F)) // Handle null grades
+                .reversed()
+                .thenComparing((User u) -> Optional.ofNullable(u.getDateOfBirth()).orElse(LocalDate.from(LocalDateTime.MIN)), Comparator.reverseOrder()) // Handle null birth date
                 .thenComparing((User u) -> governorateDistances.getOrDefault(u.getPlaceOfBirth(), 0.0), Comparator.reverseOrder());
 
         Comparator<User> oldStudentComparator = Comparator
                 .comparingInt((User u) -> getLevelDiff(u.getLevel()))
-                .thenComparingDouble(User::getPreviousAcademicYearGpa).reversed()
-                .thenComparing(User::getDateOfBirth, Comparator.reverseOrder())
+                .thenComparingDouble(u -> Optional.ofNullable(u.getPreviousAcademicYearGpa()).orElse(0.0)) // Handle null GPA
+                .reversed()
+                .thenComparing((User u) -> Optional.ofNullable(u.getDateOfBirth()).orElse(LocalDate.from(LocalDateTime.MIN)), Comparator.reverseOrder()) // Handle null birth date
                 .thenComparing((User u) -> governorateDistances.getOrDefault(u.getPlaceOfBirth(), 0.0), Comparator.reverseOrder());
 
         newUsers.sort(newStudentComparator);
@@ -274,16 +278,14 @@ public class UserServiceImpl implements AdmissionRequestService {
     }
 
     private boolean shouldIncludeUser(User user) {
-        String address = user.getResidenceAddress();
-        if (address == null) return false;
-        String normalized = address.toLowerCase();
+        String address = Optional.ofNullable(user.getResidenceAddress()).orElse("").toLowerCase();
 
-        if (normalized.contains("الواحات") || normalized.contains("el wahat")) return true;
-        if (normalized.contains("كفر شكر") || normalized.contains("kafr shukr")) return true;
+        if (address.contains("الواحات") || address.contains("el wahat")) return true;
+        if (address.contains("كفر شكر") || address.contains("kafr shukr")) return true;
 
-        if (normalized.contains("الجيزة") || normalized.contains("giza")) return false;
-        if (normalized.contains("القاهرة") || normalized.contains("cairo")) return false;
-        if (normalized.contains("القليوبية") || normalized.contains("qalyubia")) return false;
+        if (address.contains("الجيزة") || address.contains("giza")) return false;
+        if (address.contains("القاهرة") || address.contains("cairo")) return false;
+        if (address.contains("القليوبية") || address.contains("qalyubia")) return false;
 
         return true;
     }
@@ -297,7 +299,6 @@ public class UserServiceImpl implements AdmissionRequestService {
             default -> 0;
         };
     }
-
 
 
 
