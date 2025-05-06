@@ -5,6 +5,7 @@ import com.GP.GP.entities.User;
 import com.GP.GP.security.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findByRole(Role role);
     Optional<User> findByUsernameAndNationalId(String username, String nationalId);
 
+    @Query("SELECT u FROM User u WHERE u.username LIKE :username AND u.nationalId LIKE :nationalId")
+    List<User> findByUsernameLikeAndNationalIdLike(@Param("username") String username, @Param("nationalId") String nationalId);
 }

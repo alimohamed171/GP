@@ -4,6 +4,7 @@ import com.GP.GP.entities.User;
 import com.GP.GP.roles.admin.models.dto.response.StudentSearchResponseDTO;
 
 public class StudentSearchMapper {
+
     public static StudentSearchResponseDTO mapStudentToDTO(User user) {
         return StudentSearchResponseDTO.builder()
                 .id(user.getId())
