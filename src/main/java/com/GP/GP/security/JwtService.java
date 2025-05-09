@@ -36,7 +36,8 @@ public class JwtService {
                 .map(t -> !t.isLoggedOut())
                 .orElse(false);
 
-        return (username.equals(user.getUsername())) && !isTokenExpired(token) && validToken;
+        //!isTokenExpired(token) &&
+        return (username.equals(user.getUsername())) &&  validToken;
     }
 
     private boolean isTokenExpired(String token) {
@@ -67,7 +68,7 @@ public class JwtService {
                 .builder()
                 .subject(user.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 24*60*60*1000 ))
+                .expiration(new Date(System.currentTimeMillis() + 24*60*60*100000000 ))
                 .signWith(getSigninKey())
                 .compact();
 
