@@ -1,6 +1,7 @@
 package com.GP.GP.roles.user.controller;
 
 import com.GP.GP.entities.User;
+import com.GP.GP.roles.admin.models.dto.request.AdmissionStatusNotesDTO;
 import com.GP.GP.roles.user.model.dto.AdmissionRequestDTO;
 import com.GP.GP.roles.user.model.request.UpdateUserRequestDTO;
 import com.GP.GP.roles.user.model.request.UserFilterDTO;
@@ -79,8 +80,8 @@ public class UserController {
 
     // update statues ->admin (admissionId, enum.Admission status )
     @PutMapping("/admin/edit/admission-requests/{id}/status")
-    public ResponseEntity<Object> updateAdmissionRequestStatus(@PathVariable int id, @RequestParam Enums.AdmissionRequestStatues status) {
-        return admissionRequestService.updateAdmissionRequestStatues(id, status);
+    public ResponseEntity<Object> updateAdmissionRequestStatus(@PathVariable int id, @RequestParam Enums.AdmissionRequestStatues status,@RequestBody AdmissionStatusNotesDTO statusNotes) {
+        return admissionRequestService.updateAdmissionRequestStatues(id, status,statusNotes);
     }
 
     @GetMapping("/public/admission-requests/nid/{nationalId}/status")

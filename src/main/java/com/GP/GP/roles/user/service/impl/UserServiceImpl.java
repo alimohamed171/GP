@@ -3,6 +3,7 @@ package com.GP.GP.roles.user.service.impl;
 import com.GP.GP.entities.University;
 import com.GP.GP.repository.AccommodationRepository;
 import com.GP.GP.repository.AdmissionRequestRepository;
+import com.GP.GP.roles.admin.models.dto.request.AdmissionStatusNotesDTO;
 import com.GP.GP.roles.admin.service.contracts.UniversityService;
 import com.GP.GP.roles.user.model.dto.StudentDto;
 import com.GP.GP.roles.user.model.dto.StudentPriorityDto;
@@ -68,7 +69,6 @@ public class UserServiceImpl implements AdmissionRequestService {
 
         admissionRequest = AdmissionRequestMapper.toEntity(admissionRequestDTO, user, university);
 
-        // why do you need to put it in the DTO !!
         admissionRequest.setStatus(Enums.AdmissionRequestStatues.UNDER_REVIEW);
         admissionRequest.setCreatedAt(LocalDateTime.now());
 
@@ -157,11 +157,13 @@ public class UserServiceImpl implements AdmissionRequestService {
     }
 
     @Override
-    public ResponseEntity<Object> updateAdmissionRequestStatues(int id, Enums.AdmissionRequestStatues status) {
+    public ResponseEntity<Object> updateAdmissionRequestStatues(int id, Enums.AdmissionRequestStatues status, AdmissionStatusNotesDTO statusNotes) {
         if (status == null) {
             return new ResponseEntity<>(new BaseResponse(false, "Status cannot be null", null), HttpStatus.BAD_REQUEST);
         }
-
+        if (statusNotes.getAdmissionStatusNotes() == null || statusNotes.getAdmissionStatusNotes().trim().isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "Status note cannot be empty", null), HttpStatus.BAD_REQUEST);
+        }
 
         if (!userRepository.existsById(id)) {
             BaseResponse response = new BaseResponse(false, "Admission request not found", null);
@@ -175,6 +177,7 @@ public class UserServiceImpl implements AdmissionRequestService {
         }
 
         existingRequest.setStatus(status);
+        existingRequest.setAdmissionRequestStatusNotes(statusNotes.getAdmissionStatusNotes());
 
         User updatedRequest = userRepository.save(existingRequest);
         UpdatedUserResponseDTO responseDTO = UserMapper.mapToUpdatedUserResponseDTO(updatedRequest);

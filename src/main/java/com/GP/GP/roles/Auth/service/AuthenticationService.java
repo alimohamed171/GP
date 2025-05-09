@@ -100,7 +100,9 @@ public class AuthenticationService {
             user.setAdmissionRequestStatusNotes("Rejected due to restricted place of birth.");
         } else {
             user.setStatus(Enums.AdmissionRequestStatues.UNDER_REVIEW);
+            user.setSecurityCheck(Enums.SecurityCheckStatues.PENDING);
             user.setAdmissionRequestStatusNotes("Your request is under review.");
+            user.setSecurityCheckNotes("Your request is pending until security check done.");
         }
 
         user = repository.save(user);
