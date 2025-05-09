@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.lang.reflect.Method;
+
 @Aspect
 @Component
 public class AdminActionLoggingAspect {
@@ -50,14 +52,16 @@ public class AdminActionLoggingAspect {
         // Extract entity name
         String controllerClass = joinPoint.getTarget().getClass().getSimpleName();
         String entityName = controllerClass.replace("Controller", "");
+        String entityExtraInfo = extractEntityNameFromArgs(args);
 
         // Create a human-readable description
         String readableDescription = switch (actionType) {
-            case "ADD" -> "Created a new " + entityName;
-            case "UPDATE" -> "Updated an existing " + entityName;
-            case "DELETE" -> "Deleted a " + entityName;
+            case "ADD" -> "Created a new " + entityName + (isValidName(entityExtraInfo) ? " named \"" + entityExtraInfo + "\"" : "");
+            case "UPDATE" -> "Updated an existing " + entityName + (isValidName(entityExtraInfo) ? " named \"" + entityExtraInfo + "\"" : "");
+            case "DELETE" -> "Deleted a " + entityName + (isValidName(entityExtraInfo) ? " named \"" + entityExtraInfo + "\"" : "");
             default -> methodName + " executed on " + entityName;
         };
+
         String ipAddress = request.getHeader("X-Forwarded-For");
         if (ipAddress == null || ipAddress.isEmpty()) {
             ipAddress = request.getRemoteAddr();
@@ -82,4 +86,22 @@ public class AdminActionLoggingAspect {
         }
         return "N/A";
     }
+    private String extractEntityNameFromArgs(Object[] args) {
+        for (Object arg : args) {
+            try {
+                // Check if the object has a getName() method
+                Method getNameMethod = arg.getClass().getMethod("getName");
+                Object name = getNameMethod.invoke(arg);
+                if (name instanceof String) {
+                    return (String) name;
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        return "N/A";
+    }
+    private boolean isValidName(String name) {
+        return name != null && !name.trim().isEmpty() && !"N/A".equalsIgnoreCase(name.trim());
+    }
+
 }
