@@ -1,6 +1,7 @@
 package com.GP.GP.roles.user.service.contracts;
 
 import com.GP.GP.entities.User;
+import com.GP.GP.roles.admin.models.dto.request.AdmissionStatusNotesDTO;
 import com.GP.GP.roles.user.model.dto.AdmissionRequestDTO;
 import com.GP.GP.roles.user.model.request.UpdateUserRequestDTO;
 import com.GP.GP.roles.user.model.request.UserFilterDTO;
@@ -16,7 +17,7 @@ public interface AdmissionRequestService {
     ResponseEntity<Object> getAllAdmissionRequests(List<User> filteredRequests);
     ResponseEntity<Object> getAdmissionRequestByUserId(int uerId);
     ResponseEntity<Object> getAdmissionRequestById(int id);
-    ResponseEntity<Object> updateAdmissionRequestStatues(int id, Enums.AdmissionRequestStatues status);
+    ResponseEntity<Object> updateAdmissionRequestStatues(int id, Enums.AdmissionRequestStatues status, AdmissionStatusNotesDTO statusNotes);
     ResponseEntity<Object> getApplicationStatusByNID(String nationalId);
     List <User> filterAdmissionRequests(UserFilterDTO filteredRequests);
 
