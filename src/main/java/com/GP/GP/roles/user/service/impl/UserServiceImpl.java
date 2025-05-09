@@ -299,11 +299,12 @@ public class UserServiceImpl implements AdmissionRequestService {
             case "second" -> 2;
             case "third" -> 3;
             case "fourth" -> 4;
+            case "fifth" -> 5;
+            case "sixth" -> 6;
+            case "seventh" -> 7;
             default -> 0;
         };
     }
-
-
 
 }
 

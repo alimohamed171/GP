@@ -2,6 +2,7 @@ package com.GP.GP.roles.Auth.service;
 
 
 import com.GP.GP.entities.Penalty;
+import com.GP.GP.entities.Room;
 import com.GP.GP.entities.University;
 import com.GP.GP.entities.User;
 import com.GP.GP.repository.PenaltyRepository;
@@ -12,6 +13,7 @@ import com.GP.GP.roles.Auth.models.request.RegisterRequestDTO;
 import com.GP.GP.roles.Auth.models.response.LoginResponseDTO;
 import com.GP.GP.roles.Auth.models.response.RegisterResponseDTO;
 import com.GP.GP.roles.admin.models.dto.response.UniversityResponseDTO;
+import com.GP.GP.roles.admin.service.contracts.RoomAssignmentService;
 import com.GP.GP.roles.admin.service.contracts.UniversityService;
 import com.GP.GP.security.*;
 import com.GP.GP.utill.Enums;
@@ -35,6 +37,7 @@ public class AuthenticationService {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final RoomAssignmentService roomAssignmentService;
     private final JwtService jwtService;
     private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
@@ -48,7 +51,8 @@ public class AuthenticationService {
             JwtService jwtService,
             TokenRepository tokenRepository,
             AuthenticationManager authenticationManager,
-            PenaltyRepository penaltyRepository
+            PenaltyRepository penaltyRepository,
+            RoomAssignmentService roomAssignmentService
     ) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
@@ -56,6 +60,7 @@ public class AuthenticationService {
         this.tokenRepository = tokenRepository;
         this.authenticationManager = authenticationManager;
         this.penaltyRepository = penaltyRepository;
+        this.roomAssignmentService = roomAssignmentService;
     }
 
 
@@ -67,18 +72,16 @@ public class AuthenticationService {
                 : universityService.findUniversityById(request.getUniversityId());
 
         User user = existingUser.map(u -> {
-            // Update old user info
             RegisterMapper.updateUserEntity(u, request, university);
             u.setPassword(passwordEncoder.encode(request.getPassword()));
             return u;
         }).orElseGet(() -> {
-            // New user
             User newUser = RegisterMapper.toUserEntity(request, university);
             newUser.setPassword(passwordEncoder.encode(request.getPassword()));
             return newUser;
         });
 
-        boolean isNewStudent = "First Year".equalsIgnoreCase(request.getLevel());
+        boolean isNewStudent = "first".equalsIgnoreCase(request.getLevel());
         String place = request.getPlaceOfBirth() != null ? request.getPlaceOfBirth().trim().toLowerCase() : "";
         boolean isFailed = request.getAnnualGrade() == Enums.AnnualGrade.FAIL;
 
@@ -94,10 +97,21 @@ public class AuthenticationService {
                     ? "Student has a penalty: " + penalties.get(0).getPenaltyTitle() + " (" + penalties.get(0).getReason() + ")"
                     : "Student has failed the previous academic year.";
             user.setAdmissionRequestStatusNotes(reason);
-        } else if (isNewStudent && (place.contains("cairo") || place.contains("giza") || place.contains("qalyubia"))
-                && !(place.contains("kafr shukr") || place.contains("el wahat"))) {
+
+            if (existingUser.isPresent() && existingUser.get().getRoom() != null) {
+                Room oldRoom = existingUser.get().getRoom();
+                roomAssignmentService.removeStudentFromRoom(existingUser.get().getId(), oldRoom.getId());
+            }
+        } else if (isNewStudent && (place.contains("القاهرة") || place.contains("الجيزة") || place.contains("القليوبية"))
+                && !(place.contains("كفر شكر") || place.contains("الواحات البحريه"))) {
             user.setStatus(Enums.AdmissionRequestStatues.REJECTED);
             user.setAdmissionRequestStatusNotes("Rejected due to restricted place of birth.");
+
+            if (existingUser.isPresent() && existingUser.get().getRoom() != null) {
+                Room oldRoom = existingUser.get().getRoom();
+                roomAssignmentService.removeStudentFromRoom(existingUser.get().getId(), oldRoom.getId());
+            }
+
         } else {
             user.setStatus(Enums.AdmissionRequestStatues.UNDER_REVIEW);
             user.setSecurityCheck(Enums.SecurityCheckStatues.PENDING);
