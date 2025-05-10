@@ -305,7 +305,7 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
     private static void createSheet(Workbook workbook, String sheetName, List<StudentDto> students) {
         Sheet sheet = workbook.createSheet(sheetName);
 
-        String[] headers = {"الاسم", "الرقم القومي", "المستوى الدراسي", "الكليه", "رقم الهاتف","حالة الطلب","ملاحظات"};
+        String[] headers = {"اسم الطالب", "الرقم القومي", "المستوى الدراسي", "الكليه", "رقم الهاتف","حالة الطلب","ملاحظات"};
         Row headerRow = sheet.createRow(0);
         for (int i = 0; i < headers.length; i++) {
             headerRow.createCell(i).setCellValue(headers[i]);
