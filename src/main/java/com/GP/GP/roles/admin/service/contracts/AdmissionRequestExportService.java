@@ -12,5 +12,6 @@ public interface AdmissionRequestExportService {
     List<User> filterAdmissionRequests(AdmissionRequestFilterDTO filterDTO);
     ByteArrayInputStream exportFilteredAdmissionRequestsToExcel(List<User> filteredRequests, List<String> selectedColumns);
     ByteArrayInputStream generateSecurityCheckTemplate();
+    ByteArrayInputStream exportSortedApplicantsToExcelTwoSheets();
 
 }

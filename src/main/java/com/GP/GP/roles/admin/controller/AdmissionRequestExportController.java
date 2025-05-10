@@ -120,5 +120,19 @@ public class AdmissionRequestExportController {
         IOUtils.copy(template, response.getOutputStream());
         response.flushBuffer();
     }
+    @GetMapping("/admin/view/download-sorted-applicants")
+    public ResponseEntity<Object> downloadSortedApplicants() {
+        ByteArrayInputStream excelFile = exportService.exportSortedApplicantsToExcelTwoSheets();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename= Sorted_Applicants" + ".xlsx");
+
+        // Return the file as the response
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(excelFile.readAllBytes());
+    }
+
 
 }
