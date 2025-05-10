@@ -91,19 +91,30 @@ public class AuthenticationService {
 
         boolean hasPenalty = !penalties.isEmpty();
 
-        if (!isNewStudent && (isFailed || hasPenalty)) {
+        boolean isRestrictedPlace = (place.contains("القاهرة") || place.contains("الجيزة") || place.contains("القليوبية"))
+                && !(place.contains("كفر شكر") || place.contains("الواحات البحرية"));
+
+        if (!isNewStudent && (isFailed || hasPenalty || isRestrictedPlace)) {
             user.setStatus(Enums.AdmissionRequestStatues.REJECTED);
-            String reason = hasPenalty
-                    ? "Student has a penalty: " + penalties.get(0).getPenaltyTitle() + " (" + penalties.get(0).getReason() + ")"
-                    : "Student has failed the previous academic year.";
+
+            String reason;
+            if (isRestrictedPlace) {
+                reason = "Rejected due to restricted place of birth.";
+            } else if (hasPenalty) {
+                Penalty firstPenalty = penalties.get(0);
+                reason = "Student has a penalty: " + firstPenalty.getPenaltyTitle() + " (" + firstPenalty.getReason() + ")";
+            } else {
+                reason = "Student has failed the previous academic year.";
+            }
+
             user.setAdmissionRequestStatusNotes(reason);
 
             if (existingUser.isPresent() && existingUser.get().getRoom() != null) {
                 Room oldRoom = existingUser.get().getRoom();
                 roomAssignmentService.removeStudentFromRoom(existingUser.get().getId(), oldRoom.getId());
             }
-        } else if (isNewStudent && (place.contains("القاهرة") || place.contains("الجيزة") || place.contains("القليوبية"))
-                && !(place.contains("كفر شكر") || place.contains("الواحات البحريه"))) {
+
+        } else if (isNewStudent && isRestrictedPlace) {
             user.setStatus(Enums.AdmissionRequestStatues.REJECTED);
             user.setAdmissionRequestStatusNotes("Rejected due to restricted place of birth.");
 
@@ -129,6 +140,7 @@ public class AuthenticationService {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
 
     public ResponseEntity<Object> login(LoginRequestDTO request) {
