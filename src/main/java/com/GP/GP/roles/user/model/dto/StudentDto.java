@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 public class StudentDto {
     private Enums.AdmissionRequestStatues status;
     private String firstName;
-    int userID;
+    int userId;
+    private String nationalId;
     private String lastName;
     private String username;
     private Role role;
@@ -23,7 +24,7 @@ public class StudentDto {
     private String mobileNumber;
     private Enums.Gender gender;
     private Enums.SecurityCheckStatues securityCheck;
-    private String token;
     private String media;
+    private String residenceAddress;
     private String AdmissionRequestStatusNotes;
 }

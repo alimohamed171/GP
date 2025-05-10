@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class StudentMapper {
     public static StudentDto toDto(User user) {
         StudentDto dto = new StudentDto();
-        dto.setUserID(user.getId());
+        dto.setUserId(user.getId());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setUsername(user.getUsername());
@@ -22,6 +22,8 @@ public class StudentMapper {
         dto.setSecurityCheck(user.getSecurityCheck());
         dto.setRole(user.getRole());
         dto.setUniversity(UniversityResponseDTO.mapToResponseDTO(user.getUniversity()));
+        dto.setNationalId(user.getNationalId());
+        dto.setResidenceAddress(user.getResidenceAddress());
         return dto;
     }
 }

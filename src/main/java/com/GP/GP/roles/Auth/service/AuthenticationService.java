@@ -82,7 +82,7 @@ public class AuthenticationService {
         });
 
         boolean isNewStudent = "first".equalsIgnoreCase(request.getLevel());
-        String place = request.getPlaceOfBirth() != null ? request.getPlaceOfBirth().trim().toLowerCase() : "";
+        String place = request.getPlaceOfBirth() != null ? request.getPlaceOfBirth().trim() : "";
         boolean isFailed = request.getAnnualGrade() == Enums.AnnualGrade.FAIL;
 
         List<Penalty> penalties = existingUser
