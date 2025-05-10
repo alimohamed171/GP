@@ -22,5 +22,9 @@ public class AdmissionRequestUploadController {
     public ResponseEntity<Object> uploadAdmissionRequest(@RequestParam("file") MultipartFile file) {
         return admissionRequestUploadService.uploadAdmissionRequestSecurityCheck(file);
     }
+    @PostMapping("/admin/upload-admission-request-status")
+    public ResponseEntity<Object> uploadAdmissionRequestStatus(@RequestParam("file") MultipartFile file) {
+        return admissionRequestUploadService.uploadAdmissionRequestStatusesFromExcel(file);
+    }
 
 }

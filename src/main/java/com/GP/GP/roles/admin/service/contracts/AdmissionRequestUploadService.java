@@ -6,5 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface AdmissionRequestUploadService {
     ResponseEntity<Object> isValidExcelFile(MultipartFile file);
     ResponseEntity<Object> uploadAdmissionRequestSecurityCheck(MultipartFile file);
+    ResponseEntity<Object> uploadAdmissionRequestStatusesFromExcel(MultipartFile file);
 
 }
