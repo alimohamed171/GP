@@ -6,6 +6,9 @@ import com.GP.GP.roles.admin.models.dto.request.AdmissionRequestExportDtO;
 import com.GP.GP.roles.admin.models.dto.request.AdmissionRequestFilterDTO;
 import com.GP.GP.roles.admin.models.mapper.AdmissionRequestExportMapper;
 import com.GP.GP.roles.admin.service.contracts.AdmissionRequestExportService;
+import com.GP.GP.roles.user.model.dto.StudentDto;
+import com.GP.GP.roles.user.model.response.StudentsGroupedResponseDTO;
+import com.GP.GP.roles.user.service.contracts.AdmissionRequestService;
 import com.GP.GP.security.Role;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -29,6 +32,9 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
 
     @Autowired
     private AdmissionRequestExportMapper exportMapper;
+
+    @Autowired
+    AdmissionRequestService admissionRequestService;
 
     @Override
     public ByteArrayInputStream exportAllAdmissionRequestsToExcel() {
@@ -281,6 +287,45 @@ public class AdmissionRequestExportServiceImpl implements AdmissionRequestExport
         }
 
     }
+
+    @Override
+    public ByteArrayInputStream exportSortedApplicantsToExcelTwoSheets() {
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            StudentsGroupedResponseDTO grouped = admissionRequestService.getSortedApplicantsData();
+            createSheet(workbook, "Old Students", grouped.getOldStudents());
+            createSheet(workbook, "New Students", grouped.getNewStudents());
+
+            workbook.write(out);
+            return new ByteArrayInputStream(out.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to export Excel file", e);
+        }
+
+    }
+    private static void createSheet(Workbook workbook, String sheetName, List<StudentDto> students) {
+        Sheet sheet = workbook.createSheet(sheetName);
+
+        String[] headers = {"الاسم", "الرقم القومي", "المستوى الدراسي", "الكليه", "رقم الهاتف","حالة الطلب","ملاحظات"};
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            headerRow.createCell(i).setCellValue(headers[i]);
+        }
+
+        // Data
+        int rowIdx = 1;
+        for (StudentDto dto : students) {
+            Row row = sheet.createRow(rowIdx++);
+            row.createCell(0).setCellValue(dto.getFirstName()+ dto.getLastName());
+            row.createCell(1).setCellValue(dto.getNationalId());
+            row.createCell(2).setCellValue(dto.getLevel());
+            row.createCell(3).setCellValue(dto.getFaculty());
+            row.createCell(4).setCellValue(dto.getMobileNumber());
+        }
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+    }
+
 }
 
 

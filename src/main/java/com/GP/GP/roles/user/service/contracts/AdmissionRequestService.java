@@ -5,6 +5,7 @@ import com.GP.GP.roles.admin.models.dto.request.AdmissionStatusNotesDTO;
 import com.GP.GP.roles.user.model.dto.AdmissionRequestDTO;
 import com.GP.GP.roles.user.model.request.UpdateUserRequestDTO;
 import com.GP.GP.roles.user.model.request.UserFilterDTO;
+import com.GP.GP.roles.user.model.response.StudentsGroupedResponseDTO;
 import com.GP.GP.utill.Enums;
 import org.springframework.http.ResponseEntity;
 
@@ -22,6 +23,6 @@ public interface AdmissionRequestService {
     List <User> filterAdmissionRequests(UserFilterDTO filteredRequests);
 
     ResponseEntity<Object> getSortedApplicants();
-
+    StudentsGroupedResponseDTO getSortedApplicantsData();
 
 }

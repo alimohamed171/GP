@@ -212,7 +212,7 @@ public class UserServiceImpl implements AdmissionRequestService {
     }
 
     @Override
-    public ResponseEntity<Object> getSortedApplicants() {
+    public StudentsGroupedResponseDTO getSortedApplicantsData() {
         Map<String, Double> governorateDistances = Map.ofEntries(
                 Map.entry("الجيزة", 19.27),
                 Map.entry("القاهرة", 20.13),
@@ -276,7 +276,12 @@ public class UserServiceImpl implements AdmissionRequestService {
         List<StudentDto> oldStudentDtos = oldUsers.stream().map(StudentMapper::toDto).collect(Collectors.toList());
 
         StudentsGroupedResponseDTO groupedResponse = new StudentsGroupedResponseDTO(oldStudentDtos, newStudentDtos);
-        BaseResponse response = new BaseResponse(true, "Applicants sorted successfully", groupedResponse);
+        return groupedResponse;
+    }
+    @Override
+    public ResponseEntity<Object> getSortedApplicants() {
+        StudentsGroupedResponseDTO grouped = getSortedApplicantsData();
+        BaseResponse response = new BaseResponse(true, "Applicants sorted successfully", grouped);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
