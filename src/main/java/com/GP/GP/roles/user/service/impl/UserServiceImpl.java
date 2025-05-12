@@ -27,6 +27,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -199,16 +202,10 @@ public class UserServiceImpl implements AdmissionRequestService {
     }
 
     @Override
-    public List<User> filterAdmissionRequests(UserFilterDTO filterDTO) {
+    public Page<User> filterAdmissionRequests(UserFilterDTO filterDTO, Pageable pageable) {
         List<Role> adminRoles = List.of(Role.ADMIN, Role.EDIT_ADMIN, Role.ViEW_ADMIN);
-        List<User> requests = userRepository.findByRoleNotIn(adminRoles);
-        return requests.stream()
-                .filter(user -> filterDTO.getStatus() == null || filterDTO.getStatus().contains(user.getStatus()))
-                .filter(user -> filterDTO.getSecurityCheck() == null || filterDTO.getSecurityCheck().contains(user.getSecurityCheck()))
-                .filter(user -> filterDTO.getHasPenalty() == null
-                        || (filterDTO.getHasPenalty() ? user.getPenalties() != null && !user.getPenalties().isEmpty()
-                        : user.getPenalties() == null || user.getPenalties().isEmpty()))
-                .collect(Collectors.toList());
+        Specification<User> spec = UserSpecification.filterBy(filterDTO, adminRoles);
+        return userRepository.findAll(spec, pageable);
     }
 
     @Override
