@@ -84,22 +84,27 @@ public class UserController {
         Page<UpdatedUserResponseDTO> pagedDTOs = pagedUsers.map(UserMapper::mapToUpdatedUserResponseDTO);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("meta", createPageableResponse(pagedDTOs.getPageable()));
+        response.put("meta", createPageableResponse(pagedDTOs));
         response.put("content", pagedDTOs.getContent());
 
         return ResponseEntity.ok(response);
 
     }
 
-    public static Map<String, Object> createPageableResponse(Pageable pageable) {
+    public static Map<String, Object> createPageableResponse(Page<?> page) {
         Map<String, Object> pageableResponse = new HashMap<>();
-        pageableResponse.put("pageNumber", pageable.getPageNumber());
-        pageableResponse.put("pageSize", pageable.getPageSize());
-        pageableResponse.put("offset", pageable.getOffset());
-        pageableResponse.put("paged", pageable.isPaged());
-        pageableResponse.put("unpaged", pageable.isUnpaged());
+        pageableResponse.put("pageNumber", page.getNumber());
+        pageableResponse.put("pageSize", page.getSize());
+        pageableResponse.put("offset", page.getPageable().getOffset());
+        pageableResponse.put("paged", page.getPageable().isPaged());
+        pageableResponse.put("unpaged", page.getPageable().isUnpaged());
+        pageableResponse.put("totalElements", page.getTotalElements());
+        pageableResponse.put("totalPages", page.getTotalPages());
+        pageableResponse.put("isLast", page.isLast());
+        pageableResponse.put("isFirst", page.isFirst());
         return pageableResponse;
     }
+
 
     //get admission by user Id -> for admin
     @GetMapping("/admin/view/admission-requests/{userId}")
