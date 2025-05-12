@@ -31,12 +31,9 @@ public class UserSpecification {
             }
             if (dto.getHasPenalty() != null) {
                 if (dto.getHasPenalty()) {
-                    predicates.add(cb.isNotEmpty(root.get("penalties")));
+                    predicates.add(cb.greaterThan(cb.size(root.get("penalties")), 0));
                 } else {
-                    predicates.add(cb.or(
-                            cb.isNull(root.get("penalties")),
-                            cb.isEmpty(root.get("penalties"))
-                    ));
+                    predicates.add(cb.equal(cb.size(root.get("penalties")), 0));
                 }
             }
 
