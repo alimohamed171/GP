@@ -1,11 +1,9 @@
 package com.GP.GP.roles.Auth.service;
 
 
-import com.GP.GP.entities.Penalty;
-import com.GP.GP.entities.Room;
-import com.GP.GP.entities.University;
-import com.GP.GP.entities.User;
+import com.GP.GP.entities.*;
 import com.GP.GP.repository.PenaltyRepository;
+import com.GP.GP.repository.ResetPasswordTokenRepository;
 import com.GP.GP.repository.UserRepository;
 import com.GP.GP.roles.Auth.models.mapper.RegisterMapper;
 import com.GP.GP.roles.Auth.models.request.LoginRequestDTO;
@@ -19,6 +17,7 @@ import com.GP.GP.security.*;
 import com.GP.GP.utill.Enums;
 import com.GP.GP.utill.base.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +28,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthenticationService {
@@ -43,7 +44,15 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     PenaltyRepository penaltyRepository;
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private ResetPasswordTokenRepository resetPasswordTokenRepository;
+    @Autowired
     private UniversityService universityService;
+    @Value("${app.reset-token-expiry-minutes:2}")
+    private int tokenExpiryMinutes;
+
 
     public AuthenticationService(
             UserRepository repository,
@@ -189,5 +198,55 @@ public class AuthenticationService {
         token.setLoggedOut(false);
         token.setUser(user);
         tokenRepository.save(token);
+    }
+
+    public void initiatePasswordReset(String email) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("Email must not be blank");
+        }
+
+        User user = repository.findByUsername(email)
+                .orElseThrow(() -> new UsernameNotFoundException("No account associated with this email"));
+
+        String token = UUID.randomUUID().toString();
+
+        ResetPasswordToken resetToken = resetPasswordTokenRepository.findByUser(user)
+                .orElse(ResetPasswordToken.builder()
+                        .user(user)
+                        .build());
+
+        resetToken.setToken(token);
+        resetToken.setExpiryDate(LocalDateTime.now().plusMinutes(tokenExpiryMinutes));
+        resetToken.setUsed(false);
+
+        resetPasswordTokenRepository.save(resetToken);
+        emailService.sendResetEmail(email, token);
+    }
+
+    public void resetPassword(String token, String newPassword) {
+        if (token == null || token.isBlank()) {
+            throw new IllegalArgumentException("Token must not be blank");
+        }
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("Password must not be blank");
+        }
+
+        ResetPasswordToken resetToken = resetPasswordTokenRepository.findByToken(token)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid or expired token"));
+
+        if (resetToken.isUsed()) {
+            throw new IllegalArgumentException("This token has already been used.");
+        }
+
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("This token has expired.");
+        }
+
+        User user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        repository.save(user);
+
+        resetToken.setUsed(true);
+        resetPasswordTokenRepository.save(resetToken);
     }
 }
