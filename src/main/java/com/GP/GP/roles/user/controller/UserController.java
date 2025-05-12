@@ -54,8 +54,8 @@ public class UserController {
             @RequestParam(required = false) String securityCheck,
             @RequestParam(required = false) Boolean hasPenalty,
             @RequestParam(required = false) String gender,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int offset) {
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int limit) {
 
         // Build filter DTO
         UserFilterDTO filterDTO = new UserFilterDTO();
@@ -73,7 +73,7 @@ public class UserController {
         if (gender != null)
             filterDTO.setGender(Enums.Gender.valueOf(gender.trim().toUpperCase()));
         // Build pagination
-        Pageable pageable = PageRequest.of(page, offset);
+        Pageable pageable = PageRequest.of(offset, limit);
 
         // Call the paginated service
         Page<User> pagedUsers = admissionRequestService.filterAdmissionRequests(filterDTO, pageable);
