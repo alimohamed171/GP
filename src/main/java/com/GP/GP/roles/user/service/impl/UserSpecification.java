@@ -26,7 +26,9 @@ public class UserSpecification {
             if (dto.getSecurityCheck() != null && !dto.getSecurityCheck().isEmpty()) {
                 predicates.add(root.get("securityCheck").in(dto.getSecurityCheck()));
             }
-
+            if (dto.getGender() != null) {
+                predicates.add(cb.equal(root.get("gender"), dto.getGender()));
+            }
             if (dto.getHasPenalty() != null) {
                 if (dto.getHasPenalty()) {
                     predicates.add(cb.isNotEmpty(root.get("penalties")));

@@ -53,8 +53,9 @@ public class UserController {
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String securityCheck,
             @RequestParam(required = false) Boolean hasPenalty,
+            @RequestParam(required = false) String gender,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int offset) {
 
         // Build filter DTO
         UserFilterDTO filterDTO = new UserFilterDTO();
@@ -69,9 +70,10 @@ public class UserController {
                     .collect(Collectors.toList()));
         }
         filterDTO.setHasPenalty(hasPenalty);
-
+        if (gender != null)
+            filterDTO.setGender(Enums.Gender.valueOf(gender.trim().toUpperCase()));
         // Build pagination
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, offset);
 
         // Call the paginated service
         Page<User> pagedUsers = admissionRequestService.filterAdmissionRequests(filterDTO, pageable);
@@ -85,7 +87,7 @@ public class UserController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("meta", createPageableResponse(pagedDTOs));
-        response.put("content", pagedDTOs.getContent());
+        response.put("data", pagedDTOs.getContent());
 
         return ResponseEntity.ok(response);
 
@@ -96,8 +98,6 @@ public class UserController {
         pageableResponse.put("pageNumber", page.getNumber());
         pageableResponse.put("pageSize", page.getSize());
         pageableResponse.put("offset", page.getPageable().getOffset());
-        pageableResponse.put("paged", page.getPageable().isPaged());
-        pageableResponse.put("unpaged", page.getPageable().isUnpaged());
         pageableResponse.put("totalElements", page.getTotalElements());
         pageableResponse.put("totalPages", page.getTotalPages());
         pageableResponse.put("isLast", page.isLast());
