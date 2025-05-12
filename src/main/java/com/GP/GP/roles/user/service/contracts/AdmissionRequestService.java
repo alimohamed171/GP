@@ -7,6 +7,8 @@ import com.GP.GP.roles.user.model.request.UpdateUserRequestDTO;
 import com.GP.GP.roles.user.model.request.UserFilterDTO;
 import com.GP.GP.roles.user.model.response.StudentsGroupedResponseDTO;
 import com.GP.GP.utill.Enums;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -20,7 +22,7 @@ public interface AdmissionRequestService {
     ResponseEntity<Object> getAdmissionRequestById(int id);
     ResponseEntity<Object> updateAdmissionRequestStatues(int id, Enums.AdmissionRequestStatues status, AdmissionStatusNotesDTO statusNotes);
     ResponseEntity<Object> getApplicationStatusByNID(String nationalId);
-    List <User> filterAdmissionRequests(UserFilterDTO filteredRequests);
+    Page<User> filterAdmissionRequests(UserFilterDTO filteredRequests, Pageable pageable);
 
     ResponseEntity<Object> getSortedApplicants();
     StudentsGroupedResponseDTO getSortedApplicantsData();

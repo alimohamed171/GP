@@ -1,0 +1,44 @@
+package com.GP.GP.roles.user.service.impl;
+
+import com.GP.GP.entities.User;
+import com.GP.GP.roles.user.model.request.UserFilterDTO;
+import com.GP.GP.security.Role;
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.jpa.domain.Specification;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class UserSpecification {
+
+    public static Specification<User> filterBy(UserFilterDTO dto, List<Role> excludedRoles) {
+        return (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (excludedRoles != null && !excludedRoles.isEmpty()) {
+                predicates.add(cb.not(root.get("role").in(excludedRoles)));
+            }
+
+            if (dto.getStatus() != null && !dto.getStatus().isEmpty()) {
+                predicates.add(root.get("status").in(dto.getStatus()));
+            }
+
+            if (dto.getSecurityCheck() != null && !dto.getSecurityCheck().isEmpty()) {
+                predicates.add(root.get("securityCheck").in(dto.getSecurityCheck()));
+            }
+
+            if (dto.getHasPenalty() != null) {
+                if (dto.getHasPenalty()) {
+                    predicates.add(cb.isNotEmpty(root.get("penalties")));
+                } else {
+                    predicates.add(cb.or(
+                            cb.isNull(root.get("penalties")),
+                            cb.isEmpty(root.get("penalties"))
+                    ));
+                }
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+}
