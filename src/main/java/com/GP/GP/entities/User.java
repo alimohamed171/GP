@@ -1,5 +1,6 @@
 package com.GP.GP.entities;
 
+import com.GP.GP.security.Privilege;
 import com.GP.GP.security.Role;
 import com.GP.GP.security.Token;
 import com.GP.GP.utill.Enums;
@@ -183,6 +184,14 @@ public class User implements UserDetails {
 
     @Column(name = "want_food")
     private Boolean wantFood;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_privileges",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "privilege_id")
+    )
+    private List<Privilege> privileges;
 
     @CreationTimestamp
     @Column(name = "created_at")
