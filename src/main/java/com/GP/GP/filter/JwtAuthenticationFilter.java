@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -71,5 +72,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+        // just for debug purpose
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            System.out.println("Authenticated user: " + authentication.getName());
+            System.out.println("Requested URI: " + request.getRequestURI());
+            authentication.getAuthorities().forEach(auth ->
+                    System.out.println("JWT filter authority: [" + auth.getAuthority()+"]")
+            );
+        }else {
+            System.out.println("No authentication found in SecurityContextHolder.");
+        }
+
     }
 }
