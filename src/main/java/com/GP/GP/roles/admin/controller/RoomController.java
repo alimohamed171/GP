@@ -8,6 +8,7 @@ import com.GP.GP.utill.Enums;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -48,6 +49,8 @@ public class RoomController {
             @PathVariable Enums.RoomType roomType) {
         return roomService.getAvailableRooms(buildingId, roomType);
     }
+
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_ASSIGNMENT')")
     @PostMapping("/admin/edit/rooms/assign-room")
     public ResponseEntity<Object> assignRoomToStudent(@RequestBody RoomAssignmentRequestDTO roomAssignmentRequestDTO) {
         return roomAssignmentService.assignStudentToRoom(roomAssignmentRequestDTO);
@@ -58,6 +61,8 @@ public class RoomController {
             @RequestParam int roomId) {
         return roomAssignmentService.removeStudentFromRoom(studentId, roomId);
     }
+
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_ACCOMMODATION')")
     @PostMapping("/admin/edit/rooms/assign-student-specific-room")
     public ResponseEntity<Object> assignStudentToSpecificRoom(
             @RequestParam int studentId,
