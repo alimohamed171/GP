@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @AllArgsConstructor
@@ -22,12 +23,15 @@ public class LoginResponseDTO {
     Role role;
     List<Privilege> privileges;
 
+
     public static LoginResponseDTO mapToResponseDTO(User user, String token) {
         return LoginResponseDTO.builder()
                 .role(user.getRole())
                 .username(user.getUsername())
                 .token(token)
-                .privileges(user.getPrivileges())
-                .userID(user.getId()).build();
+                .userID(user.getId())
+                .privileges(Optional.ofNullable(user.getPrivileges()).orElse(List.of()))
+                .build();
     }
+
 }

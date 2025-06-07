@@ -22,7 +22,8 @@ public interface AdmissionRequestService {
     ResponseEntity<Object> getAdmissionRequestById(int id);
     ResponseEntity<Object> updateAdmissionRequestStatues(int id, Enums.AdmissionRequestStatues status, AdmissionStatusNotesDTO statusNotes);
     ResponseEntity<Object> getApplicationStatusByNID(String nationalId);
-    Page<User> filterAdmissionRequests(UserFilterDTO filteredRequests, Pageable pageable,Boolean excludedRoles);
+    Page<User> filterAdmissionRequests(UserFilterDTO filteredRequests, Pageable pageable);
+    Page<User> filterAdmins(UserFilterDTO filteredRequests, Pageable pageable);
 
     ResponseEntity<Object> getSortedApplicants();
     StudentsGroupedResponseDTO getSortedApplicantsData();

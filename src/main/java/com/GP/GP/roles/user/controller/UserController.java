@@ -2,6 +2,8 @@ package com.GP.GP.roles.user.controller;
 
 import com.GP.GP.entities.User;
 import com.GP.GP.roles.admin.models.dto.request.AdmissionStatusNotesDTO;
+import com.GP.GP.roles.admin.models.dto.response.AdminUserDTO;
+import com.GP.GP.roles.admin.models.mapper.AdminPrevMapper;
 import com.GP.GP.roles.user.model.dto.AdmissionRequestDTO;
 import com.GP.GP.roles.user.model.mapper.AdmissionRequestMapper;
 import com.GP.GP.roles.user.model.mapper.UserMapper;
@@ -76,7 +78,7 @@ public class UserController {
         Pageable pageable = PageRequest.of(offset, limit);
 
         // Call the paginated service
-        Page<User> pagedUsers = admissionRequestService.filterAdmissionRequests(filterDTO, pageable,true);
+        Page<User> pagedUsers = admissionRequestService.filterAdmissionRequests(filterDTO, pageable);
 
         if (pagedUsers.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
@@ -107,48 +109,29 @@ public class UserController {
 
     @GetMapping("/admin/all-admins")
     public ResponseEntity<Object> getAllAdmins(
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String securityCheck,
-            @RequestParam(required = false) Boolean hasPenalty,
-            @RequestParam(required = false) String gender,
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int limit) {
 
-        // Build filter DTO
-        UserFilterDTO filterDTO = new UserFilterDTO();
-        if (status != null) {
-            filterDTO.setStatus(Arrays.stream(status.split(","))
-                    .map(s -> Enums.AdmissionRequestStatues.valueOf(s.trim().toUpperCase()))
-                    .collect(Collectors.toList()));
-        }
-        if (securityCheck != null) {
-            filterDTO.setSecurityCheck(Arrays.stream(securityCheck.split(","))
-                    .map(s -> Enums.SecurityCheckStatues.valueOf(s.trim().toUpperCase()))
-                    .collect(Collectors.toList()));
-        }
-        filterDTO.setHasPenalty(hasPenalty);
-        if (gender != null)
-            filterDTO.setGender(Enums.Gender.valueOf(gender.trim().toUpperCase()));
-        // Build pagination
+        UserFilterDTO filterDTO = new UserFilterDTO(); // Optional filtering
         Pageable pageable = PageRequest.of(offset, limit);
 
-        // Call the paginated service
-        Page<User> pagedUsers = admissionRequestService.filterAdmissionRequests(filterDTO, pageable,false);
+        Page<User> pagedAdmins = admissionRequestService.filterAdmins(filterDTO, pageable);
 
-        if (pagedUsers.isEmpty()) {
+        if (pagedAdmins.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
                     .body(new BaseResponse(true, "No data found", HttpStatus.NO_CONTENT));
         }
 
-        Page<UpdatedUserResponseDTO> pagedDTOs = pagedUsers.map(UserMapper::mapToUpdatedUserResponseDTO);
+        Page<AdminUserDTO> pagedDTOs = pagedAdmins.map(AdminPrevMapper::toAdminUserDTO);
 
         Map<String, Object> response = new HashMap<>();
         response.put("meta", createPageableResponse(pagedDTOs));
         response.put("data", pagedDTOs.getContent());
 
         return ResponseEntity.ok(response);
-
     }
+
+
     //get admission by user Id -> for admin
     @GetMapping("/admin/view/admission-requests/{userId}")
     public ResponseEntity<Object> getAdmissionRequestByUserId(@PathVariable int userId) {
