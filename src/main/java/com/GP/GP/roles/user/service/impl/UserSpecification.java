@@ -11,12 +11,18 @@ import java.util.List;
 
 public class UserSpecification {
 
-    public static Specification<User> filterBy(UserFilterDTO dto, List<Role> excludedRoles) {
+    public static Specification<User> filterBy(UserFilterDTO dto, List<Role> roles, Boolean excludedRoles) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (excludedRoles != null && !excludedRoles.isEmpty()) {
-                predicates.add(cb.not(root.get("role").in(excludedRoles)));
+            // If excludedRoles is true → exclude users with those roles
+            if (Boolean.TRUE.equals(excludedRoles) && roles != null && !roles.isEmpty()) {
+                predicates.add(cb.not(root.get("role").in(roles)));
+            }
+
+            // If excludedRoles is false → return only users with those roles
+            if (Boolean.FALSE.equals(excludedRoles) && roles != null && !roles.isEmpty()) {
+                predicates.add(root.get("role").in(roles));
             }
 
             if (dto.getStatus() != null && !dto.getStatus().isEmpty()) {
@@ -26,9 +32,11 @@ public class UserSpecification {
             if (dto.getSecurityCheck() != null && !dto.getSecurityCheck().isEmpty()) {
                 predicates.add(root.get("securityCheck").in(dto.getSecurityCheck()));
             }
+
             if (dto.getGender() != null) {
                 predicates.add(cb.equal(root.get("gender"), dto.getGender()));
             }
+
             if (dto.getHasPenalty() != null) {
                 if (dto.getHasPenalty()) {
                     predicates.add(cb.greaterThan(cb.size(root.get("penalties")), 0));
@@ -40,4 +48,5 @@ public class UserSpecification {
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
+
 }

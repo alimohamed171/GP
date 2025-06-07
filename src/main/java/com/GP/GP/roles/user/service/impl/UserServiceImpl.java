@@ -202,9 +202,9 @@ public class UserServiceImpl implements AdmissionRequestService {
     }
 
     @Override
-    public Page<User> filterAdmissionRequests(UserFilterDTO filterDTO, Pageable pageable) {
+    public Page<User> filterAdmissionRequests(UserFilterDTO filterDTO, Pageable pageable, Boolean excludedRoles) {
         List<Role> adminRoles = List.of(Role.ADMIN, Role.EDIT_ADMIN, Role.ViEW_ADMIN);
-        Specification<User> spec = UserSpecification.filterBy(filterDTO, adminRoles);
+        Specification<User> spec = UserSpecification.filterBy(filterDTO, adminRoles,excludedRoles);
         return userRepository.findAll(spec, pageable);
     }
 
@@ -275,6 +275,7 @@ public class UserServiceImpl implements AdmissionRequestService {
         StudentsGroupedResponseDTO groupedResponse = new StudentsGroupedResponseDTO(oldStudentDtos, newStudentDtos);
         return groupedResponse;
     }
+
     @Override
     public ResponseEntity<Object> getSortedApplicants() {
         StudentsGroupedResponseDTO grouped = getSortedApplicantsData();
