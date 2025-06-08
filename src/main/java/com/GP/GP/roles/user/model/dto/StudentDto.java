@@ -1,30 +1,113 @@
 package com.GP.GP.roles.user.model.dto;
 
+import com.GP.GP.roles.admin.models.dto.response.RoomResponseForUserDTO;
 import com.GP.GP.roles.admin.models.dto.response.UniversityResponseDTO;
 import com.GP.GP.security.Role;
 import com.GP.GP.utill.Enums;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class StudentDto {
-    private Enums.AdmissionRequestStatues status;
+    @NotBlank(message = "First name is required")
     private String firstName;
-    int userId;
-    private String nationalId;
+
+    private int userId;
+
+    @NotBlank(message = "Last name is required")
     private String lastName;
+
+    @NotBlank(message = "Username is required")
     private String username;
-    private Role role;
+
+    @NotBlank(message = "Password is required")
+    private String password;
+
     private UniversityResponseDTO university;
-    private String faculty;
-    private String level;
+
+    private Integer penaltiesCount;
+
+    @NotBlank(message = "National ID is required")
+    @Size(min = 14, max = 14, message = "National ID must be 14 characters")
+    private String nationalId;
+
+    @NotBlank(message = "Mobile number is required")
+    @Size(max = 20, message = "Mobile number can't exceed 20 characters")
     private String mobileNumber;
-    private Enums.Gender gender;
-    private Enums.SecurityCheckStatues securityCheck;
-    private String media;
+
+    private String faculty;
+
+    private String level;
+
+    @NotNull(message = "Date of birth is required")
+    private LocalDate dateOfBirth;
+
+    private RoomResponseForUserDTO room;
+
+    private Enums.StudentType studentType;
+
     private String residenceAddress;
+
+    private String detailedAddress;
+
+    private String placeOfBirth;
+
+    @NotNull(message = "Gender is required")
+    private Enums.Gender gender;
+
+    private Enums.Religion religion;
+
+    private String fatherName;
+
+    private String fatherNationalId;
+
+    private String fatherOccupation;
+
+    private String fatherPhoneNumber;
+
+    private String guardianName;
+
+    private String guardianNationalId;
+
+    private String guardianPhoneNumber;
+
+    private String parentsStatus;
+
+    private Double previousAcademicYearGpa;
+
+    private Enums.AdmissionRequestStatues status;
+
+    private String housingInPreviousYears;
+
+    private Boolean familyAbroad;
+
+    private Boolean specialNeeds;
+
+    private String secondaryDivision;
+
+    private Float totalGradesHighSchool;
+
+    private String passportNumber;
+
+    private String passportIssuingAuthority;
+    private Enums.SecurityCheckStatues securityCheckStatues;
+    private String securityCheckNotes;
+
+    private Enums.AnnualGrade annualGrade;
+    private String studentCode;
+    private String guardianRelationship;
+    private String phoneNumber;
+    private String houseTypeName;
+    private Boolean wantFood;
     private String AdmissionRequestStatusNotes;
 }
