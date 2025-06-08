@@ -123,4 +123,18 @@ public class RoomServiceImpl implements RoomService {
         return new ResponseEntity<>(new BaseResponse(true, "Available rooms retrieved successfully", responseDTOs), HttpStatus.OK);
 
     }
+
+    @Override
+    public ResponseEntity<Object> getAvailableRoomsByBuildingTypeAndRoomType(Enums.BuildingType buildingType, Enums.RoomType roomType) {
+        List<Room> availableRooms = roomRepository.findAvailableRoomsByBuildingTypeAndRoomType(buildingType, roomType);
+
+        if (availableRooms.isEmpty()) {
+            return new ResponseEntity<>(new BaseResponse(false, "No available rooms found"), HttpStatus.NOT_FOUND);
+        }
+        List<RoomResponseDTO> responseDTOs = availableRooms.stream()
+                .map(RoomMapper::toRoomResponseDTO)
+                .toList();
+
+        return new ResponseEntity<>(new BaseResponse(true, "Available rooms retrieved successfully", responseDTOs), HttpStatus.OK);
+    }
 }

@@ -49,6 +49,12 @@ public class RoomController {
             @PathVariable Enums.RoomType roomType) {
         return roomService.getAvailableRooms(buildingId, roomType);
     }
+    @GetMapping("/admin/view/rooms/get-available-by-building-type/{buildingType}/{roomType}")
+    public ResponseEntity<Object> getAvailableRoomsByBuildingTypeAndRoomType(
+            @PathVariable Enums.BuildingType buildingType,
+            @PathVariable Enums.RoomType roomType) {
+        return roomService.getAvailableRoomsByBuildingTypeAndRoomType(buildingType, roomType);
+    }
 
     @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_ASSIGNMENT')")
     @PostMapping("/admin/edit/rooms/assign-room")

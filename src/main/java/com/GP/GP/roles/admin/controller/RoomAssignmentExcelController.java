@@ -20,7 +20,7 @@ import java.io.IOException;
 public class RoomAssignmentExcelController {
     @Autowired
     private RoomAssignmentExcelService roomAssignmentExcelService;
-    @GetMapping("/admin/view/room-assignment/export-available-rooms")
+  /*  @GetMapping("/admin/view/room-assignment/export-available-rooms")
     public ResponseEntity<byte[]> exportAvailableRooms(@RequestParam int buildingId,
                                                        @RequestParam Enums.RoomType roomType) throws IOException {
         ByteArrayInputStream excelFile = roomAssignmentExcelService.exportAvailableRoomsInBuildingToExcel(buildingId, roomType);
@@ -33,12 +33,43 @@ public class RoomAssignmentExcelController {
                 .ok()
                 .headers(headers)
                 .body(excelFile.readAllBytes());
-    }
+    }*/
     @PostMapping("/admin/edit/room-assignment/upload-student-housing-info")
     public ResponseEntity<Object> uploadStudentHousingInfo(@RequestParam("file") MultipartFile file) {
         return roomAssignmentExcelService.uploadStudentHousingInfo(file);
     }
+/*    @GetMapping("/admin/view/room-assignment/export-available-rooms-by-building-type")
+    public ResponseEntity<byte[]> exportAvailableRoomsByBuildingType(@RequestParam Enums.BuildingType buildingType,
+                                                                      @RequestParam Enums.RoomType roomType) throws IOException {
+        ByteArrayInputStream excelFile = roomAssignmentExcelService.exportAvailableRoomsByBuildingTypeToExcel(buildingType, roomType);
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=available_rooms_by_building_type.xlsx");
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(excelFile.readAllBytes());
+    }*/
+
+    @GetMapping("/admin/view/room-assignment/export-available-rooms")
+    public ResponseEntity<byte[]> exportAvailableRooms(
+            @RequestParam(required = false) Integer buildingId,
+            @RequestParam(required = false) Enums.BuildingType buildingType,
+            @RequestParam Enums.RoomType roomType) throws IOException {
+
+        ByteArrayInputStream excelFile =
+                roomAssignmentExcelService.exportAvailableRoomsToExcel(buildingId, buildingType, roomType);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=available_rooms.xlsx");
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(excelFile.readAllBytes());
+    }
 
 }
