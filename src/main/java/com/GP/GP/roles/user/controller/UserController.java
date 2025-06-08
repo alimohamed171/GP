@@ -2,6 +2,8 @@ package com.GP.GP.roles.user.controller;
 
 import com.GP.GP.entities.User;
 import com.GP.GP.roles.admin.models.dto.request.AdmissionStatusNotesDTO;
+import com.GP.GP.roles.admin.models.dto.response.AdminUserDTO;
+import com.GP.GP.roles.admin.models.mapper.AdminPrevMapper;
 import com.GP.GP.roles.user.model.dto.AdmissionRequestDTO;
 import com.GP.GP.roles.user.model.mapper.AdmissionRequestMapper;
 import com.GP.GP.roles.user.model.mapper.UserMapper;
@@ -103,6 +105,30 @@ public class UserController {
         pageableResponse.put("isLast", page.isLast());
         pageableResponse.put("isFirst", page.isFirst());
         return pageableResponse;
+    }
+
+    @GetMapping("/admin/all-admins")
+    public ResponseEntity<Object> getAllAdmins(
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "10") int limit) {
+
+        UserFilterDTO filterDTO = new UserFilterDTO(); // Optional filtering
+        Pageable pageable = PageRequest.of(offset, limit);
+
+        Page<User> pagedAdmins = admissionRequestService.filterAdmins(filterDTO, pageable);
+
+        if (pagedAdmins.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(new BaseResponse(true, "No data found", HttpStatus.NO_CONTENT));
+        }
+
+        Page<AdminUserDTO> pagedDTOs = pagedAdmins.map(AdminPrevMapper::toAdminUserDTO);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("meta", createPageableResponse(pagedDTOs));
+        response.put("data", pagedDTOs.getContent());
+
+        return ResponseEntity.ok(response);
     }
 
 
