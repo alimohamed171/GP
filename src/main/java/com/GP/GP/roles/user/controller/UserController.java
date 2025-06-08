@@ -17,6 +17,7 @@ import com.GP.GP.utill.Enums;
 import com.GP.GP.utill.base.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -48,44 +49,40 @@ public class UserController {
         return admissionRequestService.checkApplicationStatus(id, userId);
     }
 
-    // get all admission -> admin
     @GetMapping("/admin/view/admission-requests")
     public ResponseEntity<Object> getAllAdmissionRequests(
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String securityCheck,
             @RequestParam(required = false) Boolean hasPenalty,
             @RequestParam(required = false) String gender,
-            @RequestParam(required = false) String sorted,  // <-- هنا ضفت
+            @RequestParam(required = false) Boolean isSorted,
+            @RequestParam(required = false) String studentType,
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int limit) {
 
-        // لو param sorted مش موجود ارجع الطلبات عادي
-        if (sorted == null || sorted.isEmpty()) {
-            UserFilterDTO filterDTO = new UserFilterDTO();
-            if (status != null) {
-                filterDTO.setStatus(Arrays.stream(status.split(","))
-                        .map(s -> Enums.AdmissionRequestStatues.valueOf(s.trim().toUpperCase()))
-                        .collect(Collectors.toList()));
+        // لو isSorted = true
+        if (Boolean.TRUE.equals(isSorted)) {
+            StudentsGroupedResponseDTO grouped = admissionRequestService.getSortedApplicantsData();
+            List allSorted = new ArrayList<>();
+
+            if (studentType == null || studentType.isEmpty()) {
+                // عرض كل الطلاب المترتبين
+                allSorted.addAll(grouped.getNewStudents());
+                allSorted.addAll(grouped.getOldStudents());
+            } else if (studentType.equalsIgnoreCase("new")) {
+                allSorted.addAll(grouped.getNewStudents());
+            } else if (studentType.equalsIgnoreCase("old")) {
+                allSorted.addAll(grouped.getOldStudents());
+            } else {
+                return ResponseEntity.badRequest().body(new BaseResponse(false, "Invalid studentType", HttpStatus.BAD_REQUEST));
             }
-            if (securityCheck != null) {
-                filterDTO.setSecurityCheck(Arrays.stream(securityCheck.split(","))
-                        .map(s -> Enums.SecurityCheckStatues.valueOf(s.trim().toUpperCase()))
-                        .collect(Collectors.toList()));
-            }
-            filterDTO.setHasPenalty(hasPenalty);
-            if (gender != null)
-                filterDTO.setGender(Enums.Gender.valueOf(gender.trim().toUpperCase()));
 
             Pageable pageable = PageRequest.of(offset, limit);
+            int start = Math.min((int) pageable.getOffset(), allSorted.size());
+            int end = Math.min(start + pageable.getPageSize(), allSorted.size());
+            List<UpdatedUserResponseDTO> pagedList = allSorted.subList(start, end);
 
-            Page<User> pagedUsers = admissionRequestService.filterAdmissionRequests(filterDTO, pageable);
-
-            if (pagedUsers.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                        .body(new BaseResponse(true, "No data found", HttpStatus.NO_CONTENT));
-            }
-
-            Page<UpdatedUserResponseDTO> pagedDTOs = pagedUsers.map(UserMapper::mapToUpdatedUserResponseDTO);
+            Page<UpdatedUserResponseDTO> pagedDTOs = new PageImpl<>(pagedList, pageable, allSorted.size());
 
             Map<String, Object> response = new HashMap<>();
             response.put("meta", createPageableResponse(pagedDTOs));
@@ -94,63 +91,39 @@ public class UserController {
             return ResponseEntity.ok(response);
         }
 
-        // لو sorted موجود
-        StudentsGroupedResponseDTO grouped = admissionRequestService.getSortedApplicantsData();
+        // الفلترة العادية لما isSorted مش true
+        UserFilterDTO filterDTO = new UserFilterDTO();
+        if (status != null) {
+            filterDTO.setStatus(Arrays.stream(status.split(","))
+                    .map(s -> Enums.AdmissionRequestStatues.valueOf(s.trim().toUpperCase()))
+                    .collect(Collectors.toList()));
+        }
+        if (securityCheck != null) {
+            filterDTO.setSecurityCheck(Arrays.stream(securityCheck.split(","))
+                    .map(s -> Enums.SecurityCheckStatues.valueOf(s.trim().toUpperCase()))
+                    .collect(Collectors.toList()));
+        }
+        filterDTO.setHasPenalty(hasPenalty);
+        if (gender != null)
+            filterDTO.setGender(Enums.Gender.valueOf(gender.trim().toUpperCase()));
 
-        Map<String, Object> responseData = new HashMap<>();
+        Pageable pageable = PageRequest.of(offset, limit);
+        Page<User> pagedUsers = admissionRequestService.filterAdmissionRequests(filterDTO, pageable);
 
-        switch (sorted.toLowerCase()) {
-            case "newstudent":
-                responseData.put("newStudents", grouped.getNewStudents());
-                responseData.put("oldStudents", Collections.emptyList());
-                break;
-            case "oldstudent":
-                responseData.put("newStudents", Collections.emptyList());
-                responseData.put("oldStudents", grouped.getOldStudents());
-                break;
-            case "sorted":
-                responseData.put("newStudents", grouped.getNewStudents());
-                responseData.put("oldStudents", grouped.getOldStudents());
-                break;
-            default:
-                // لو قيمة مش متوقعة، ارجع كل الطلبات عادي (زي ما هو)
-                UserFilterDTO filterDTO = new UserFilterDTO();
-                if (status != null) {
-                    filterDTO.setStatus(Arrays.stream(status.split(","))
-                            .map(s -> Enums.AdmissionRequestStatues.valueOf(s.trim().toUpperCase()))
-                            .collect(Collectors.toList()));
-                }
-                if (securityCheck != null) {
-                    filterDTO.setSecurityCheck(Arrays.stream(securityCheck.split(","))
-                            .map(s -> Enums.SecurityCheckStatues.valueOf(s.trim().toUpperCase()))
-                            .collect(Collectors.toList()));
-                }
-                filterDTO.setHasPenalty(hasPenalty);
-                if (gender != null)
-                    filterDTO.setGender(Enums.Gender.valueOf(gender.trim().toUpperCase()));
-
-                Pageable pageable = PageRequest.of(offset, limit);
-
-                Page<User> pagedUsers = admissionRequestService.filterAdmissionRequests(filterDTO, pageable);
-
-                if (pagedUsers.isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                            .body(new BaseResponse(true, "No data found", HttpStatus.NO_CONTENT));
-                }
-
-                Page<UpdatedUserResponseDTO> pagedDTOs = pagedUsers.map(UserMapper::mapToUpdatedUserResponseDTO);
-
-                Map<String, Object> response = new HashMap<>();
-                response.put("meta", createPageableResponse(pagedDTOs));
-                response.put("data", pagedDTOs.getContent());
-
-                return ResponseEntity.ok(response);
+        if (pagedUsers.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(new BaseResponse(true, "No data found", HttpStatus.NO_CONTENT));
         }
 
-        // لما نرجع الليست المرتبة حسب sorted
-        BaseResponse response = new BaseResponse(true, "Admission requests sorted by " + sorted, responseData);
+        Page<UpdatedUserResponseDTO> pagedDTOs = pagedUsers.map(UserMapper::mapToUpdatedUserResponseDTO);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("meta", createPageableResponse(pagedDTOs));
+        response.put("data", pagedDTOs.getContent());
+
         return ResponseEntity.ok(response);
     }
+
 
 
     public static Map<String, Object> createPageableResponse(Page<?> page) {
