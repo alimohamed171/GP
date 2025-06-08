@@ -208,6 +208,17 @@ public class UserServiceImpl implements AdmissionRequestService {
         return userRepository.findAll(spec, pageable);
     }
 
+    // Get only admins with optional filters
+    @Override
+    public Page<User> filterAdmins(UserFilterDTO filterDTO, Pageable pageable) {
+        List<Role> adminRoles = List.of(Role.ADMIN, Role.EDIT_ADMIN, Role.ViEW_ADMIN);
+        Specification<User> spec = Specification
+                .where(UserSpecification.includeOnlyRoles(adminRoles))
+                .and(UserSpecification.filterByUserFilterDTO(filterDTO));
+
+        return userRepository.findAll(spec, pageable);
+    }
+
     @Override
     public StudentsGroupedResponseDTO getSortedApplicantsData() {
         Map<String, Double> governorateDistances = Map.ofEntries(
@@ -275,6 +286,7 @@ public class UserServiceImpl implements AdmissionRequestService {
         StudentsGroupedResponseDTO groupedResponse = new StudentsGroupedResponseDTO(oldStudentDtos, newStudentDtos);
         return groupedResponse;
     }
+
     @Override
     public ResponseEntity<Object> getSortedApplicants() {
         StudentsGroupedResponseDTO grouped = getSortedApplicantsData();
