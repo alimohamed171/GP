@@ -11,15 +11,17 @@ public class AdminMapper {
     public static ApplicationGuidelineAndApprovalDTO toApplicationGuidelineAndApprovalDTO(ApplicationGuidelineAndApproval entity) {
         return ApplicationGuidelineAndApprovalDTO.builder()
                 .guidelines(entity.getGuidelines())
-                .media(entity.getMedia())
                 .build();
     }
 
-    public static ApplicationGuidelineAndApproval toApplicationGuidelineAndApprovalEntity(ApplicationGuidelineAndApprovalDTO dto, University university) {
+    public static ApplicationGuidelineAndApproval toApplicationGuidelineAndApprovalEntity(
+            ApplicationGuidelineAndApprovalDTO dto,
+            University university,
+            String filePath) {
         return ApplicationGuidelineAndApproval.builder()
                 .guidelines(dto.getGuidelines())
+                .media(filePath)
                 .university(university)
-                .media(dto.getMedia())
                 .build();
     }
 

@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("")
@@ -13,8 +14,13 @@ public class GuideLinesController {
     @Autowired
     private GuideLineService guideLineService;
 
-    @PostMapping("/admin/edit/add-guidelines/{universityId}")
-    public ResponseEntity<Object> addGuideLines(@PathVariable int universityId, @Valid @RequestBody ApplicationGuidelineAndApprovalDTO request) {
+    @PostMapping(value = "/admin/edit/add-guidelines/{universityId}", consumes = {"multipart/form-data"})
+    public ResponseEntity<Object> addGuideLines(
+            @PathVariable int universityId,
+            @RequestPart("guidelines") String guidelines,
+            @RequestPart(value = "media", required = false) MultipartFile media
+    ) {
+        ApplicationGuidelineAndApprovalDTO request = new ApplicationGuidelineAndApprovalDTO(guidelines, media);
         return guideLineService.addGuideLines(universityId, request);
     }
 

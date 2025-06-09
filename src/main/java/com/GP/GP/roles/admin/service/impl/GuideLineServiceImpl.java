@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,21 +30,48 @@ public class GuideLineServiceImpl implements GuideLineService {
     private UniversityService universityService;
 
     @Override
-    public ResponseEntity<Object> addGuideLines(int universityId, @Valid ApplicationGuidelineAndApprovalDTO request) {
-
+    public ResponseEntity<Object> addGuideLines(int universityId, ApplicationGuidelineAndApprovalDTO request) {
         University university = universityService.findUniversityById(universityId);
-        ApplicationGuidelineAndApproval guidelineEntity = AdminMapper.toApplicationGuidelineAndApprovalEntity(request, university);
 
         if (university == null) {
-            BaseResponse response = new BaseResponse(false, "No university found with ID " + universityId, null);
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new BaseResponse(false, "No university found", null), HttpStatus.NOT_FOUND);
         }
 
-        guidelineEntity = guidelineRepo.save(guidelineEntity);
-        ApplicationGuidelineAndApprovalResponseDTO responseDto = ApplicationGuidelineAndApprovalResponseDTO.mapToResponseDTO(guidelineEntity);
-        BaseResponse response = new BaseResponse(true, "Guidelines added successfully.", responseDto);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        String filePath = null;
+        if (request.getMedia() != null && !request.getMedia().isEmpty()) {
+            try {
+                // استخدم مسار مطلق
+                String uploadDir = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "guidelines";
+                File directory = new File(uploadDir);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                String fileName = System.currentTimeMillis() + "_" + request.getMedia().getOriginalFilename();
+                File dest = new File(directory, fileName);
+                request.getMedia().transferTo(dest);
+                filePath = "uploads/guidelines/" + fileName; // مسار نسبي للتخزين في الداتا بيز
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(new BaseResponse(false, "Error uploading file", null), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        ApplicationGuidelineAndApproval guideline = ApplicationGuidelineAndApproval.builder()
+                .guidelines(request.getGuidelines())
+                .media(filePath)
+                .university(university)
+                .build();
+
+        guideline = guidelineRepo.save(guideline);
+        ApplicationGuidelineAndApprovalResponseDTO responseDto = ApplicationGuidelineAndApprovalResponseDTO.mapToResponseDTO(guideline);
+
+        return new ResponseEntity<>(new BaseResponse(true, "Guidelines added successfully.", responseDto), HttpStatus.OK);
     }
+
+
+
 
     @Override
     public ResponseEntity<Object> getAllGuidelines(int universityId) {
