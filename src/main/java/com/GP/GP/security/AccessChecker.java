@@ -11,21 +11,21 @@ public class AccessChecker {
 
     public boolean hasPrivilegeOrIsAdmin(Authentication authentication, String requiredPrivilege) {
         if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("❌ Not authenticated");
             return false;
         }
 
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        System.out.println("✅ Authenticated. Authorities: " + authorities);
 
 
         boolean isAdmin = authorities.stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
-        if (isAdmin) {
-            return true;
-        }
 
-
-        return authorities.stream()
+        boolean hasPrivilege= authorities.stream()
                 .anyMatch(auth -> auth.getAuthority().equals(requiredPrivilege));
+        System.out.println("isAdmin: " + isAdmin + ", hasPrivilege: " + hasPrivilege);
+        return isAdmin || hasPrivilege;
     }
 }

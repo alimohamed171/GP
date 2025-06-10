@@ -10,4 +10,5 @@ public interface RoomService {
     ResponseEntity<Object> deleteRoom(int buildingId, int roomId);
     ResponseEntity<Object> getRoomById(int buildingId, int roomId);
     ResponseEntity<Object> getAvailableRooms(int buildingId, Enums.RoomType roomType);
+    ResponseEntity<Object> getAvailableRoomsByBuildingTypeAndRoomType(Enums.BuildingType buildingType, Enums.RoomType roomType);
 }
