@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("")
@@ -15,8 +16,13 @@ public class GuideLinesController {
     private GuideLineService guideLineService;
 
     @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_ADD_GUIDELINES')")
-    @PostMapping("/admin/edit/add-guidelines/{universityId}")
-    public ResponseEntity<Object> addGuideLines(@PathVariable int universityId, @Valid @RequestBody ApplicationGuidelineAndApprovalDTO request) {
+    @PostMapping(value = "/admin/add-guidelines/{universityId}", consumes = {"multipart/form-data"})
+    public ResponseEntity<Object> addGuideLines(
+            @PathVariable int universityId,
+            @RequestPart("guidelines") String guidelines,
+            @RequestPart(value = "media", required = false) MultipartFile media
+    ) {
+        ApplicationGuidelineAndApprovalDTO request = new ApplicationGuidelineAndApprovalDTO(guidelines, media);
         return guideLineService.addGuideLines(universityId, request);
     }
 
@@ -31,12 +37,16 @@ public class GuideLinesController {
             @RequestParam int guidelineId) {
         return guideLineService.deleteGuideline(universityId, guidelineId);
     }
+
     @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_UPDATE_GUIDELINES')")
-    @PutMapping("/admin/edit/update-guidelines")
+    @PutMapping(value = "/admin/update-guidelines", consumes = {"multipart/form-data"})
     public ResponseEntity<Object> updateGuideline(
             @RequestParam int universityId,
             @RequestParam int guidelineId,
-            @Valid @RequestBody ApplicationGuidelineAndApprovalDTO request) {
+            @RequestPart("guidelines") String guidelines,
+            @RequestPart(value = "media", required = false) MultipartFile media
+    ) {
+        ApplicationGuidelineAndApprovalDTO request = new ApplicationGuidelineAndApprovalDTO(guidelines, media);
         return guideLineService.updateGuideline(universityId, guidelineId, request);
     }
 

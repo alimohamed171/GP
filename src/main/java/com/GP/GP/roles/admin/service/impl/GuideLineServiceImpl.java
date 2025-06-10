@@ -40,7 +40,6 @@ public class GuideLineServiceImpl implements GuideLineService {
         String filePath = null;
         if (request.getMedia() != null && !request.getMedia().isEmpty()) {
             try {
-                // استخدم مسار مطلق
                 String uploadDir = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "guidelines";
                 File directory = new File(uploadDir);
                 if (!directory.exists()) {
@@ -127,17 +126,29 @@ public class GuideLineServiceImpl implements GuideLineService {
 
         ApplicationGuidelineAndApproval guideline = guidelineOptional.get();
 
-        if (guideline.getUniversity().getId() != universityId) {
-            return new ResponseEntity<>(new BaseResponse(false, "Guideline does not belong to this university", null), HttpStatus.BAD_REQUEST);
-        }
-
         guideline.setGuidelines(request.getGuidelines());
 
+        if (request.getMedia() != null && !request.getMedia().isEmpty()) {
+            try {
+                String uploadDir = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "guidelines";
+                File directory = new File(uploadDir);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                String fileName = System.currentTimeMillis() + "_" + request.getMedia().getOriginalFilename();
+                File dest = new File(directory, fileName);
+                request.getMedia().transferTo(dest);
+                guideline.setMedia(fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(new BaseResponse(false, "Error uploading file", null), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
         guideline = guidelineRepo.save(guideline);
-
-        ApplicationGuidelineAndApprovalResponseDTO responseDto = ApplicationGuidelineAndApprovalResponseDTO.mapToResponseDTO(guideline);
-
-        BaseResponse response = new BaseResponse(true, "Guideline updated successfully", responseDto);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        ApplicationGuidelineAndApprovalResponseDTO responseDTO = ApplicationGuidelineAndApprovalResponseDTO.mapToResponseDTO(guideline);
+        return new ResponseEntity<>(new BaseResponse(true, "Guideline updated successfully.", responseDTO), HttpStatus.OK);
     }
+
 }
