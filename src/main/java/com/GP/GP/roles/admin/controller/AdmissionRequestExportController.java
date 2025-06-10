@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,7 +40,7 @@ public class AdmissionRequestExportController {
         IOUtils.copy(excelFile, response.getOutputStream());
         response.flushBuffer();
     }
-
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_EXPORT_ADMISSION')")
     @GetMapping("/admin/view/admission-requests/export")
     public ResponseEntity<Object> exportAdmissionRequestsToExcel(
             @RequestParam(required = false) LocalDateTime from,
@@ -120,6 +121,7 @@ public class AdmissionRequestExportController {
         IOUtils.copy(template, response.getOutputStream());
         response.flushBuffer();
     }
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_EXPORT_SORTED_ADMISSION')")
     @GetMapping("/admin/view/download-sorted-applicants")
     public ResponseEntity<Object> downloadSortedApplicants() {
         ByteArrayInputStream excelFile = exportService.exportSortedApplicantsToExcelTwoSheets();

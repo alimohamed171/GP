@@ -4,6 +4,7 @@ package com.GP.GP.repository;
 import com.GP.GP.entities.Room;
 import com.GP.GP.utill.Enums;
 import jakarta.persistence.LockModeType;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -26,6 +27,7 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
             @Param("buildingId") int buildingId,
             @Param("roomType") Enums.RoomType roomType);
     @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Transactional
     @Query("""
             SELECT r
             FROM Room r

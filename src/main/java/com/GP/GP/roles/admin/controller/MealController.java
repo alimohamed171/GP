@@ -5,6 +5,7 @@ import com.GP.GP.roles.admin.service.contracts.MealService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,27 +13,27 @@ import org.springframework.web.bind.annotation.*;
 public class MealController {
     @Autowired
     private MealService mealService;
-
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_MANAGE_MEALS')")
     @PostMapping("admin/edit/add-meals")
     public ResponseEntity<Object> createMeal(@Valid @RequestBody MealRequestDTO mealRequestDTO) {
         return mealService.createMeal(mealRequestDTO);
     }
-
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_MANAGE_MEALS')")
     @GetMapping("admin/edit/get-meals")
     public ResponseEntity<Object> getAllMeals() {
         return mealService.getAllMeals();
     }
-
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_MANAGE_MEALS')")
     @DeleteMapping("admin/delete-meal/{mealId}")
     public ResponseEntity<Object> deleteMeal(@PathVariable int mealId) {
         return mealService.deleteMealById(mealId);
     }
-
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_MANAGE_MEALS')")
     @PutMapping("admin/edit/update-meal/{mealId}")
     public ResponseEntity<Object> updateMeal(@PathVariable int mealId, @Valid @RequestBody MealRequestDTO mealRequestDTO) {
         return mealService.updateMeal(mealId, mealRequestDTO);
     }
-
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_MANAGE_MEALS')")
     @PostMapping("/admin/edit/meals/assign-student-specific-meal")
     public ResponseEntity<Object> assignMealToStudent(@RequestParam("studentId") int studentId, @RequestParam("mealId") int mealId) {
         return mealService.assignMealToStudent(studentId, mealId);

@@ -126,5 +126,91 @@ public class RoomAssignmentExcelServiceImpl implements RoomAssignmentExcelServic
             return new ByteArrayInputStream(out.toByteArray());
         }
     }
+    @Override
+    public ByteArrayInputStream exportAvailableRoomsByBuildingTypeToExcel(Enums.BuildingType buildingType, Enums.RoomType roomType) throws IOException {
+
+        List<Room> availableRooms = roomRepository.findAvailableRoomsByBuildingTypeAndRoomType(buildingType, roomType);
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("Available Rooms");
+
+            Row headerRow = sheet.createRow(0);
+            String[] headers = {"ID ","رقم الغرفه","نوع السكن", "نوع المبنى", "اسم المبنى", "الاشغال الحالي", "السعه", "رقم الطابق", "الجناح", "الرقم القومي"};
+
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+                headerRow.createCell(i).setCellValue(headers[i]);
+            }
+
+            int rowIdx = 1;
+            for (Room room : availableRooms) {
+                Row row = sheet.createRow(rowIdx++);
+                row.createCell(0).setCellValue(room.getId());
+                row.createCell(1).setCellValue(room.getRoomNumber());
+                row.createCell(2).setCellValue(room.getType().toString());
+                row.createCell(3).setCellValue(room.getBuilding().getType().toString());
+                row.createCell(4).setCellValue(room.getBuilding().getName());
+                row.createCell(5).setCellValue(room.getCurrentOccupancy());
+                row.createCell(6).setCellValue(room.getCapacity());
+                row.createCell(7).setCellValue(room.getFloorNumber());
+                row.createCell(8).setCellValue(room.getWing());
+                row.createCell(9).setCellValue("");
+            }
+
+            workbook.write(out);
+            return new ByteArrayInputStream(out.toByteArray());
+        }
+    }
+
+    @Override
+    public ByteArrayInputStream exportAvailableRoomsToExcel(Integer buildingId, Enums.BuildingType buildingType, Enums.RoomType roomType) throws IOException {
+            if (buildingId == null && buildingType == null) {
+                throw new IllegalArgumentException("Either buildingId or buildingType must be provided.");
+            }
+            List<Room> availableRooms;
+
+            if (buildingId != null) {
+                if (!buildingRepository.existsById(buildingId)) {
+                    throw new IllegalArgumentException("Building not found with ID: " + buildingId);
+                }
+                availableRooms = roomRepository.findAvailableRoomsByBuildingAndRoomType(buildingId, roomType);
+
+            } else if (buildingType != null) {
+                availableRooms = roomRepository.findAvailableRoomsByBuildingTypeAndRoomType(buildingType, roomType);
+
+            } else {
+                throw new IllegalArgumentException("Either buildingId or buildingType must be provided.");
+            }
+
+            try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                Sheet sheet = workbook.createSheet("Available Rooms");
+
+                Row headerRow = sheet.createRow(0);
+                String[] headers = {"ID", "رقم الغرفه", "نوع السكن", "نوع المبنى", "اسم المبنى", "الاشغال الحالي", "السعه", "رقم الطابق", "الجناح", "الرقم القومي"};
+
+                for (int i = 0; i < headers.length; i++) {
+                    headerRow.createCell(i).setCellValue(headers[i]);
+                    sheet.autoSizeColumn(i);
+                }
+
+                int rowIdx = 1;
+                for (Room room : availableRooms) {
+                    Row row = sheet.createRow(rowIdx++);
+                    row.createCell(0).setCellValue(room.getId());
+                    row.createCell(1).setCellValue(room.getRoomNumber());
+                    row.createCell(2).setCellValue(room.getType().toString());
+                    row.createCell(3).setCellValue(room.getBuilding().getType().toString());
+                    row.createCell(4).setCellValue(room.getBuilding().getName());
+                    row.createCell(5).setCellValue(room.getCurrentOccupancy());
+                    row.createCell(6).setCellValue(room.getCapacity());
+                    row.createCell(7).setCellValue(room.getFloorNumber());
+                    row.createCell(8).setCellValue(room.getWing());
+                    row.createCell(9).setCellValue("");
+                }
+
+                workbook.write(out);
+                return new ByteArrayInputStream(out.toByteArray());
+            }
+    }
 }
 

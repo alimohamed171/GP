@@ -54,8 +54,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         req -> req.requestMatchers("/public/**")
                                 .permitAll()
-                                .requestMatchers("/admin/view/**").hasAnyAuthority("ADMIN", "EDIT_ADMIN","ViEW_ADMIN")
-                                .requestMatchers("/admin/edit/**").hasAnyAuthority("ADMIN", "EDIT_ADMIN")
+                                .requestMatchers("/admin/view/**").authenticated() // Let AccessChecker control access
+                                .requestMatchers("/admin/edit/**").authenticated()
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers("/user/**").hasAuthority("USER")
                                 .anyRequest()
