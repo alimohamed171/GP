@@ -23,7 +23,7 @@ public class ApplicationGuidelineAndApprovalResponseDTO {
                 .guidelines(guidelineEntity.getGuidelines())
                 .universityId(guidelineEntity.getUniversity().getId())
                 .universityName(guidelineEntity.getUniversity().getName())
-                .media(guidelineEntity.getMedia())
+                .media("http://localhost:8080/public/media/" + guidelineEntity.getMedia())
                 .build();
     }
 }

@@ -50,7 +50,7 @@ public class GuideLineServiceImpl implements GuideLineService {
                 String fileName = System.currentTimeMillis() + "_" + request.getMedia().getOriginalFilename();
                 File dest = new File(directory, fileName);
                 request.getMedia().transferTo(dest);
-                filePath = "uploads/guidelines/" + fileName; // مسار نسبي للتخزين في الداتا بيز
+                filePath = fileName;
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -69,9 +69,6 @@ public class GuideLineServiceImpl implements GuideLineService {
 
         return new ResponseEntity<>(new BaseResponse(true, "Guidelines added successfully.", responseDto), HttpStatus.OK);
     }
-
-
-
 
     @Override
     public ResponseEntity<Object> getAllGuidelines(int universityId) {
