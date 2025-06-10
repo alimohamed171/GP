@@ -20,7 +20,7 @@ public class RoomController {
     @Autowired
     private RoomAssignmentService roomAssignmentService;
 
-
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_ADD_ROOMS')")
     @PostMapping("/admin/edit/rooms/add")
     public ResponseEntity<Object> addRoom(@Valid @RequestBody RoomRequestDTO dto) {
         return roomService.addRoom(dto);
@@ -30,7 +30,7 @@ public class RoomController {
     public ResponseEntity<Object> getAllRooms(@PathVariable int buildingId) {
         return roomService.getAllRooms(buildingId);
     }
-
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_DELETE_ROOMS')")
     @DeleteMapping("/admin/rooms/delete")
     public ResponseEntity<Object> deleteRoom(
             @RequestParam int buildingId,
@@ -43,12 +43,14 @@ public class RoomController {
             @PathVariable int roomId) {
         return roomService.getRoomById(buildingId, roomId);
     }
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_VIEW_AVAILABLE_ROOMS')")
     @GetMapping("/admin/view/rooms/get-available/{buildingId}/{roomType}")
     public ResponseEntity<Object> getAvailableRooms(
             @PathVariable int buildingId,
             @PathVariable Enums.RoomType roomType) {
         return roomService.getAvailableRooms(buildingId, roomType);
     }
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_VIEW_AVAILABLE_ROOMS')")
     @GetMapping("/admin/view/rooms/get-available-by-building-type/{buildingType}/{roomType}")
     public ResponseEntity<Object> getAvailableRoomsByBuildingTypeAndRoomType(
             @PathVariable Enums.BuildingType buildingType,
@@ -61,6 +63,7 @@ public class RoomController {
     public ResponseEntity<Object> assignRoomToStudent(@RequestBody RoomAssignmentRequestDTO roomAssignmentRequestDTO) {
         return roomAssignmentService.assignStudentToRoom(roomAssignmentRequestDTO);
     }
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_REMOVE_STUDENT_FROM_ROOM')")
     @DeleteMapping("/admin/rooms/remove-student")
     public ResponseEntity<Object> removeStudentFromRoom(
             @RequestParam int studentId,
@@ -68,7 +71,7 @@ public class RoomController {
         return roomAssignmentService.removeStudentFromRoom(studentId, roomId);
     }
 
-    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_ACCOMMODATION')")
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_ASSIGNMENT')")
     @PostMapping("/admin/edit/rooms/assign-student-specific-room")
     public ResponseEntity<Object> assignStudentToSpecificRoom(
             @RequestParam int studentId,

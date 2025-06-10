@@ -3,6 +3,7 @@ package com.GP.GP.roles.admin.controller;
 import com.GP.GP.roles.admin.service.contracts.AdmissionRequestUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,10 +19,12 @@ public class AdmissionRequestUploadController {
     public ResponseEntity<Object> validateExcel(@RequestParam("file") MultipartFile file) {
         return admissionRequestUploadService.isValidExcelFile(file);
     }
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_UPLOAD_ADMISSION_SECURITY_CHECK')")
     @PostMapping("/admin/upload-admission-request")
     public ResponseEntity<Object> uploadAdmissionRequest(@RequestParam("file") MultipartFile file) {
         return admissionRequestUploadService.uploadAdmissionRequestSecurityCheck(file);
     }
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_UPLOAD_ADMISSION_STATUS')")
     @PostMapping("/admin/upload-admission-request-status")
     public ResponseEntity<Object> uploadAdmissionRequestStatus(@RequestParam("file") MultipartFile file) {
         return admissionRequestUploadService.uploadAdmissionRequestStatusesFromExcel(file);
