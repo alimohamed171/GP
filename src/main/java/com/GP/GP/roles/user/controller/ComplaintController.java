@@ -1,16 +1,12 @@
 package com.GP.GP.roles.user.controller;
 
-import com.GP.GP.entities.User;
-import com.GP.GP.roles.Auth.service.AuthenticationService;
 import com.GP.GP.roles.user.model.request.ComplaintRequestDTO;
 import com.GP.GP.roles.user.service.contracts.ComplaintService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 
@@ -27,12 +23,14 @@ public class ComplaintController {
     }
 
     // Get all complaints (Admin)
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_VIEW_COMPLAINTS')")
     @GetMapping("/admin/view/get-all-complaints")
     public ResponseEntity<Object> getAllComplaints() {
         return complaintService.getAllComplaints();
     }
 
     // Get a complaint by ID (Admin)
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_VIEW_COMPLAINTS')")
     @GetMapping("/admin/view/get-complaint/{id}")
     public ResponseEntity<Object> getComplaintById(@PathVariable int id) {
         return complaintService.getComplaintById(id);
@@ -47,12 +45,14 @@ public class ComplaintController {
     }
 
     // Delete a complaint by ID (Admin)
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_DELETE_COMPLAINTS')")
     @DeleteMapping("/admin/delete-complaint/{id}")
     public ResponseEntity<Object> deleteComplaint(@PathVariable int id) {
         return complaintService.deleteComplaint(id);
     }
 
     // Get all complaints by a specific user (Admin)
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_VIEW_APPEALS')")
     @GetMapping("/admin/view/get-user-complaints/{userId}")
     public ResponseEntity<Object> getComplaintsByUser(@PathVariable int userId) {
         return complaintService.getComplaintsByUser(userId);
