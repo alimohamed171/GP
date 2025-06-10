@@ -48,7 +48,7 @@ public class UserController {
     public ResponseEntity<Object> checkStatus(@PathVariable int id, @RequestParam int userId) {
         return admissionRequestService.checkApplicationStatus(id, userId);
     }
-
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_VIEW_ADMISSION_REQUESTS')")
     @GetMapping("/admin/view/admission-requests")
     public ResponseEntity<Object> getAllAdmissionRequests(
             @RequestParam(required = false) String status,
@@ -137,7 +137,7 @@ public class UserController {
         pageableResponse.put("isFirst", page.isFirst());
         return pageableResponse;
     }
-
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_VIEW_ADMINS')")
     @GetMapping("/admin/all-admins")
     public ResponseEntity<Object> getAllAdmins(
             @RequestParam(defaultValue = "0") int offset,
@@ -161,9 +161,8 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
-
-
     //get admission by user Id -> for admin
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_VIEW_ADMISSION_REQUESTS')")
     @GetMapping("/admin/view/admission-requests/{userId}")
     public ResponseEntity<Object> getAdmissionRequestByUserId(@PathVariable int userId) {
         return admissionRequestService.getAdmissionRequestByUserId(userId);
@@ -176,6 +175,7 @@ public class UserController {
     }
 
     // update statues ->admin (admissionId, enum.Admission status )
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_UPDATE_ADMISSION_REQUEST_STATUS')")
     @PutMapping("/admin/edit/admission-requests/{id}/status")
     public ResponseEntity<Object> updateAdmissionRequestStatus(@PathVariable int id, @RequestParam Enums.AdmissionRequestStatues status, @RequestBody AdmissionStatusNotesDTO statusNotes) {
         return admissionRequestService.updateAdmissionRequestStatues(id, status, statusNotes);
@@ -185,7 +185,7 @@ public class UserController {
     public ResponseEntity<Object> checkApplicationStatus(@PathVariable String nationalId) {
         return admissionRequestService.getApplicationStatusByNID(nationalId);
     }
-
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_VIEW_ADMISSION_REQUESTS')")
     @GetMapping("/admin/view/sorted-applicants")
     public ResponseEntity<Object> getSortedApplicants() {
         return admissionRequestService.getSortedApplicants();
