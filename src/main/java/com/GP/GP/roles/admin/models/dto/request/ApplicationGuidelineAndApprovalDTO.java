@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -13,5 +14,5 @@ import lombok.NoArgsConstructor;
 public class ApplicationGuidelineAndApprovalDTO {
     @NotBlank(message = "Guidelines cannot be empty")
     private String guidelines;
-    private String media;
+    private MultipartFile media;
 }

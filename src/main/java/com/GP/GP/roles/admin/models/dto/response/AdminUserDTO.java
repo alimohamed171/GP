@@ -1,6 +1,6 @@
 package com.GP.GP.roles.admin.models.dto.response;
 
-import com.GP.GP.security.Privilege;
+import com.GP.GP.roles.user.model.dto.PrivilegesDTO;
 import com.GP.GP.security.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,5 +15,5 @@ public class AdminUserDTO {
     private int userID;
     private String username;
     private Role role;
-    private List<Privilege> privileges;
+    private List<PrivilegesDTO> privileges;
 }
