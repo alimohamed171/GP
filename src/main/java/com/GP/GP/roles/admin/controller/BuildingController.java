@@ -19,7 +19,6 @@ public class BuildingController {
     public ResponseEntity<Object> addBuilding(@Valid @RequestBody BuildingRequestDTO request) {
         return buildingService.addBuilding(request);
     }
-    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_VIEW_BUILDINGS')")
     @GetMapping("/public/get-buildings/{universityId}")
     public ResponseEntity<Object> getAllBuildings(@PathVariable int universityId) {
         return buildingService.getAllBuildings(universityId);
