@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdmissionAnalysisController {
      @Autowired
     private AdmissionAnalysisService admissionAnalysisService;
-     @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_ADMISSION_ANALYSIS')")
      @GetMapping("/admin/view/admission-analysis")
      public ResponseEntity<Object> getAdmissionAnalysis() {
          return admissionAnalysisService.analysisAdmissionRequest();

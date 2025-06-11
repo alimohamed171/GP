@@ -38,7 +38,7 @@ public class GuideLinesController {
         return guideLineService.deleteGuideline(universityId, guidelineId);
     }
 
-    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_UPDATE_GUIDELINES')")
+    @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_ADD_GUIDELINES')")
     @PutMapping(value = "/admin/update-guidelines", consumes = {"multipart/form-data"})
     public ResponseEntity<Object> updateGuideline(
             @RequestParam int universityId,
