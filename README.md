@@ -1,4 +1,4 @@
-# GP Project
+# Maskany University Dormitory Management System
 
 ## Description
 
