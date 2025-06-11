@@ -3,6 +3,8 @@ package com.GP.GP.repository;
 import com.GP.GP.entities.AdmissionRequest;
 import com.GP.GP.entities.User;
 import com.GP.GP.security.Role;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -23,5 +25,5 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
     Optional<User> findByUsernameAndNationalId(String username, String nationalId);
 
     @Query("SELECT u FROM User u WHERE u.username LIKE :username AND u.nationalId LIKE :nationalId")
-    List<User> findByUsernameLikeAndNationalIdLike(@Param("username") String username, @Param("nationalId") String nationalId);
+    Page<User> findByUsernameLikeAndNationalIdLike(@Param("username") String username, @Param("nationalId") String nationalId, Pageable pageable);
 }
