@@ -15,5 +15,6 @@ public class AppealResponseDTO {
         private String reason;
         private Enums.AdmissionRequestStatues status;
         private Integer userId;
+        private String username;
 
 }

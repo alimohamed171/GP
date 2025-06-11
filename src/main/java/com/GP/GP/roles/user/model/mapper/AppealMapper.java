@@ -25,6 +25,7 @@ public class AppealMapper {
         response.setStatus(appeal.getStatus());
         if (appeal.getUser() != null) {
             response.setUserId(appeal.getUser().getId());
+            response.setUsername(appeal.getUser().getUsername());
         }
         return response;
     }
