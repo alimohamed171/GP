@@ -91,7 +91,7 @@ public class UserServiceImpl implements AdmissionRequestService {
 
         if (existingUser.getStatus() != Enums.AdmissionRequestStatues.UNDER_REVIEW) {
             BaseResponse response = new BaseResponse(false, "Cannot update request after it has been processed", null);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
 
         University university = universityService.findUniversityById(updateUserRequestDTO.getUniversityId());
