@@ -37,6 +37,17 @@ public class UserSpecification {
                 }
             }
 
+            if (dto.getSearch() != null && !dto.getSearch().isBlank()) {
+                String likeSearch = "%" + dto.getSearch().toLowerCase() + "%";
+
+                Predicate namePredicate = cb.like(cb.lower(root.get("firstName")), likeSearch);
+                Predicate emailPredicate = cb.like(cb.lower(root.get("lastName")), likeSearch);
+                Predicate nationalIdPredicate = cb.like(cb.lower(root.get("nationalId")), likeSearch);
+
+                predicates.add(cb.or(namePredicate, emailPredicate, nationalIdPredicate));
+            }
+
+
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
