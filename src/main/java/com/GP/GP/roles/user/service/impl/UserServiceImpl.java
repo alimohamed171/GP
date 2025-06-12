@@ -90,7 +90,8 @@ public class UserServiceImpl implements AdmissionRequestService {
                 .orElseThrow(() -> new ResourceNotFoundException("Admission request not found"));
 
         if (existingUser.getStatus() != Enums.AdmissionRequestStatues.UNDER_REVIEW) {
-            throw new InvalidOperationException("Cannot update request after it has been processed");
+            BaseResponse response = new BaseResponse(false, "Cannot update request after it has been processed", null);
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
 
         University university = universityService.findUniversityById(updateUserRequestDTO.getUniversityId());

@@ -17,4 +17,5 @@ public class UserFilterDTO {
     private List<Enums.SecurityCheckStatues> securityCheck;
     private Boolean hasPenalty;
     private Enums.Gender gender;
+    private String search;
 }

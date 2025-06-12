@@ -57,6 +57,7 @@ public class UserController {
             @RequestParam(required = false) String gender,
             @RequestParam(required = false) Boolean isSorted,
             @RequestParam(required = false) String studentType,
+            @RequestParam(required = false) String search, // هنا أضفنا الباراميتر الجديد
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int limit) {
 
@@ -97,6 +98,10 @@ public class UserController {
             filterDTO.setStatus(Arrays.stream(status.split(","))
                     .map(s -> Enums.AdmissionRequestStatues.valueOf(s.trim().toUpperCase()))
                     .collect(Collectors.toList()));
+        }
+        if(search != null)
+        {
+            filterDTO.setSearch(search);
         }
         if (securityCheck != null) {
             filterDTO.setSecurityCheck(Arrays.stream(securityCheck.split(","))
