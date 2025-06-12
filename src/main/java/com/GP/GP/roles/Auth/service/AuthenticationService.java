@@ -91,7 +91,10 @@ public class AuthenticationService {
         });
 
         boolean isNewStudent = "first".equalsIgnoreCase(request.getLevel());
-        String place = request.getPlaceOfBirth() != null ? request.getPlaceOfBirth().trim() : "";
+        String residenceAddress = request.getResidenceAddress() != null ? request.getResidenceAddress().trim() : "";
+        String[] addressParts = residenceAddress.split(" - ");
+        String secondWord = addressParts.length >= 2 ? addressParts[1].trim() : "";
+
         boolean isFailed = request.getAnnualGrade() == Enums.AnnualGrade.FAIL;
 
         List<Penalty> penalties = existingUser
@@ -100,15 +103,15 @@ public class AuthenticationService {
 
         boolean hasPenalty = !penalties.isEmpty();
 
-        boolean isRestrictedPlace = (place.contains("القاهرة") || place.contains("الجيزة") || place.contains("القليوبية"))
-                && !(place.contains("كفر شكر") || place.contains("الواحات البحرية"));
+        boolean isRestrictedPlace = (secondWord.contains("القاهرة") || secondWord.contains("الجيزة") || secondWord.contains("القليوبية"))
+                && !(residenceAddress.contains("كفر شكر") || residenceAddress.contains("الواحات البحرية"));
 
         if (!isNewStudent && (isFailed || hasPenalty || isRestrictedPlace)) {
             user.setStatus(Enums.AdmissionRequestStatues.REJECTED);
 
             String reason;
             if (isRestrictedPlace) {
-                reason = "Rejected due to restricted place of birth.";
+                reason = "Rejected due to restricted residence address.";
             } else if (hasPenalty) {
                 Penalty firstPenalty = penalties.get(0);
                 reason = "Student has a penalty: " + firstPenalty.getPenaltyTitle() + " (" + firstPenalty.getReason() + ")";
@@ -125,7 +128,7 @@ public class AuthenticationService {
 
         } else if (isNewStudent && isRestrictedPlace) {
             user.setStatus(Enums.AdmissionRequestStatues.REJECTED);
-            user.setAdmissionRequestStatusNotes("Rejected due to restricted place of birth.");
+            user.setAdmissionRequestStatusNotes("Rejected due to restricted residence address.");
 
             if (existingUser.isPresent() && existingUser.get().getRoom() != null) {
                 Room oldRoom = existingUser.get().getRoom();
@@ -149,7 +152,6 @@ public class AuthenticationService {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
 
     public ResponseEntity<Object> login(LoginRequestDTO request) {
