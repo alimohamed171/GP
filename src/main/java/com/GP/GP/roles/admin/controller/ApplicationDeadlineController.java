@@ -15,7 +15,7 @@ public class ApplicationDeadlineController {
     @Autowired
     private ApplicationDeadlineService applicationDeadlineService;
     @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_ADD_APPLICATION_DEADLINES')")
-    @PostMapping("/admin/edit/application-deadline/{universityId}")
+    @PostMapping("/admin/application-deadline/{universityId}")
     ResponseEntity<Object> addApplicationDeadline(@PathVariable int universityId, @Valid @RequestBody ApplicationDeadlineDTO dto){
         return applicationDeadlineService.addApplicationDeadline(universityId, dto);
     }

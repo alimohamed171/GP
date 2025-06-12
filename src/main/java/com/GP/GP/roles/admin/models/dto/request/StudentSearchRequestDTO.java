@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class StudentSearchRequestDTO {
-    @NotBlank(message = "Username is required")
     private String username;
 
-    @NotBlank(message = "National ID is required")
     private String nationalId;
 }
