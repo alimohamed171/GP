@@ -193,16 +193,17 @@ public class UserServiceImpl implements AdmissionRequestService {
 
     @Override
     public ResponseEntity<Object> getApplicationStatusByNID(String nationalId) {
+        Optional<User> admissionRequestOptional = userRepository.findByNationalId(nationalId);
 
-        User admissionRequest = userRepository.findByNationalId(nationalId)
-                .orElseThrow(() -> new ResourceNotFoundException("No admission request found for National ID: " + nationalId));
-        if (admissionRequest.getStatus() == null) {
-            return new ResponseEntity<>(new BaseResponse(false, "No application found for the provided National ID", null), HttpStatus.NOT_FOUND);
+        if (admissionRequestOptional.isPresent()) {
+            User admissionRequest = admissionRequestOptional.get();
+            AdmissionRequestInquiryResponseDTO responseDTO = AdmissionRequestInquiryMapper.entityToResponse(admissionRequest);
+            BaseResponse response = new BaseResponse(true, "Application status retrieved successfully", responseDTO);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            BaseResponse errorResponse = new BaseResponse(false, "No admission request found for National ID: " + nationalId, null);
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
-
-        AdmissionRequestInquiryResponseDTO responseDTO = AdmissionRequestInquiryMapper.entityToResponse(admissionRequest);
-        BaseResponse response = new BaseResponse(true, "Application status retrieved successfully", responseDTO);
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Override
