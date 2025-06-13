@@ -38,13 +38,25 @@ public class UserSpecification {
             }
 
             if (dto.getSearch() != null && !dto.getSearch().isBlank()) {
-                String likeSearch = "%" + dto.getSearch().toLowerCase() + "%";
+                String searchInput = dto.getSearch().trim().toLowerCase();
+                String[] searchWords = searchInput.split("\\s+");
 
-                Predicate namePredicate = cb.like(cb.lower(root.get("firstName")), likeSearch);
-                Predicate emailPredicate = cb.like(cb.lower(root.get("lastName")), likeSearch);
-                Predicate nationalIdPredicate = cb.like(cb.lower(root.get("nationalId")), likeSearch);
+                List<Predicate> nameFieldPredicates = new ArrayList<>();
 
-                predicates.add(cb.or(namePredicate, emailPredicate, nationalIdPredicate));
+                for (String word : searchWords) {
+                    String likePattern = "%" + word + "%";
+
+
+                    Predicate currentWordMatchesFirstName = cb.like(cb.lower(root.get("firstName")), likePattern);
+                    Predicate currentWordMatchesLastName = cb.like(cb.lower(root.get("lastName")), likePattern);
+                    Predicate currentWordMatchesNationalId = cb.like(cb.lower(root.get("nationalId")), likePattern);
+
+                    nameFieldPredicates.add(cb.or(currentWordMatchesFirstName, currentWordMatchesLastName, currentWordMatchesNationalId));
+                }
+
+                if (!nameFieldPredicates.isEmpty()) {
+                    predicates.add(cb.or(nameFieldPredicates.toArray(new Predicate[0])));
+                }
             }
 
 
