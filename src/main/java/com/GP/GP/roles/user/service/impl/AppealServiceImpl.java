@@ -111,10 +111,16 @@ public class AppealServiceImpl implements AppealService {
 
         if (appeal.getStatus() != Enums.AdmissionRequestStatues.UNDER_REVIEW) {
             return new ResponseEntity<>(
-                    new BaseResponse(false, "Only appeals that are UNDER_REVIEW can be updated.", null),
-                    HttpStatus.BAD_REQUEST);
+                    new BaseResponse(true, "can't change appeal decision after proceed", null),
+                    HttpStatus.CONFLICT);
+
         }
 
+        if (appeal.getStatus() == status) {
+            return new ResponseEntity<>(
+                    new BaseResponse(false, "Appeal is already in the requested status.", null),
+                    HttpStatus.BAD_REQUEST);
+        }
 
         User student = appeal.getUser();
         if (
@@ -125,7 +131,7 @@ public class AppealServiceImpl implements AppealService {
         } else if (status == Enums.AdmissionRequestStatues.REJECTED) {
             student.setStatus(Enums.AdmissionRequestStatues.REJECTED);
             userRepository.save(student);
-        }else {
+        } else {
             return new ResponseEntity<>(
                     new BaseResponse(true, "request status is under review", null),
                     HttpStatus.BAD_REQUEST);
@@ -146,7 +152,7 @@ public class AppealServiceImpl implements AppealService {
         Appeal appeal = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appeal not found with id: " + id));
 
-        if (appeal.getStatus() != Enums.AdmissionRequestStatues.UNDER_REVIEW) {
+        if (appeal.getStatus() != Enums.AdmissionRequestStatues.REJECTED) {
             return new ResponseEntity<>(
                     new BaseResponse(false, "Only appeals that are UNDER_REVIEW can be deleted.", null),
                     HttpStatus.BAD_REQUEST);
