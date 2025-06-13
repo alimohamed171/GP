@@ -33,7 +33,7 @@ public class RoomRequestDTO {
     @Min(value = 0, message = "Floor number must be at least 0.")
     private Integer floorNumber;
 
-    @Pattern(regexp = "^[A-Za-z]+$", message = "Wing must only contain alphabetic characters.")
+    @Pattern(regexp = "^[A-Za-z\\u0600-\\u06FF ]+$", message = "Wing must only contain alphabetic characters.")
     private String wing;
 
     @NotNull(message = "Bed count is required.")
