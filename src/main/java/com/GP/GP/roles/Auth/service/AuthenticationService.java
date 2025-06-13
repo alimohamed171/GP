@@ -184,7 +184,7 @@ public class AuthenticationService {
 
 
     private void revokeAllTokenByUser(User user) {
-        List<Token> validTokens = tokenRepository.findAllByUserIdAndLoggedOutFalse(user.getId());
+        List<Token> validTokens = tokenRepository.findAllTokensByUser(user.getId());
         if (validTokens.isEmpty()) {
             return;
         }
