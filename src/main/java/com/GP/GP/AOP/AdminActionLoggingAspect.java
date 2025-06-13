@@ -8,6 +8,8 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,10 @@ import java.lang.reflect.Method;
 @Aspect
 @Component
 public class AdminActionLoggingAspect {
+    @Bean
+    public CommandLineRunner runner() {
+        return args -> System.out.println("Resolved DB URL: " + System.getenv("MYSQLHOST"));
+    }
 
     @Autowired
     private AdminActionLogRepository logRepository;
