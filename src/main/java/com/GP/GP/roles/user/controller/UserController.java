@@ -191,7 +191,7 @@ public class UserController {
         return admissionRequestService.getApplicationStatusByNID(nationalId);
     }
     @PreAuthorize("@accessChecker.hasPrivilegeOrIsAdmin(authentication, 'ACCESS_VIEW_ADMISSION_REQUESTS')")
-    @GetMapping("/admin/view/sorted-applicants")
+    @GetMapping("/admin/sorted-applicants")
     public ResponseEntity<Object> getSortedApplicants() {
         return admissionRequestService.getSortedApplicants();
     }
