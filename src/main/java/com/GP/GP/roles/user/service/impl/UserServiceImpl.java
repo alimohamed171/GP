@@ -257,6 +257,7 @@ public class UserServiceImpl implements AdmissionRequestService {
         );
 
         List<User> users = userRepository.findAll().stream()
+                .filter(user -> user.getStatus() == Enums.AdmissionRequestStatues.UNDER_REVIEW)
                 .filter(user -> user.getSecurityCheck() == Enums.SecurityCheckStatues.ACCEPTED)
                 .filter(this::shouldIncludeUser)
                 .toList();
