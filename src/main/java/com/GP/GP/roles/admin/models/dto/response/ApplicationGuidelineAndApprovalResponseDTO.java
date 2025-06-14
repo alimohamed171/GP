@@ -23,7 +23,7 @@ public class ApplicationGuidelineAndApprovalResponseDTO {
                 .guidelines(guidelineEntity.getGuidelines())
                 .universityId(guidelineEntity.getUniversity().getId())
                 .universityName(guidelineEntity.getUniversity().getName())
-                .media("http://localhost:8080/public/media/" + guidelineEntity.getMedia())
+                .media("https://gp-production-2df8.up.railway.app/public/media/" + guidelineEntity.getMedia())
                 .build();
     }
 }
